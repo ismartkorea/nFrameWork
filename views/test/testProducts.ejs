@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8"/>
+    <title>동적 테스트</title>
+    <!-- Bootstrap core CSS     -->
+    <link href="../css/bootstrap.css" rel="stylesheet" />
+</head>
+<body>
+<form id="frm" name="frm">
+<div style="width: 100%; text-align: center; margin: 0 auto;">
+    <div id="nav">
+        <h1>동적 테스트</h1>
+    </div>
+    <div id="content">
+        <div id="divRow">
+            <ul style="list-style: none;">
+                <li id="liList">
+                    상품1 : <input type="text" id="pName1" name="pName[]" value=""/>
+                </li>
+                <li id="liList">
+                    옵션상품1<input type="text" id="opt1Name" name="optName[]" value=""/>
+                </li>
+                <li id="liList">
+                    옵션상품2<input type="text" id="opt2Name" name="optName[]" value=""/>
+                </li>
+                <li id="liList">
+                    상품2 : <input type="text" id="pName2" name="pName[]" value=""/>
+                </li>
+                <li id="liList">
+                    옵션상품1<input type="text" id="opt3Name" name="optName[]" value=""/>
+                </li>
+                <li id="liList">
+                    옵션상품2<input type="text" id="opt4Name" name="optName[]" value=""/>
+                </li>
+            </ul>
+        </div>
+        <div>
+            <input type="button" id="submitBtn" name="submitBtn" value="전송"/>
+        </div>
+    </div>
+    <div id="footer`">
+        푸터
+    </div>
+</div>
+</form>
+<!--   Core JS Files   -->
+<script src="/js/jquery-1.11.3.min.js" type="text/javascript"></script>
+<script src="/js/bootstrap.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+    $(function() {
+        // 선택 버튼 이벤트 처리.
+        $("#submitBtn").on("click", function(e) {
+            e.preventDefault();
+            $("#frm").attr("method", "post");
+            $("#frm").attr("action", "/test/product/save");
+            $("#frm").submit();
+        });
+    });
+</script>
+</body>
+</html>

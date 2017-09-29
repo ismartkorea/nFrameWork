@@ -1,0 +1,87 @@
+<%
+// 콤마 붙이기
+function fnComma(num) {
+    var reg = /(^[+-]?\d+)(\d{3})/;
+    num += '';
+    while(reg.test(num)) {
+        num = num.replace(reg, '$1' + ',' + '$2');
+    }
+    return num;
+}
+// 콤마 제거
+function fnUnComma(num) {
+    return (num.replace(/\,/g,""));
+}
+%>
+<!doctype html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>고객 결제 부가서비스 정보 화면.</title>
+    <!-- Bootstrap Core CSS -->
+    <link href="/admin/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/join.css">
+    <script type="text/javascript" src="/js/jquery-1.11.3.min.js"></script>
+    <!-- Magnific Popup -->
+    <script type="text/javascript" src="/js/jquery.magnific-popup.min.js"></script>
+    <script type="text/javascript" src="/js/magnific-popup-options.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+
+            // 닫기 버튼 이벤트 처리.
+            $("#closeBtn").on("click",function(e) {
+                e.preventDefault();
+                self.close();
+            });
+        });
+    </script>
+</head>
+<body>
+<div id="content">
+        <div id="join">
+            <h1 class="tit-join">결제 서비스 상세 조회</h1>
+        <!--////---서비스이용내역 시작///////-->
+        <table border="0" cellspacing="0" width="100%" class="table_style11">
+            <tr>
+                <th width="5%">No</th>
+                <th width="10">주문번호</th>
+                <th width="10">상품번호</th>
+                <th width="10">상품종류</th>
+                <th width="35%">상품명</th>
+                <th width="15%">상품구분</th>
+                <th width="25%">상품가격</th>
+            </tr>
+<%
+    if(rList.length > 0) {
+        rList.forEach(function(item, index) {
+%>
+            <tr>
+                <td><%=item.num%></td>
+                <td><%=item.orderNo%></td>
+                <td><%=item.pCode%></td>
+                <td><%=item.pTypeNm%></td>
+                <td><%=item.pNm%></td>
+                <td><%=item.pDivNm%></td>
+                <td><%=fnComma(item.pPrice)%></td>
+            </tr>
+<%
+        })
+    } else {
+%>
+            <tr>
+                <td colspan="7" style="text-align: center;">
+                    No Data
+                </td>
+            </tr>
+<%
+    }
+%>
+        </table>
+        <div class="btn-area">
+            <a id="closeBtn" href="#" class="mfp-close">닫기</a>
+        </div>
+    </div>
+</div>
+</body>
+</html>

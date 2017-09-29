@@ -1,0 +1,365 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>아이디/비밀번호찾기</title>
+    <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
+    <meta name="viewport" content="width=device-width" />
+    <head>
+        <!-- Bootstrap core CSS     -->
+        <link href="/assist/css/bootstrap.min.css" rel="stylesheet" />
+
+        <!--  Material Dashboard CSS    -->
+        <link href="/assist/css/material-dashboard.css" rel="stylesheet"/>
+
+        <!--     Fonts and icons     -->
+        <link href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" rel="stylesheet">
+
+
+    </head>
+    <!--팝업창크기는 css/magnific-popup.css에 mfp-iframe-scaler3 클래스에 지정되어있음-->
+<body>
+<div class="wrapper">
+    <div class="pd1em2em">
+
+        <h3>아이디/비밀번호 찾기</h3>
+
+        <!-- 아이디/비밀번호 찾기 시작 -->
+
+        <div class="card card-nav-tabs">
+            <div class="card-header" data-background-color="green2">
+                <div class="nav-tabs-navigation">
+                    <div class="nav-tabs-wrapper">
+                        <ul class="nav nav-tabs" data-tabs="tabs">
+                            <li class="pdwide active">
+                                <a href="#search_id" data-toggle="tab">
+                                    <i class="fa fa-user" aria-hidden="true"></i> 아이디찾기
+                                    <div class="ripple-container"></div></a>
+                            </li>
+
+                            <li class="pdwide">
+                                <a href="#search_pwd" data-toggle="tab">
+                                    <i class="fa fa-unlock-alt" aria-hidden="true"></i> 비밀번호찾기
+                                    <div class="ripple-container"></div></a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-content">
+                <div class="tab-content">
+
+                    <!--아이디찾기 탭 시작-->
+                    <div class="tab-pane active" id="search_id">
+
+                        <div class="col-md-12">
+                            <h4><i class="fa fa-user" aria-hidden="true"></i> 아이디 찾기</h4>
+                            <p>'휴대전화번호로 찾기' 또는 '이메일로찾기' 중 원하시는 방식으로 아이디찾기를 하시면 됩니다.</p>
+                        </div>
+
+                        <!--휴대전화번호로 찾기-->
+<!--
+                        <div class="col-md-6 col-sm-6 col-xs-12 searchidbox">
+                            <dl>
+                                <dt><i class="fa fa-mobile darkgrey" aria-hidden="true"></i> 휴대전화번호로 찾기</dt>
+                                <dd><span class="wid70">이름</span>
+                                    <input type="text" id="" name="" value="" size="20" maxlength="20"></dd>
+                                <dd><span class="wid70">휴대폰번호</span>
+                                        <span class="dispblock">
+                               <select>
+                               	<option selected>010</option>
+                               </select>
+                                - <input type="text" id="" name="" value="" size="4" maxlength="4"> - <input type="text"  id="" name="" value="" size="4" maxlength="4"></span></dd>
+                                <div class="text-center"><input type="button" class="btn darkgreyb" value="확인" /></div>
+                            </dl>
+
+                        </div>
+-->
+                        <!--col-md-6 searchidbox-->
+                        <!--휴대전화번호로 찾기 끝-->
+
+                        <!--이메일로 찾기-->
+                        <div class="col-md-6 col-sm-6 col-xs-12 searchidbox">
+                            <dl>
+                                <dt><i class="fa fa-envelope-o darkgrey" aria-hidden="true"></i> 이메일로 찾기</dt>
+                                <dd><span class="wid70">이름</span>
+                                    <input type="text" id="usrNm1" name="usrNm1" value="" size="28" maxlength="28"></dd>
+                                <dd><span class="wid70">이메일주소</span>
+                                    <input type="text" id="usrEmail1" name="usrEmail1" value="" size="28" maxlength="38"></dd>
+                                <div class="text-center"><input type="button" id="idSrchBtn" class="btn darkgreyb" value="확인" /></div>
+                            </dl>
+
+                        </div><!--col-md-6 searchidbox-->
+                        <!--이메일로 찾기 끝-->
+                    </div><!--tab-pane-->
+                    <!--아이디찾기 탭 끝-->
+
+
+
+                    <!--비밀번호찾기 탭 시작-->
+                    <div class="tab-pane" id="search_pwd">
+                        <div class="col-md-12">
+                            <h4><i class="fa fa-unlock-alt" aria-hidden="true"></i> 비밀번호 찾기</h4>
+                            <p>'휴대전화번호로 찾기' 또는 '이메일로찾기' 중 원하시는 방식으로 비밀번호 찾기를 하시면 됩니다.</p>
+                        </div>
+
+                        <!--휴대전화번호로 찾기-->
+<!--
+                        <div class="col-md-6 col-sm-6 col-xs-12 searchidbox">
+                            <dl>
+                                <dt><i class="fa fa-mobile darkgrey" aria-hidden="true"></i> 휴대전화번호로 찾기</dt>
+                                <dd><span class="wid70">아이디</span>
+                                    <input type="text" id="" name="" value="" size="14" maxlength="18">&nbsp;<input type="button" class="btn btn-xs greyb" value="확인" />
+                                </dd>
+                                <dd class="mtm10"><span class="wid70">이름</span>
+                                    <input type="text" id="" name="" value="" size="14" maxlength="18">
+                                </dd>
+                                <dd class="mtm10"><span class="wid70">휴대폰번호</span>
+                                        <span class="dispblock">
+                               <select>
+                               	<option selected>010</option>
+                               </select>
+                                - <input type="text" id="" name="" value="" size="4" maxlength="4"> - <input type="text"  id="" name="" value="" size="4" maxlength="4">&nbsp;<input type="button" class="btn btn-xs greyb" value="인증번호발송" />
+                                </span>
+                                </dd>
+                                <dd class="mtm20"><span class="wid70">인증번호</span>
+                                        <span class="dispblock">
+                               <input type="text" id="" name="" value="" size="14" maxlength="20">&nbsp;<input type="button" class="btn btn-xs greyb" value="확인" />
+                               </span>
+                                </dd>
+
+                                <div class="text-center"><input type="button" class="btn darkgreyb" value="확인" /></div>
+                            </dl>
+
+                        </div>
+-->
+                        <!--col-md-6 searchidbox-->
+                        <!--휴대전화번호로 찾기 끝-->
+
+                        <!--이메일로 찾기-->
+                        <div class="col-md-6 col-sm-6 col-xs-12 searchidbox">
+                            <dl>
+                                <dt><i class="fa fa-envelope-o darkgrey" aria-hidden="true"></i> 이메일로 찾기</dt>
+                                <dd><span class="wid70">아이디</span>
+                                    <input type="text" id="usrId2" name="usrId2" value="" size="14" maxlength="38">&nbsp;<input type="button" id="srchIdBtn" class="btn btn-xs greyb" value="확인" />
+                                </dd>
+                                <dd class="mtm10"><span class="wid70">이름</span>
+                                    <input type="text" id="usrNm2" name="usrNm2" value="" size="14" maxlength="18">
+                                </dd>
+                                <dd><span class="wid70">이메일주소</span>
+
+                                    <input type="text" id="usrEmail2" name="usrEmail2" value="" size="20" maxlength="26">&nbsp;
+<!--
+                                    <input type="button" class="btn btn-xs greyb" value="인증번호발송" />
+-->
+                                </dd>
+                                <!--
+                                                                <dd class="mtm20"><span class="wid70">인증번호</span>
+                                                                        <span class="dispblock">
+                                                               <input type="text" id="" name="" value="" size="14" maxlength="20">&nbsp;<input type="button" class="btn btn-xs greyb" value="확인" />
+                               </span>
+                                </dd>
+                                -->
+
+                                <div class="text-center"><input type="button" id="pwdSrchBtn" class="btn darkgreyb" value="확인" /></div>
+                            </dl>
+
+                        </div><!--col-md-6 searchidbox-->
+                        <!--이메일로 찾기 끝-->
+                    </div><!--tab-pane-->
+
+                    <!--비밀번호찾기 탭 끝-->
+
+                    <p class="text-right mr20 mb0" style="clear:both; display:block;">고객센터: <a href="tel:1644-0495">1644-0495</a></p>
+
+                </div><!--tab-content-->
+            </div><!--card-content-->
+
+        </div><!--card-->
+
+        <!-- 맨 아래 닫기 버튼 -->
+        <div class="text-center">
+            <input type="button" id="closeBtn" name="closeBtn" class="btn btn-close" value="닫기"/>
+        </div>
+
+    </div>
+</div><!--wrap-->
+
+</body>
+
+
+<!--Core JS Files -->
+<script src="/assist/js/jquery-3.1.0.min.js"></script>
+<script src="/assist/js/bootstrap.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+    $(function() {
+        var emailRegExp = /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i;
+        var checkID = false;
+
+        // 아이디 확인
+        $("#srchIdBtn").on("click", function(e) {
+            e.preventDefault();
+
+            var usrId2 = $.trim($("#usrId2").val());
+
+            if(usrId2 == "") {
+                alert("아이디를 입력하세요.");
+                $("#usrId2").focus();
+                return false;
+            }
+
+            var dataValues = {
+                'usrId' : usrId2
+            };
+
+            // 데이타 전송 처리.
+            $.ajax({
+                url : "/login/find/getid",
+                type : "post",
+                dataType : "json",
+                data : dataValues,
+                success : function(data) {
+                    if(data.result == "OK") {
+                        alert("아이디를 확인하였습니다.");
+                        checkID = true;
+                    } else {
+                        alert("입력하신 아이디가 없거나 잘못 입력한 아이디입니다.")
+                    }
+                },
+                error : function(err) {
+                    alert("errCode : " + err.message);
+                }
+            });
+
+        });
+
+        // 아이디 찾기
+        $("#idSrchBtn").on("click", function(e) {
+           e.preventDefault();
+
+            var usrNm1 = $.trim($("#usrNm1").val());
+            var usrEmail1 = $.trim($("#usrEmail1").val());
+            var usrId2 = $.trim($("#usrId2").val());
+            var usrNm2 = $.trim($("#usrNm2").val());
+            var usrEmail2 = $.trim($("#usrEmail2").val());
+
+            if(usrNm1 == "") {
+                alert("이름을 입력해주세요.");
+                $("#usrNm1").focus();
+                return false;
+            }
+
+            if(usrEmail1 == "") {
+                alert("이메일을 입력해주세요.");
+                $("#usrEmail1").focus();
+                return false;
+            } else {
+                // 이메일 상세 체크.
+                if(!emailRegExp.test(usrEmail1)) {
+                    alert("올바른 이메일이 아닙니다. 다시 입력하여 주세요.");
+                    $("#usrEmail1").focus();
+                    return false;
+                }
+            }
+
+            var dataValues = {
+                'usrNm' : usrNm1,
+                'usrEmail' : usrEmail1
+            };
+
+            // 데이타 전송 처리.
+            $.ajax({
+                url : "/login/find/id",
+                type : "post",
+                dataType : "json",
+                data : dataValues,
+                success : function(data) {
+                    if(data.result == "OK") {
+                        alert("메일을 전송하였습니다. 확인하세요.");
+                    }
+                },
+                error : function(err) {
+                    alert("errCode : " + err.message);
+                }
+            });
+
+        });
+
+
+        // 비밀번호 찾기
+        $("#pwdSrchBtn").on("click", function(e) {
+            e.preventDefault();
+
+            var usrId2 = $.trim($("#usrId2").val());
+            var usrNm2 = $.trim($("#usrNm2").val());
+            var usrEmail2 = $.trim($("#usrEmail2").val());
+
+            if(usrId2 == "") {
+                alert("아이디를 입력해주세요.");
+                $("#usrId2").focus();
+                return false;
+            }
+
+            if(checkID != true) {
+                alert("아이디 '확인' 버튼을 누르시고 체크하여 주세요");
+                return false;
+            }
+
+            if(usrNm2 == "") {
+                alert("이름을 입력해주세요.");
+                $("#usrNm2").focus();
+                return false;
+            }
+
+            if(usrEmail2 == "") {
+                alert("이메일을 입력해주세요.");
+                $("#usrEmail2").focus();
+                return false;
+            } else {
+                // 이메일 상세 체크.
+                if(!emailRegExp.test(usrEmail2)) {
+                    alert("올바른 이메일이 아닙니다. 다시 입력하여 주세요.");
+                    $("#usrEmail2").focus();
+                    return false;
+                }
+            }
+
+            var dataValues = {
+                'usrId' : usrId2,
+                'usrNm' : usrNm2,
+                'usrEmail' : usrEmail2
+            };
+
+            // 데이타 전송 처리.
+            $.ajax({
+                url : "/login/find/pwd",
+                type : "post",
+                dataType : "json",
+                data : dataValues,
+                success : function(data) {
+                    if(data.result == "OK") {
+                        alert("메일을 전송하였습니다. 확인하세요.");
+                    }
+                },
+                error : function(err) {
+                    alert("errCode : " + err.message);
+                }
+            });
+
+        });
+
+        // 닫기 버튼 이벤트 처리.
+        $("#closeBtn").on("click", function(e) {
+           e.preventDefault();
+
+            if (window.parent == window.top) {
+                window.parent.$.magnificPopup.close();
+            }
+        });
+
+    });
+</script>
+
+</html>

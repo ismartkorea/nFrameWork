@@ -1,0 +1,159 @@
+<% layout('../../../admin/layout') -%>
+<script type="text/javascript" src="/js/jquery-1.11.3.min.js"></script>
+<script type="text/javascript" src="/js/common.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        // console.
+        console.log("on READY");
+
+        // 이전 버튼 이벤트 처리.
+        $("#prevBtn").on('click', function () {
+            location.href = '/admin';
+        });
+        // 검색 엔터키 이벤트 처리.
+        $("#srchText").on("keypress", function(e) {
+            if(e.which == 13) {
+                $("#srchBtn").click();
+                return false;
+            }
+        });
+        // 검색버튼 이벤트 처리.
+        $("#srchBtn").on("click", function (e) {
+            e.preventDefault();
+            var selectedVal = $("#srchType option:selected").val();
+
+            // 선택박스 체크.
+            if (selectedVal == null || selectedVal == "") {
+                alert("검색할려는 항목을 선택하여 주세요.");
+                $("#srchType").focus();
+                return false;
+            }
+            // 검색할 텍스터 체크.
+            /*
+             if($("#srchText").val() == null || $("#srchText").val() == "") {
+             alert("검색 단어을 입력하여 주세요.");
+             $("#srchText").focus();
+             return false;
+             }
+             */
+            var srchText = $.trim($("#srchText").val());
+            // 전송 처리.
+            $("#srchType").val(selectedVal);
+            $("#srchText").val(srchText);
+            $("#searchForm").attr("method", "post");
+            $("#searchForm").attr("action", "/admin/pay/order/list/search");
+            $("#searchForm").submit();
+        });
+
+
+    });
+
+</script>
+<div class="container-fluid">
+
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="page-header">주문 상세 테이블 조회 화면</h1>
+        </div>
+        <form id="searchForm" name="searchForm" method="post">
+            <div class="form-group text-right form-inline">
+                <div class="form-group">
+                    <select id="srchType" name="srchType" class="form-control">
+                        <option value="">선택하세요.</option>>
+                        <option value="orderNo" <%if(srchType=="orderNo") {%> selected <% }%>>주문번호</option>
+                        <option value="usrId" <%if(srchType=="usrId") {%> selected <% }%>>고객ID</option>
+                    </select>
+                </div>
+                <div class="input-group custom-search-form">
+                    <input type="text" id="srchText" name="srchText" class="form-control" value="<%=srchText%>" size="20" placeholder="Search...">
+                        <span class="input-group-btn">
+                            <button class="btn btn-primary" type="button" id="srchBtn" name="srchBtn">
+                                <i class="fa fa-search"></i>
+                            </button>
+                        </span>
+                </div>
+            </div>
+        </form>
+    </div>
+    <table width="100%" border="0" class="table table-hover">
+        <tr>
+            <th>번호</th>
+            <th>주문번호</th>
+            <th>고객ID</th>
+            <th>서비스번호</th>
+            <th>서비스구분</th>
+            <th>연관코드여부</th>
+            <th>연관코드</th>
+            <th>서비스명</th>
+            <th>서비스가격</th>
+            <th>서비스고유코드</th>
+            <th>옵션버튼표시여부</th>
+            <th>옵션개수</th>
+            <th>정렬순서</th>
+            <th>작성일</th>
+            <th>작성자ID</th>
+        </tr>
+<%
+    if(rList.length > 0) {
+        rList.forEach(function(item, index) {
+%>
+        <tr id="listTr">
+            <td><%=item.num%></td>
+            <td><%=item.orderNo%></td>
+            <td><%=item.usrId%></td>
+            <td><%=item.pCode%></td>
+            <td><%=item.pDivNm%></td>
+            <td><%=item.pPairCodeYn%></td>
+            <td><%=item.pPairCode%></td>
+            <td><%=item.pNm%></td>
+            <td><%=item.pPrice%></td>
+            <td><%=item.pUniqCode%></td>
+            <td><%=item.pOptBtnDisYn%></td>
+            <td><%=item.optCnt%></td>
+            <td><%=item.sortNo%></td>
+            <td><%=item.insertDt%></td>
+            <td><%=item.insertUsr%></td>
+        </tr>
+<%
+        });
+    } else {
+%>
+        <tr>
+            <td colspan="15" align="center">
+                No Data
+            </td>
+        </tr>
+<%
+    }
+%>
+    </table>
+    <!-- 페이징 처리 부분 -->
+    <p id="page" align="center">
+<%
+    console.log(">>> maxPage = " + maxPage);
+    for(var x=1; x<=maxPage;x++) {
+        if(x <= offset || x > maxPage - offset || (x >= page-(offset-1) && x <= page+(offset-1))) {
+            if(x != page) {
+                console.log(">>> * ["+x+"] page = " + page);
+%>
+        [<a href="/admin/pay?page=<%=x%>&srchType=<%=srchType%>&srchText=<%=srchText%>"><%=x%></a>]
+<%
+            } else {
+                console.log(">>> ["+x+"] page = " + page);
+%>
+        [<b><%=x%></b>]
+<%
+            }
+        } else if(x == offset+1 || x == maxPage-offset) {
+%>
+        ...
+<%
+        }
+    }
+%>
+    </p>
+    <!-- 페이징 처리 부분 -->
+    <p align="right">
+        <input type="button" id="prevBtn" name="prevBtn" class="btn btn-default" value="메인 화면"/>
+    </p>
+</div>

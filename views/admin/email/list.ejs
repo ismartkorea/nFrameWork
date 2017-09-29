@@ -1,0 +1,161 @@
+<% layout('../../admin/layout') -%>
+    <script type="text/javascript" src="/js/jquery-1.11.3.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            // console.
+            console.log("on READY");
+            $("#prevBtn").on('click', function() {
+               location.href = '/admin';
+            });
+            $("#loginBtn").on("click", function () {
+                location.href = './login';
+            });
+            $("#logoutBtn").on("click", function () {
+                location.href = '/login/logout';
+            });
+            $("#signupBtn").on("click", function () {
+                location.href = '/signup';
+            });
+            // 검색 엔터키 이벤트 처리.
+            $("#srchText").on("keypress", function(e) {
+                if(e.which == 13) {
+                    $("#srchBtn").click();
+                    return false;
+                }
+            });
+
+            // 검색버튼 이벤트 처리.
+            $("#srchBtn").on("click", function(e) {
+                e.preventDefault();
+                var selectedVal = $("#srchType option:selected").val();
+
+                // 선택박스 체크.
+                if(selectedVal == null || selectedVal == "") {
+                    alert("검색할려는 항목을 선택하여 주세요.");
+                    $("#srchType").focus();
+                    return false;
+                }
+                // 검색할 텍스터 체크.
+/*
+                if($("#srchText").val() == null || $("#srchText").val() == "") {
+                    alert("검색 단어을 입력하여 주세요.");
+                    $("#srchText").focus();
+                    return false;
+                }
+*/
+                var srchText = $.trim($("#srchText").val());
+                // 전송 처리.
+                $("#srchType").val(selectedVal);
+                $("#srchText").val(srchText);
+                $("#searchForm").attr("method","post");
+                $("#searchForm").attr("action","/admin/email/search");
+                $("#searchForm").submit();
+            });
+        });
+        // callback
+        function callback() {
+            location.href = "/admin/email";
+        }
+    </script>
+<div class="container-fluid">
+
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="page-header">이메일 전송 관리 화면</h1>
+        </div>
+        <form id="searchForm" name="searchForm" method="post">
+            <div class="form-group text-right form-inline">
+                <div class="form-group">
+                    <select id="srchType" name="srchType" class="form-control">
+                        <option value="">선택하세요.</option>
+                        <option value="title" <%if(srchType=="title") {%> selected <% }%>>제목</option>
+                        <option value="writer" <%if(srchType=="writer") {%> selected <% }%>>작성자</option>
+                    </select>
+                </div>
+                <div class="input-group custom-search-form">
+                    <input type="text" id="srchText" name="srchText" class="form-control" value="<%=srchText%>" size="20" placeholder="Search...">
+                        <span class="input-group-btn">
+                            <button class="btn btn-primary" type="button" id="srchBtn" name="srchBtn">
+                                <i class="fa fa-search"></i>
+                            </button>
+                        </span>
+                </div>
+            </div>
+        </form>
+    </div>
+<form id="frm" name="frm">
+<table width="100%" border="0" class="table table-hover table-striped">
+    <tr>
+        <th>번호</th>
+        <th>보내는 사람명</th>
+        <th>보내는 사람 Email</th>
+        <th>받는 사람명</th>
+        <th>받는 사람명 Email</th>
+        <th>서비스명</th>
+        <th>전송여부</th>
+        <th>전송결과</th>
+        <th>에러내용</th>
+        <th>전송일</th>
+    </tr>
+    <%
+        //console.log("board size : " + board.length);
+        if(rList.length > 0) {
+            rList.forEach(function(item, index) {
+    %>
+    <tr>
+        <td><%=item.no%></td>
+        <td><%=item.fromUsrNm%></td>
+        <td><%=item.fromUsrEmail%></td>
+        <td><%=item.toUsrNm%></td>
+        <td><%=item.toUsrEmail%></td>
+        <td><%=item.serviceNm%></td>
+        <td><%=item.content%></td>
+        <td><%=item.sendYn%></td>
+        <td><%=item.sendResult%></td>
+        <td><%=item.errorDesc%></td>
+        <td><%=item.sendDate%></td>
+    </tr>
+    <%
+            })
+        } else {
+     %>
+    <tr>
+        <td colspan="11" align="center">
+            No Data
+        </td>
+    </tr>
+    <%
+            }
+    %>
+</table>
+    <!-- 페이징 처리 부분 -->
+    <p id="page" align="center">
+<%
+    console.log(">>> maxPage = " + maxPage);
+    for(var x=1; x<=maxPage;x++) {
+        if(x <= offset || x > maxPage - offset || (x >= page-(offset-1) && x <= page+(offset-1))) {
+            if(x != page) {
+                console.log(">>> * ["+x+"] page = " + page);
+%>
+        [<a href="/admin/edit?page=<%=x%>&srchType=<%=srchType%>&srchText=<%=srchText%>"><%=x%></a>]
+<%
+            } else {
+                console.log(">>> ["+x+"] page = " + page);
+%>
+        [<b><%=x%></b>]
+<%
+            }
+        } else if(x == offset+1 || x == maxPage-offset) {
+%>
+        ...
+<%
+        }
+    }
+%>
+    </p>
+    <!-- 페이징 처리 부분 -->
+    <p align="right">
+        <input type="button" id="prevBtn" name="prevBtn" class="btn btn-default" value="메인 화면"/>
+    </p>
+</form>
+</div>

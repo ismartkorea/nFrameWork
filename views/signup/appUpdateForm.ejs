@@ -1,0 +1,1024 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>회원가입</title>
+<meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
+<meta name="viewport" content="width=device-width" />
+<link rel="stylesheet" href="/css/join.css">
+<script type="text/javascript" src="/js/jquery.min.js"></script>
+<!-- Magnific Popup -->
+<script type="text/javascript" src="/js/jquery.magnific-popup.min.js"></script>
+<script type="text/javascript" src="/js/magnific-popup-options.js"></script>
+<script type="text/javascript" src="https://spi.maps.daum.net/imap/map_js_init/postcode.v2.js"></script>
+<script type="text/javascript">
+    var emailRegExp = /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i;
+    var cellNoRegExp = /^\d{3}-\d{3,4}-\d{4}$/;
+    var telNoRegExp = /^\d{2,3}-\d{3,4}-\d{4}$/;
+    var idRegExp = /^[a-z0-9_]{4,20}$/;
+    var pwdRegExp = /^(?=.*[a-z])(?=.*[0-9]).{6,16}$/;
+    $(document).ready(function() {
+      // init 초기화 처리.
+      var idCheck = false;
+      var emailCheck = false;
+
+      $("#companySpan").css("display","none");
+      $("#srchPostNoBtn1").bind("click",function() {
+          execDaumPostcode('1');
+      });
+      $("#srchPostNoBtn2").bind("click",function() {
+          execDaumPostcode('2');
+      });
+
+      // 회원유형 버튼 이벤트 처리시.
+      $("#usrType1").on("click", function() {
+          $("#companySpan").css("display","none");
+      });
+      $("#usrType2").on("click", function() {
+          $("#companySpan").css("display","none");
+      });
+      $("#usrType3").on("click", function() {
+          $("#companySpan").css("display","block");
+      });
+      $("#usrType4").on("click", function() {
+          $("#companySpan").css("display","block");
+      });
+      $("#usrType5").on("click", function() {
+          $("#companySpan").css("display","block");
+      });
+      // 이메일 '직접입력' 선택시 처리.
+      $("#usrEmail2").on("change", function() {
+         if($("#usrEmail2 option:selected").val()=="direct") {
+             $("#usrEmail3").attr("readonly",false);
+         } else {
+             $("#usrEmail3").val("");
+             $("#usrEmail3").attr("readonly",true);
+         }
+      });
+        // 주소카피 버튼 이벤트 처리
+        $("#copyBtn").on("click", function() {
+            if($("#copyBtn").prop("checked")) {
+                $("#usrCompPostNo").val($("#usrPostNo").val());
+                $("#usrCompAddr1").val($("#usrAddr1").val());
+                $("#usrCompAddr2").val($("#usrAddr2").val());
+            } else {
+                $("#usrCompPostNo").val("");
+                $("#usrCompAddr1").val("");
+                $("#usrCompAddr2").val("");
+            }
+        });
+      // 아이디 중복 체크 버튼 이벤트 처리.
+      $("#idChkBtn").on("click",function() {
+
+          if($("#usrId").val() == null || $("#usrId").val() == "") {
+              alert("아이디를 입력하세요.");
+              $("#usrId").focus();
+              return false;
+          }
+
+          if(!idRegExp.test($("#usrId").val())) {
+              alert("올바른 아이디가 아닙니다.\n 다시 확인하시고 입력하세요.");
+              $("#usrId").focus();
+              return false;
+          }
+
+          // 값 저장 처리.
+          var dataVals = {
+              usrId : $.trim($("#usrId").val()),
+          };
+          // 전송 처리.
+          $.ajax({
+              url: "/common/idCheckProcess",
+              type: "post",
+              dataType: "json",
+              data: dataVals,
+              success: function (data) {
+                  if(data.result > 0) {
+                      idCheck = false;
+                      alert("이미 사용중인 아이디가 있습니다.");
+                      $("#usrId").focus();
+                  } else {
+                      idCheck = true;
+                      alert("사용가능한 아이디 입니다.");
+                      $("#usrId").attr("readonly",true);
+                      $("#usrPwd1").focus();
+                  }
+              },
+              error: function (err) {
+                  alert("errCode : " + err);
+              }
+          });
+      });
+
+      // 이메일 중복 체크 버튼 이벤트 처리.
+      $("#emailChkBtn").on("click",function() {
+          var usrEmail;
+          // 이메일2 값 취득.
+          var usrEmail1 = $.trim($("#usrEmail1").val());
+          var usrEmail2 = $.trim($("#usrEmail2 option:selected").val());
+
+          if(usrEmail1 == "") {
+              alert("이메일 아이디를 입력하여 주세요.");
+              $("#usrEmail1").focus();
+              return false;
+          }
+          if(usrEmail2 == "") {
+              alert("이메일 주소를 선택하여 주세요.");
+              $("#usrEmail2").focus();
+              return false;
+          } else {
+              if(usrEmail2 == "direct") {
+                  if($("#usrEmail3").val()==null || $("#usrEmail3").val()=="") {
+                      alert("이메일 주소를 입력하여 주세요.");
+                      $("#usrEmail3").focus();
+                      return false;
+                  }
+              }
+
+          }
+          // 값셋팅.
+          if(usrEmail1 != "" && usrEmail2 != "direct") {
+              usrEmail = usrEmail1 + "@" + usrEmail2;
+          } if(usrEmail1 != "" && usrEmail2 == "direct") {
+              if($("#usrEmail3").val() != null || $("#usrEmail3").val() != "") {
+                  usrEmail = usrEmail1 + "@" + usrEmail3;
+              }
+          }
+          // 이메일 상세 체크.
+          if(!emailRegExp.test(usrEmail)) {
+              alert("올바른 이메일이 아닙니다. 다시 입력하여 주세요.");
+              $("#usrEmail1").focus();
+              return false;
+          }
+
+          // 값 저장 처리.
+          var dataVals = {
+              usrEmail : usrEmail
+          };
+          // 전송 처리.
+          $.ajax({
+              url: "/common/emailCheckProcess",
+              type: "post",
+              dataType: "json",
+              data: dataVals,
+              success: function (data) {
+                  console.log(">>> data = " + data.result);
+                  if(data.result > 0) {
+                      alert("이미 사용중인 이메일이 있습니다.");
+                      $("#usrEmail1").focus();
+                  } else {
+                      emailCheck = true;
+                      alert("사용가능한 이메일 입니다.");
+                      $("#usrEmail1").attr("readonly",true);
+                      $("#usrEmail2").attr("disabled",true);
+                      $("#usrEmail3").attr("readonly",true);
+                  }
+              },
+              error: function (err) {
+                  alert("errCode : " + err);
+              }
+          });
+      });
+
+      // a 링크 클릭이벤트 처리.
+      $("#aSubmitBtn").on("click", function(e) {
+          e.preventDefault();
+          // 초기화.
+          var usrCompNm = "";
+          var usrCompTelNo = "";
+          var usrCompAddr1 = "";
+          var usrCompAddr2 = "";
+          var usrCompPostNo = "";
+          var usrSaupNo = "";
+          // 회원유형 값 취득.
+          var userType = $("input:radio[name='usrType']:checked").val();
+          // 생일월별 값 취득.
+          var usrBirthYear = $("#usrBirthYear option:selected").val();
+          var usrBirthMonth = $("#usrBirthMonth option:selected").val();
+          var usrBirthDay = $("#usrBirthDay option:selected").val();
+          // 성별 값 취득.
+          var usrSex = $("input:radio[name='usrSex']:checked").val();
+          // 연락처 앞번호 취득.
+          var usrTelNo1 = $("#usrTelNo1 option:selected").val();
+          // 휴대폰 앞번호 취득.
+          var usrCellNo1 = $("#usrCellNo1 option:selected").val();
+          // 이메일 뒷 자리 취득.
+          var usrEmail2 = $("#usrEmail2 option:selected").val();
+          // 회사 전화번호 취득.
+          var usrCompTelNo1 = $("#usrCompTelNo1 option:selected").val();
+          // 정보활용확인여부 취득.
+          var usrInfoYn = $("input:radio[name='usrInfoYn']:checked").val();
+
+          // 고객명 체크.
+          if($("#usrName").val() == null || $("#usrName").val() == "") {
+              alert("성함을 입력하여 주세요.");
+              $("#usrName").focus();
+              return false;
+          }
+          // 고객 아이디 체크
+          if($("#usrId").val() == null || $("#usrId").val() == "") {
+              alert("고객 아이디를 입력하여 주세요.");
+              $("#usrId").focus();
+              return false;
+          }
+          // 고객 아이디 체크
+          if($("#usrId").val() == null || $("#usrId").val() == "") {
+              alert("고객 아이디를 입력하여 주세요.");
+              $("#usrId").focus();
+              return false;
+          }
+          /*
+          if(idCheck==false) {
+              alert("아이디 중복 확인 해주세요.");
+              $("#").focus();
+              return false;
+          }
+          */
+
+          // 고객 비밀번호1 체크
+          if($("#usrPwd1").val() == null || $("#usrPwd1").val() == "") {
+              alert("고객 비밀번호를 입력하여 주세요.");
+              $("#usrPwd1").focus();
+              return false;
+          }
+          // 고객 비밀번호2 체크
+          if($("#usrPwd2").val() == null || $("#usrPwd2").val() == "") {
+              alert("확인용 고객 비밀번호를 입력하여 주세요.");
+              $("#usrPwd2").focus();
+              return false;
+          }
+          // 입력한 고객비밀번호가 맞는 지 체크.
+          if($("#usrPwd1").val() != $("#usrPwd2").val()) {
+              alert("입력하신 비밀번호가 맞지 않습니다.\n 다시 확인해주세요.");
+              $("#usrPwd2").focus();
+              return false;
+          } else {
+              // 비밀번호 정규화 체크.
+              if(!pwdRegExp.test($("#usrPwd2").val())) {
+                  alert("비밀번호 형식이 올바르지 않습니다.\n 영문 소문자/숫자를 혼용하여 입력하여주세요.\n (최소6자리)");
+                  $("#usrPwd2").val("");
+                  $("#usrPwd1").focus();
+                  return false;
+              }
+          }
+          // 생년월일 체크.
+          if($.trim(usrBirthYear) == "") {
+            alert("생년을 선택하여주세요.");
+            $("#usrBirthYear").focus();
+            return false;
+          }
+          if($.trim(usrBirthMonth) == "") {
+              alert("월을 선택하여주세요.");
+              $("#usrBirthYear").focus();
+              return false;
+          }
+          if($.trim(usrBirthDay) == "") {
+              alert("일을 선택하여주세요.");
+              $("#usrBirthYear").focus();
+              return false;
+          }
+
+          // 우편번호 체크
+          if($("#usrPostNo").val() == null || $("#usrPostNo").val() == "") {
+              alert("우편번호 검색하여 입력하여 주세요.");
+              $("#srchPostNoBtn1").focus();
+              return false;
+          }
+          // 주소 체크
+          if($("#usrAddr1").val() == null || $("#usrAddr1").val() == "") {
+              alert("우편번호(2) 검색하여 입력하여 주세요.");
+              $("#srchPostNoBtn1").focus();
+              return false;
+          }
+
+          // 연락처 체크
+          if(usrTelNo1 == null || usrTelNo1 == "") {
+              alert("전화번호 앞자리를 선택하여 주세요.");
+              $("#usrTelNo1").focus();
+              return false;
+          }
+          if($("#usrTelNo2").val() == null || $("#usrTelNo2").val() == "") {
+              alert("전화번호 두번째 자리를 입력하여 주세요.");
+              $("#usrTelNo2").focus();
+              return false;
+          }
+          if($("#usrTelNo3").val() == null || $("#usrTelNo3").val() == "") {
+              alert("전화번호 세번째 자리를 입력하여 주세요.");
+              $("#usrTelNo3").focus();
+              return false;
+          }
+          // 휴대폰 체크.
+          if(usrCellNo1 == null || usrCellNo1 == "") {
+              alert("휴대폰 번호 앞자리를 선택하여 주세요.");
+              $("#usrCellNo1").focus();
+              return false;
+          }
+          if($("#usrCellNo2").val() == null || $("#usrCellNo2").val() == "") {
+              alert("휴대폰 번호 두번째 자리를 입력하여 주세요.");
+              $("#usrCellNo2").focus();
+              return false;
+          }
+          if($("#usrCellNo3").val() == null || $("#usrCellNo3").val() == "") {
+              alert("휴대폰 번호 세번째 자리를 입력하여 주세요.");
+              $("#usrCellNo3").focus();
+              return false;
+          }
+          // 이메일 체크.
+          if($("#usrEmail1").val() == null || $("#usrEmail1").val() == "") {
+              alert("이메일 앞자리를 입력하여 주세요.");
+              $("#usrEmail1").focus();
+              return false;
+          }
+          if(usrEmail2 == null || usrEmail2 == "") {
+              alert("이메일 주소를 선택하여 주세요.");
+              $("#usrEmail2").focus();
+              return false;
+          } else {
+              if(usrEmail2 == "direct") {
+                  if($("#usrEmail3").val() == null || $("#usrEmail3").val() == "") {
+                      alert("이메일 주소를 입력하여 주세요.");
+                      $("#usrEmail3").focus();
+                      return false;
+                  }
+              }
+          }
+          /*
+          if(emailCheck==false) {
+              alert("이메일 중복 확인 해주세요.");
+              $("#usrEmail1").focus();
+              return false;
+          }
+          */
+          // 사업자인 경우 체크.
+          if(userType=="C" || userType=="D" || userType=="E") {
+              // 회사명 체크.
+              if($("#usrCompNm").val() == null || $("#usrCompNm").val() == "") {
+                alert("회사명을 입력하여 주세요.");
+                $("#usrCompNm").focus();
+                return false;
+              }
+              // 회사전화 체크.
+              if(usrCompTelNo1 == null || usrCompTelNo1 == "") {
+                  alert("전화번호 앞자리를 선택하여 주세요.");
+                  $("#usrCompTelNo1").focus();
+                  return false;
+              }
+              if($("#usrCompTelNo2").val() == null || $("#usrCompTelNo2").val() == "") {
+                  alert("전화번호 두번째 자리를 입력하여 주세요.");
+                  $("#usrCompTelNo2").focus();
+                  return false;
+              }
+              if($("#usrCompTelNo3").val() == null || $("#usrCompTelNo3").val() == "") {
+                  alert("전화번호 세번째 자리를 입력하여 주세요.");
+                  $("#usrCompTelNo3").focus();
+                  return false;
+              }
+              usrCompTelNo = usrCompTelNo1 + "-" + $("#usrCompTelNo2").val() + "-" + $("#usrCompTelNo3").val();
+              if(!telNoRegExp.test(usrCompTelNo)) {
+                  alert("회사 전화번호 형식이 올바르지 않습니다.\n 확인하고 다시 입력하여 주세요.");
+                  $("#usrCompTelNo2").focus();
+                  return false;
+              }
+              // 회사우편번호 체크
+              if($("#usrCompPostNo").val() == "" || $("#usrCompPostNo").val() == "") {
+                  alert("우편번호 검색하여 입력하여 주세요.");
+                  $("#srchPostNoBtn2").focus();
+                  return false;
+              }
+              // 회사주소 체크.
+              if($("#usrCompAddr1").val() == null || $("#usrCompAddr1").val() == "") {
+                  alert("우편번호 검색하여 입력하여 주세요.");
+                  $("#srchPostNoBtn2").focus();
+                  return false;
+              }
+              // 사업자등록번호 체크.
+              if($("#usrSaupNo").val() == null || $("#usrSaupNo").val() == "") {
+                  alert("사업자번호를 입력하여 주세요.");
+                  $("#usrSaupNo").focus();
+                  return false;
+              } else {
+                  if($("#usrSaupNo").val().length != 12) {
+                      alert("사업자등록번호가 정확하지 않습니다. \n '-' 까지 포함하여(12자리) 입력하여 주세요.");
+                      $("#usrSaupNo").focus();
+                      return false;
+                  }
+              }
+              // 값 취득.
+              usrCompNm = $("#usrCompNm").val();
+              usrCompPostNo = $("#usrCompPostNo").val();
+              usrCompAddr1 = $("#usrCompAddr1").val();
+              usrCompAddr2 = $("#usrCompAddr2").val();
+              usrSaupNo = $("#usrSaupNo").val();
+          }
+          // 정보활용확인 여부 체크.
+          if(usrInfoYn=="N") {
+              alert("정보활용확인여부 '예'로 체크하셔야 가입이 가능합니다.");
+              $("#usrInfoYn1").focus();
+              return false;
+          }
+
+          // val
+          var usrBirth = usrBirthYear + "" + usrBirthMonth + "" + usrBirthDay;
+          var usrPostNo = $("#usrPostNo").val();
+          var usrTelNo = usrTelNo1 + "-" + $("#usrTelNo2").val() + "-" + $("#usrTelNo3").val();
+          var usrCellNo = usrCellNo1 + "-" + $("#usrCellNo2").val() + "-" + $("#usrCellNo3").val();
+
+          // 전화번호/휴대폰/회사번호 정규화 체크.
+          if(!telNoRegExp.test(usrTelNo)) {
+              alert("전화번호 형식이 올바르지 않습니다.\n 확인하고 다시 입력하여 주세요.");
+              $("#usrTelNo2").focus();
+              return false;
+          }
+          if(!cellNoRegExp.test(usrCellNo)) {
+              alert("휴대폰 번호 형식이 올바르지 않습니다.\n 확인하고 다시 입력하여 주세요.");
+              $("#usrCellNo2").focus();
+              return false;
+          }
+
+          // 값셋팅.
+          if($.trim($("#usrEmail1").val()) != "" && usrEmail2 != "direct") {
+              var usrEmail = $("#usrEmail1").val() + "@" + usrEmail2;
+          } if($.trim($("#usrEmail1").val()) != "" && usrEmail2 == "direct") {
+              if($("#usrEmail3").val() != null || $.trim($("#usrEmail3").val()) != "") {
+                  var usrEmail = $("#usrEmail1").val() + "@" + $("#usrEmail3").val();
+              }
+          }
+
+          // 값 저장 처리.
+          var dataVals = {
+              usrType : userType,
+              usrId : $.trim($("#usrId").val()),
+              usrPwd : $.trim($("#usrPwd1").val()),
+              usrName : $.trim($("#usrName").val()),
+              usrAddr1 : $.trim($("#usrAddr1").val()),
+              usrAddr2 : $.trim($("#usrAddr2").val()),
+              usrPostNo : usrPostNo,
+              usrEmail : usrEmail,
+              usrSex : usrSex,
+              usrBirth : usrBirth,
+              usrJuminNo : '',
+              usrTelNo : usrTelNo,
+              usrTelNo1 : usrTelNo1,
+              usrTelNo2 : $.trim($("#usrTelNo2").val()),
+              usrTelNo3 : $.trim($("#usrTelNo3").val()),
+              usrCellNo : usrCellNo,
+              usrCellNo1 : usrCellNo1,
+              usrCellNo2 : $.trim($("#usrCellNo2").val()),
+              usrCellNo3 : $.trim($("#usrCellNo3").val()),
+              usrCompNm : usrCompNm,
+              usrCompTelNo : usrCompTelNo,
+              usrCompTelNo1 : usrCompTelNo1,
+              usrCompTelNo2 : $.trim($("#usrCompTelNo2").val()),
+              usrCompTelNo3 : $.trim($("#usrCompTelNo3").val()),
+              usrCompAddr1 : usrCompAddr1,
+              usrCompAddr2 : usrCompAddr2,
+              usrCompPostNo : usrCompPostNo,
+              usrSaupNo : usrSaupNo,
+              usrEmailYn : "Y",
+              usrInfoYn : usrInfoYn
+          };
+          // 전송 처리.
+          $.ajax({
+              url: "/signup/app/edit",
+              type: "post",
+              dataType: "json",
+              data: dataVals,
+              success: function (data) {
+                  console.log(">>> data = " + data.result);
+                  if(data.result=="OK") {
+                      alert("수정처리 되었습니다.");
+                      if(window.parent == window.top) {
+                          window.parent.$.magnificPopup.close();
+                      }
+                      location.href = "/";
+                  }
+              },
+              error: function (err) {
+                  alert("errCode : " + err.message);
+              }
+          });
+
+      });
+  });
+  function execDaumPostcode(no) {
+      new daum.Postcode({
+          oncomplete: function(data) {
+              // 팝업에서 검색결과 항목을 클릭했을때 실행할 코드를 작성하는 부분.
+
+              // 각 주소의 노출 규칙에 따라 주소를 조합한다.
+              // 내려오는 변수가 값이 없는 경우엔 공백('')값을 가지므로, 이를 참고하여 분기 한다.
+              var fullAddr = ''; // 최종 주소 변수
+              var extraAddr = ''; // 조합형 주소 변수
+
+              // 사용자가 선택한 주소 타입에 따라 해당 주소 값을 가져온다.
+              if (data.userSelectedType === 'R') { // 사용자가 도로명 주소를 선택했을 경우
+                  fullAddr = data.roadAddress;
+
+              } else { // 사용자가 지번 주소를 선택했을 경우(J)
+                  fullAddr = data.jibunAddress;
+              }
+
+              // 사용자가 선택한 주소가 도로명 타입일때 조합한다.
+              if(data.userSelectedType === 'R'){
+                  //법정동명이 있을 경우 추가한다.
+                  if(data.bname !== ''){
+                      extraAddr += data.bname;
+                  }
+                  // 건물명이 있을 경우 추가한다.
+                  if(data.buildingName !== ''){
+                      extraAddr += (extraAddr !== '' ? ', ' + data.buildingName : data.buildingName);
+                  }
+                  // 조합형주소의 유무에 따라 양쪽에 괄호를 추가하여 최종 주소를 만든다.
+                  fullAddr += (extraAddr !== '' ? ' ('+ extraAddr +')' : '');
+              }
+
+              if(no=="1") {
+                  // 우편번호와 주소 정보를 해당 필드에 넣는다.
+                  document.getElementById('usrPostNo').value = data.zonecode; //5자리 새우편번호 사용
+                  document.getElementById('usrAddr1').value = fullAddr;
+                  // 커서를 상세주소 필드로 이동한다.
+                  document.getElementById('usrAddr2').focus();
+              }
+              if(no=="2") {
+                  // 우편번호와 주소 정보를 해당 필드에 넣는다.
+                  document.getElementById('usrCompPostNo').value = data.zonecode; //5자리 새우편번호 사용
+                  document.getElementById('usrCompAddr1').value = fullAddr;
+                  // 커서를 상세주소 필드로 이동한다.
+                  document.getElementById('usrCompAddr2').focus();
+              }
+
+          }
+      }).open();
+  }
+</script>
+</head>
+<!--팝업창크기는 css/magnific-popup.css에 mfp-iframe-scaler2 클래스에 지정되어있음-->
+<body>
+
+<div id="content">
+    <form id="frm" name="frm">
+ <div id="join">
+  <h1 class="tit-join">회원정보 수정</h1>
+                   
+<!-- 일반회원 기본 노출 -->
+    <table  border="0" cellspacing="0" width="100%" class="table_style11">
+        <colgroup>
+            <col width="150"/><col width="*">
+        </colgroup>
+        <tr>
+            <th>
+               <span class="red">*</span> 회원유형
+            </th>
+            <td>
+            <input type="radio" name="usrType" id="usrType1" value="A" <% if(info.usertype=="A") { %>checked <% }%>><label for="usrType1"><span><span></span></span>일반사용자</label>
+            <input type="radio" name="usrType" id="usrType2" value="B" <% if(info.usertype=="B") { %>checked <% }%>><label for="usrType2"><span><span></span></span>개인정비사</label>
+            <input type="radio" name="usrType" id="usrType3" value="C" <% if(info.usertype=="C") { %>checked <% }%>><label for="usrType3"><span><span></span></span>정비업체</label>
+            <input type="radio" name="usrType" id="usrType4" value="D" <% if(info.usertype=="D") { %>checked <% }%>><label for="usrType4"><span><span></span></span>부품업체</label>
+            <input type="radio" name="usrType" id="usrType5" value="E" <% if(info.usertype=="E") { %>checked <% }%>><label for="usrType5"><span><span></span></span>보험사</label>
+            </td>
+        </tr>
+        <tr>
+            <th>
+              <span class="red">*</span> 아이디
+            </th>
+            <td>
+               <input type="text" name="usrId" id="usrId" value="<%=info.id%>"  class="w137" size="10" maxlength="12" readonly />
+                <!--
+               <span><input type="button" id="idChkBtn" class="btn" value="아이디중복확인"></span>
+               -->
+            </td>
+        </tr>
+        <tr>
+            <th>
+              <span class="red">*</span> 비밀번호
+            </th>
+            <td>
+               <input type="password" name="usrPwd1" id="usrPwd1"  class="w137" value="" size="15" maxlength="20"/>
+               <span class="idpw-info">* 영문 소문자/숫자를 혼용하여 6~16자</span>
+            </td>
+        </tr>
+        <tr>
+            <th>
+              <span class="red">*</span> 비밀번호 확인
+            </th>
+            <td>
+              <input type="password" name="usrPwd2" id="usrPwd2"  class="w137" value="" size="15" maxlength="20"/>
+            </td>
+        </tr>
+        <tr>
+            <th>
+                <span class="red">*</span> 이름
+            </th>
+            <td>
+                <input type="text" name="usrName" id="usrName" value="<%=info.name%>"  class="w137" size="15" maxlength="30"  />
+            </td>
+        </tr>
+        <tr>
+            <th>
+              <span class="red">*</span> 생일/성별
+            </th>
+            <td>
+              <select id="usrBirthYear" name="usrBirthYear">
+                <option value="">선택</option>
+                  <option value=1920 <%if(info.year=="1920") { %> selected <% } %>>1920</option>
+                  <option value=1921 <%if(info.year=="1921") { %> selected <% } %>>1921</option>
+                  <option value=1922 <%if(info.year=="1922") { %> selected <% } %>>1922</option>
+                  <option value=1923 <%if(info.year=="1923") { %> selected <% } %>>1923</option>
+                  <option value=1924 <%if(info.year=="1924") { %> selected <% } %>>1924</option>
+                  <option value=1925 <%if(info.year=="1925") { %> selected <% } %>>1925</option>
+                  <option value=1926 <%if(info.year=="1926") { %> selected <% } %>>1926</option>
+                  <option value=1927 <%if(info.year=="1927") { %> selected <% } %>>1927</option>
+                  <option value=1928 <%if(info.year=="1928") { %> selected <% } %>>1928</option>
+                  <option value=1929 <%if(info.year=="1929") { %> selected <% } %>>1929</option>
+                  <option value=1930 <%if(info.year=="1930") { %> selected <% } %>>1930</option>
+                  <option value=1931 <%if(info.year=="1931") { %> selected <% } %>>1931</option>
+                  <option value=1932 <%if(info.year=="1932") { %> selected <% } %>>1932</option>
+                  <option value=1933 <%if(info.year=="1933") { %> selected <% } %>>1933</option>
+                  <option value=1934 <%if(info.year=="1934") { %> selected <% } %>>1934</option>
+                  <option value=1935 <%if(info.year=="1935") { %> selected <% } %>>1935</option>
+                  <option value=1936 <%if(info.year=="1936") { %> selected <% } %>>1936</option>
+                  <option value=1937 <%if(info.year=="1937") { %> selected <% } %>>1937</option>
+                  <option value=1938 <%if(info.year=="1938") { %> selected <% } %>>1938</option>
+                  <option value=1939 <%if(info.year=="1939") { %> selected <% } %>>1939</option>
+                  <option value=1940 <%if(info.year=="1940") { %> selected <% } %>>1940</option>
+                  <option value=1941 <%if(info.year=="1941") { %> selected <% } %>>1941</option>
+                  <option value=1942 <%if(info.year=="1942") { %> selected <% } %>>1942</option>
+                  <option value=1943 <%if(info.year=="1943") { %> selected <% } %>>1943</option>
+                  <option value=1944 <%if(info.year=="1944") { %> selected <% } %>>1944</option>
+                  <option value=1945 <%if(info.year=="1945") { %> selected <% } %>>1945</option>
+                  <option value=1946 <%if(info.year=="1946") { %> selected <% } %>>1946</option>
+                  <option value=1947 <%if(info.year=="1947") { %> selected <% } %>>1947</option>
+                  <option value=1948 <%if(info.year=="1948") { %> selected <% } %>>1948</option>
+                  <option value=1949 <%if(info.year=="1949") { %> selected <% } %>>1949</option>
+                  <option value=1950 <%if(info.year=="1950") { %> selected <% } %>>1950</option>
+                  <option value=1951 <%if(info.year=="1951") { %> selected <% } %>>1951</option>
+                  <option value=1952 <%if(info.year=="1952") { %> selected <% } %>>1952</option>
+                  <option value=1953 <%if(info.year=="1953") { %> selected <% } %>>1953</option>
+                  <option value=1954 <%if(info.year=="1954") { %> selected <% } %>>1954</option>
+                  <option value=1955 <%if(info.year=="1955") { %> selected <% } %>>1955</option>
+                  <option value=1956 <%if(info.year=="1956") { %> selected <% } %>>1956</option>
+                  <option value=1957 <%if(info.year=="1957") { %> selected <% } %>>1957</option>
+                  <option value=1958 <%if(info.year=="1958") { %> selected <% } %>>1958</option>
+                  <option value=1959 <%if(info.year=="1959") { %> selected <% } %>>1959</option>
+                  <option value=1960 <%if(info.year=="1960") { %> selected <% } %>>1960</option>
+                  <option value=1961 <%if(info.year=="1961") { %> selected <% } %>>1961</option>
+                  <option value=1962 <%if(info.year=="1962") { %> selected <% } %>>1962</option>
+                  <option value=1963 <%if(info.year=="1963") { %> selected <% } %>>1963</option>
+                  <option value=1964 <%if(info.year=="1964") { %> selected <% } %>>1964</option>
+                  <option value=1965 <%if(info.year=="1965") { %> selected <% } %>>1965</option>
+                  <option value=1966 <%if(info.year=="1966") { %> selected <% } %>>1966</option>
+                  <option value=1967 <%if(info.year=="1967") { %> selected <% } %>>1967</option>
+                  <option value=1968 <%if(info.year=="1968") { %> selected <% } %>>1968</option>
+                  <option value=1969 <%if(info.year=="1969") { %> selected <% } %>>1969</option>
+                  <option value=1970 <%if(info.year=="1970") { %> selected <% } %>>1970</option>
+                  <option value=1971 <%if(info.year=="1971") { %> selected <% } %>>1971</option>
+                  <option value=1972 <%if(info.year=="1972") { %> selected <% } %>>1972</option>
+                  <option value=1973 <%if(info.year=="1973") { %> selected <% } %>>1973</option>
+                  <option value=1974 <%if(info.year=="1974") { %> selected <% } %>>1974</option>
+                  <option value=1975 <%if(info.year=="1975") { %> selected <% } %>>1975</option>
+                  <option value=1976 <%if(info.year=="1976") { %> selected <% } %>>1976</option>
+                  <option value=1977 <%if(info.year=="1977") { %> selected <% } %>>1977</option>
+                  <option value=1978 <%if(info.year=="1978") { %> selected <% } %>>1978</option>
+                  <option value=1979 <%if(info.year=="1979") { %> selected <% } %>>1979</option>
+                  <option value=1980 <%if(info.year=="1980") { %> selected <% } %>>1980</option>
+                  <option value=1981 <%if(info.year=="1981") { %> selected <% } %>>1981</option>
+                  <option value=1982 <%if(info.year=="1982") { %> selected <% } %>>1982</option>
+                  <option value=1983 <%if(info.year=="1983") { %> selected <% } %>>1983</option>
+                  <option value=1984 <%if(info.year=="1984") { %> selected <% } %>>1984</option>
+                  <option value=1985 <%if(info.year=="1985") { %> selected <% } %>>1985</option>
+                  <option value=1986 <%if(info.year=="1986") { %> selected <% } %>>1986</option>
+                  <option value=1987 <%if(info.year=="1987") { %> selected <% } %>>1987</option>
+                  <option value=1988 <%if(info.year=="1988") { %> selected <% } %>>1988</option>
+                  <option value=1989 <%if(info.year=="1989") { %> selected <% } %>>1989</option>
+                  <option value=1990 <%if(info.year=="1990") { %> selected <% } %>>1990</option>
+                  <option value=1991 <%if(info.year=="1991") { %> selected <% } %>>1991</option>
+                  <option value=1992 <%if(info.year=="1992") { %> selected <% } %>>1992</option>
+                  <option value=1993 <%if(info.year=="1993") { %> selected <% } %>>1993</option>
+                  <option value=1994 <%if(info.year=="1994") { %> selected <% } %>>1994</option>
+                  <option value=1995 <%if(info.year=="1995") { %> selected <% } %>>1995</option>
+                  <option value=1996 <%if(info.year=="1996") { %> selected <% } %>>1996</option>
+                  <option value=1997 <%if(info.year=="1997") { %> selected <% } %>>1997</option>
+                  <option value=1998 <%if(info.year=="1998") { %> selected <% } %>>1998</option>
+                  <option value=1999 <%if(info.year=="1999") { %> selected <% } %>>1999</option>
+                  <option value=2000 <%if(info.year=="2000") { %> selected <% } %>>2000</option>
+                  <option value=2001 <%if(info.year=="2001") { %> selected <% } %>>2001</option>
+                  <option value=2002 <%if(info.year=="2002") { %> selected <% } %>>2002</option>
+                  <option value=2003 <%if(info.year=="2003") { %> selected <% } %>>2003</option>
+                  <option value=2004 <%if(info.year=="2004") { %> selected <% } %>>2004</option>
+                  <option value=2005 <%if(info.year=="2005") { %> selected <% } %>>2005</option>
+                  <option value=2006 <%if(info.year=="2006") { %> selected <% } %>>2006</option>
+                  <option value=2007 <%if(info.year=="2007") { %> selected <% } %>>2007</option>
+                  <option value=2008 <%if(info.year=="2008") { %> selected <% } %>>2008</option>
+                  <option value=2009 <%if(info.year=="2009") { %> selected <% } %>>2009</option>
+                  <option value=2010 <%if(info.year=="2010") { %> selected <% } %>>2010</option>
+                  <option value=2011 <%if(info.year=="2011") { %> selected <% } %>>2011</option>
+                  <option value=2012 <%if(info.year=="2012") { %> selected <% } %>>2012</option>
+                  <option value=2013 <%if(info.year=="2013") { %> selected <% } %>>2013</option>
+                  <option value=2014 <%if(info.year=="2014") { %> selected <% } %>>2014</option>
+                  <option value=2015 <%if(info.year=="2015") { %> selected <% } %>>2015</option>
+                  <option value=2016 <%if(info.year=="2016") { %> selected <% } %>>2016</option>
+              </select> 년 &nbsp;
+                <select id="usrBirthMonth" name="usrBirthMonth"  class="MS_select MS_birthday" >
+                <option value="">선택</option>
+                    <option value="01" <%if(info.month=="01") { %> selected <% } %>>1</option>
+                    <option value="02" <%if(info.month=="02") { %> selected <% } %>>2</option>
+                    <option value="03" <%if(info.month=="03") { %> selected <% } %>>3</option>
+                    <option value="04" <%if(info.month=="04") { %> selected <% } %>>4</option>
+                    <option value="05" <%if(info.month=="05") { %> selected <% } %>>5</option>
+                    <option value="06" <%if(info.month=="06") { %> selected <% } %>>6</option>
+                    <option value="07" <%if(info.month=="07") { %> selected <% } %>>7</option>
+                    <option value="08" <%if(info.month=="08") { %> selected <% } %>>8</option>
+                    <option value="09" <%if(info.month=="09") { %> selected <% } %>>9</option>
+                    <option value="10" <%if(info.month=="10") { %> selected <% } %>>10</option>
+                    <option value="11" <%if(info.month=="11") { %> selected <% } %>>11</option>
+                    <option value="12" <%if(info.month=="12") { %> selected <% } %>>12</option>
+                </select> 월 &nbsp;
+                <select id="usrBirthDay" name="usrBirthDay"  class="MS_select MS_birthday" >
+                <option value="">선택</option>
+                    <option value="01" <%if(info.day=="01") { %> selected <% } %>>1</option>
+                    <option value="02" <%if(info.day=="02") { %> selected <% } %>>2</option>
+                    <option value="03" <%if(info.day=="03") { %> selected <% } %>>3</option>
+                    <option value="04" <%if(info.day=="04") { %> selected <% } %>>4</option>
+                    <option value="05" <%if(info.day=="05") { %> selected <% } %>>5</option>
+                    <option value="06" <%if(info.day=="06") { %> selected <% } %>>6</option>
+                    <option value="07" <%if(info.day=="07") { %> selected <% } %>>7</option>
+                    <option value="08" <%if(info.day=="08") { %> selected <% } %>>8</option>
+                    <option value="09" <%if(info.day=="09") { %> selected <% } %>>9</option>
+                    <option value="10" <%if(info.day=="10") { %> selected <% } %>>10</option>
+                    <option value="11" <%if(info.day=="11") { %> selected <% } %>>11</option>
+                    <option value="12" <%if(info.day=="12") { %> selected <% } %>>12</option>
+                    <option value="13" <%if(info.day=="13") { %> selected <% } %>>13</option>
+                    <option value="14" <%if(info.day=="14") { %> selected <% } %>>14</option>
+                    <option value="15" <%if(info.day=="15") { %> selected <% } %>>15</option>
+                    <option value="16" <%if(info.day=="16") { %> selected <% } %>>16</option>
+                    <option value="17" <%if(info.day=="17") { %> selected <% } %>>17</option>
+                    <option value="18" <%if(info.day=="18") { %> selected <% } %>>18</option>
+                    <option value="19" <%if(info.day=="19") { %> selected <% } %>>19</option>
+                    <option value="20" <%if(info.day=="20") { %> selected <% } %>>20</option>
+                    <option value="21" <%if(info.day=="21") { %> selected <% } %>>21</option>
+                    <option value="22" <%if(info.day=="22") { %> selected <% } %>>22</option>
+                    <option value="23" <%if(info.day=="23") { %> selected <% } %>>23</option>
+                    <option value="24" <%if(info.day=="24") { %> selected <% } %>>24</option>
+                    <option value="25" <%if(info.day=="25") { %> selected <% } %>>25</option>
+                    <option value="26" <%if(info.day=="26") { %> selected <% } %>>26</option>
+                    <option value="27" <%if(info.day=="27") { %> selected <% } %>>27</option>
+                    <option value="28" <%if(info.day=="28") { %> selected <% } %>>28</option>
+                    <option value="29" <%if(info.day=="29") { %> selected <% } %>>29</option>
+                    <option value="30" <%if(info.day=="30") { %> selected <% } %>>30</option>
+                    <option value="31" <%if(info.day=="31") { %> selected <% } %>>31</option>
+              </select> 일 &nbsp;&nbsp;
+              <input type="radio" name="usrSex" id="usrSexM" value="M" checked><label for="radio1"><span><span></span></span>남</span></span></label>
+              <input type="radio" name="usrSex" id="usrSexF" value="F" /><label for="radio2"><span><span></span></span>여</label>
+            </td>
+        </tr>
+        <tr>
+            <th>
+             <span class="red">*</span> 우편번호
+            </th>
+            <td>
+              <input type="text" name="usrPostNo" id="usrPostNo"  class="MS_input_txt" value="<%=info.postno%>" size="6" maxlength="6" onfocus="this.blur();" />
+				<span> <input type="button" id="srchPostNoBtn1" class="btn" value="우편번호검색"></span>
+                
+            </td>
+        </tr>
+        <tr>
+            <th>
+              <span class="red">*</span> 주소
+            </th>
+            <td>
+              <input type="text" name="usrAddr1" id="usrAddr1"  class="MS_input_txt w415" value="<%=info.address1%>" size='40' maxlength="100" readonly />
+            </td>
+        </tr>
+        <tr>
+            <th>
+               <span class="red">*</span> 상세주소
+            </th>
+            <td>
+                 <input type="text" name="usrAddr2" id="usrAddr2"  class="MS_input_txt w415" value="<%=info.address2%>" size='40' maxlength="100" />
+            </td>
+        </tr>
+        <tr>
+            <th>
+               <span class="red">*</span> 연락처
+            </th>
+            <td>
+                <select name="usrTelNo1" form="join_form" id="usrTelNo1" class="MS_select MS_tel" >
+                    <option value=''>선택</option>
+                    <option value="011" <% if(info.telno1=="010") { %> selected <% } %>>010</option>
+                    <option value="011" <% if(info.telno1=="011") { %> selected <% } %>>011</option>
+                    <option value="016" <% if(info.telno1=="016") { %> selected <% } %>>016</option>
+                    <option value="017" <% if(info.telno1=="017") { %> selected <% } %>>017</option>
+                    <option value="018" <% if(info.telno1=="018") { %> selected <% } %>>018</option>
+                    <option value="019" <% if(info.telno1=="019") { %> selected <% } %>>019</option>
+                    <option value="02" <% if(info.telno1=="02") { %> selected <% } %>>서울 (02)</option>
+                    <option value="031" <% if(info.telno1=="031") { %> selected <% } %>>경기 (031)</option>
+                    <option value="032" <% if(info.telno1=="032") { %> selected <% } %>>인천 (032)</option>
+                    <option value="033" <% if(info.telno1=="033") { %> selected <% } %>>강원 (033)</option>
+                    <option value="041" <% if(info.telno1=="041") { %> selected <% } %>>충남 (041)</option>
+                    <option value="042" <% if(info.telno1=="042") { %> selected <% } %>>대전 (042)</option>
+                    <option value="043" <% if(info.telno1=="043") { %> selected <% } %>>충북 (043)</option>
+                    <option value="044" <% if(info.telno1=="044") { %> selected <% } %>>세종 (044)</option>
+                    <option value="051" <% if(info.telno1=="051") { %> selected <% } %>>부산 (051)</option>
+                    <option value="052" <% if(info.telno1=="052") { %> selected <% } %>>울산 (052)</option>
+                    <option value="053" <% if(info.telno1=="053") { %> selected <% } %>>대구 (053)</option>
+                    <option value="054" <% if(info.telno1=="054") { %> selected <% } %>>경북 (054)</option>
+                    <option value="055" <% if(info.telno1=="055") { %> selected <% } %>>경남 (055)</option>
+                    <option value="061" <% if(info.telno1=="061") { %> selected <% } %>>전남 (061)</option>
+                    <option value="062" <% if(info.telno1=="062") { %> selected <% } %>>광주 (062)</option>
+                    <option value="063" <% if(info.telno1=="063") { %> selected <% } %>>전북 (063)</option>
+                    <option value="064" <% if(info.telno1=="064") { %> selected <% } %>>제주 (064)</option>
+                    <option value="0502" <% if(info.telno1=="0502") { %> selected <% } %>>KT (0502)</option>
+                    <option value="0503" <% if(info.telno1=="0503") { %> selected <% } %>>온세텔레콤(0503)</option>
+                    <option value="0504" <% if(info.telno1=="0504") { %> selected <% } %>>온세텔레콤(0504)</option>
+                    <option value="0505" <% if(info.telno1=="0505") { %> selected <% } %>>Dacom (0505)</option>
+                    <option value="070" <% if(info.telno1=="070") { %> selected <% } %>>인터넷전화 (070)</option>
+                    <option value="080" <% if(info.telno1=="080") { %> selected <% } %>>착신 과금 서비스 (080)</option>
+                </select>
+          - 
+            <input type="text" name='usrTelNo2' form="join_form" id="usrTelNo2"  class="MS_input_tel" value="<%=info.telno2%>" size="4" maxlength="4" />
+            -
+            <input type="text" name="usrTelNo3" form="join_form" id="usrTelNo3"  class="MS_input_tel" value="<%=info.telno3%>" size="4" maxlength="4" />
+        </td>
+      </tr>
+      <tr>
+       <th>
+       <span class="red">*</span> 휴대폰
+       </th>
+         <td>
+          <select name="usrCellNo1" id="usrCellNo1" class="MS_select MS_tel">
+          <option value=''>선택</option>
+              <option value="010" <%if(info.cellno1=="010") { %> selected <% } %>>010</option>
+              <option value="011" <%if(info.cellno1=="011") { %> selected <% } %>>011</option>
+              <option value="016" <%if(info.cellno1=="016") { %> selected <% } %>>016</option>
+              <option value="017" <%if(info.cellno1=="017") { %> selected <% } %>>017</option>
+              <option value="018" <%if(info.cellno1=="018") { %> selected <% } %>>018</option>
+              <option value="019" <%if(info.cellno1=="019") { %> selected <% } %>>019</option>
+          </select>
+          - 
+          <input type="text" name="usrCellNo2" id="usrCellNo2"  class="MS_input_tel" value="<%=info.cellno2%>" size="4" maxlength="4"  />
+          -
+          <input type="text" name="usrCellNo3" id="usrCellNo3"  class="MS_input_tel" value="<%=info.cellno3%>" size="4" maxlength="4"  />
+         </td>
+       </tr>
+        <tr>
+        <th>
+           <span class="red">*</span> 이메일
+        </th>
+        <td>
+          <input type="text" name="usrEmail1" id="usrEmail1" class="MS_input_txt" size="10" maxlength="20" value="<%=info.email?info.email.split('@')[0]:''%>"  />
+          <span>@</span>
+<%
+    var directEmail = "";
+     var email2 = info.email.split('@')[1] != null ? info.email.split('@')[1] : '';
+    if(email2 != 'naver.com' && email2 != 'hotmail.com' && email2 != 'hanmail.net' && email2 != 'yahoo.co.kr' && email2 != 'paran.com'
+      && email2 != 'nate.com' && email2 != 'empal.com' && email2 != 'dreamwiz.com' && email2 != 'hanafos.com' && email2 != 'korea.com'
+      && email2 != 'chol.com' && email2 != 'gmail.com' && email2 != 'lycos.co.kr' && email2 != 'netian.com' && email2 != 'hanmir.com'
+      && email2 != 'sayclub.com') {
+        directEmail = email2;
+    }
+%>
+          <select name="usrEmail2" id="usrEmail2" class="MS_select MS_email" style="margin-right:5px;">
+          <option value="">선택</option>
+              <option value="naver.com" <%if(email2=="naver.com") { %> selected <% } %>>naver.com</option>
+              <option value="hotmail.com" <%if(email2=="hotmail.com") { %> selected <% } %>>hotmail.com</option>
+              <option value="hanmail.net" <%if(email2=="hanmail.net") { %> selected <% } %>>hanmail.net</option>
+              <option value="yahoo.co.kr" <%if(email2=="yahoo.co.kr") { %> selected <% } %>>yahoo.co.kr</option>
+              <option value="paran.com" <%if(email2=="paran.com") { %> selected <% } %>>paran.com</option>
+              <option value="nate.com" <%if(email2=="nate.com") { %> selected <% } %>>nate.com</option>
+              <option value="empal.com" <%if(email2=="empal.com") { %> selected <% } %>>empal.com</option>
+              <option value="dreamwiz.com" <%if(email2=="dreamwiz.com") { %> selected <% } %>>dreamwiz.com</option>
+              <option value="hanafos.com" <%if(email2=="hanafos.com") { %> selected <% } %>>hanafos.com</option>
+              <option value="korea.com" <%if(email2=="korea.com") { %> selected <% } %>>korea.com</option>
+              <option value="chol.com" <%if(email2=="chol.com") { %> selected <% } %>>chol.com</option>
+              <option value="gmail.com" <%if(email2=="gmail.com") { %> selected <% } %>>gmail.com</option>
+              <option value="lycos.co.kr" <%if(email2=="lycos.co.kr") { %> selected <% } %>>lycos.co.kr</option>
+              <option value="netian.com" <%if(email2=="netian.com") { %> selected <% } %>>netian.com</option>
+              <option value="hanmir.com" <%if(email2=="hanmir.com") { %> selected <% } %>>hanmir.com</option>
+              <option value="sayclub.com" <%if(email2=="sayclub.com") { %> selected <% } %> >sayclub.com</option>
+              <option value="direct">직접입력</option>
+          </select>
+      <!--이메일주소 직접입력-->
+          <input type="text" name="usrEmail3" id="usrEmail3"  class="MS_input_txt" value="<%=directEmail%>" size="15" maxlength="25"/>
+      <!--이메일주소 직접입력-->
+          <!--
+          <input type="button" id="emailChkBtn" class="btn" value="중복확인">
+          -->
+       </td>
+     </tr>
+     <tr>
+         <td colspan="2" style="border:0;padding:0;">
+     <span id="companySpan">
+        <table border="0" cellspacing="0" width="100%">
+        <colgroup>
+            <col width="150"/><col width="*">
+        </colgroup>
+        <tr>
+            <th>
+                <span class="red">*</span> 회사명
+            </th>
+            <td>
+                <input type="text" name="usrCompNm" id="usrCompNm" value="<%=info.compnm%>"  class="w137" size="15" maxlength="30"  />
+            </td>
+        </tr>
+     <tr>
+      <th><span class="red">*</span>&nbsp;&nbsp;회사전화</th>
+      <td>
+        <select name="usrCompTelNo1" id="usrCompTelNo1" class="MS_select MS_tel" >
+            <option value="">선택</option>
+            <option value="010" <% if(info.comptelno1=="010") { %> selected <% } %>>010</option>
+            <option value="011" <% if(info.comptelno1=="011") { %> selected <% } %>>011</option>
+            <option value="016" <% if(info.comptelno1=="016") { %> selected <% } %>>016</option>
+            <option value="017" <% if(info.comptelno1=="017") { %> selected <% } %>>017</option>
+            <option value="018" <% if(info.comptelno1=="018") { %> selected <% } %>>018</option>
+            <option value="019" <% if(info.comptelno1=="019") { %> selected <% } %>>019</option>
+            <option value="02" <% if(info.comptelno1=="02") { %> selected <% } %>>서울 (02)</option>
+            <option value="031" <% if(info.comptelno1=="031") { %> selected <% } %>>경기 (031)</option>
+            <option value="032" <% if(info.comptelno1=="032") { %> selected <% } %>>인천 (032)</option>
+            <option value="033" <% if(info.comptelno1=="033") { %> selected <% } %>>강원 (033)</option>
+            <option value="041" <% if(info.comptelno1=="041") { %> selected <% } %>>충남 (041)</option>
+            <option value="042" <% if(info.comptelno1=="042") { %> selected <% } %>>대전 (042)</option>
+            <option value="043" <% if(info.comptelno1=="043") { %> selected <% } %>>충북 (043)</option>
+            <option value="044" <% if(info.comptelno1=="044") { %> selected <% } %>>세종 (044)</option>
+            <option value="051" <% if(info.comptelno1=="051") { %> selected <% } %>>부산 (051)</option>
+            <option value="052" <% if(info.comptelno1=="052") { %> selected <% } %>>울산 (052)</option>
+            <option value="053" <% if(info.comptelno1=="053") { %> selected <% } %>>대구 (053)</option>
+            <option value="054" <% if(info.comptelno1=="054") { %> selected <% } %>>경북 (054)</option>
+            <option value="055" <% if(info.comptelno1=="055") { %> selected <% } %>>경남 (055)</option>
+            <option value="061" <% if(info.comptelno1=="061") { %> selected <% } %>>전남 (061)</option>
+            <option value="062" <% if(info.comptelno1=="062") { %> selected <% } %>>광주 (062)</option>
+            <option value="063" <% if(info.comptelno1=="063") { %> selected <% } %>>전북 (063)</option>
+            <option value="064" <% if(info.comptelno1=="064") { %> selected <% } %>>제주 (064)</option>
+            <option value="0502" <% if(info.comptelno1=="0502") { %> selected <% } %>>KT (0502)</option>
+            <option value="0503" <% if(info.comptelno1=="0503") { %> selected <% } %>>온세텔레콤(0503)</option>
+            <option value="0504" <% if(info.comptelno1=="0504") { %> selected <% } %>>온세텔레콤(0504)</option>
+            <option value="0505" <% if(info.comptelno1=="0505") { %> selected <% } %>>Dacom (0505)</option>
+            <option value="070" <% if(info.comptelno1=="070") { %> selected <% } %>>인터넷전화 (070)</option>
+            <option value="080" <% if(info.comptelno1=="080") { %> selected <% } %>>착신 과금 서비스 (080)</option>
+        </select>
+- 
+<input type="text" name='usrCompTelNo2' id="usrCompTelNo2"  class="MS_input_tel" value="<%=info.comptelno2%>" size="4" maxlength="4" />
+-
+<input type="text" name="usrCompTelNo3" id="usrCompTelNo3"  class="MS_input_tel" value="<%=info.comptelno3%>" size="4" maxlength="4" />
+       </td>
+     </tr>
+     <tr>
+      <th><span class="red">*</span>&nbsp;&nbsp;회사주소</th>
+       <td>
+        <ul style="padding:5px 0;">
+          <li style="margin-bottom:5px;">
+            <input type="text" name="usrCompPostNo" id="usrCompPostNo"  class="MS_input_txt" value="<%=info.comppostno%>" size="6" maxlength="6" onfocus="this.blur();" />
+            <input type="button" id="srchPostNoBtn2" class="btn" value="우편번호검색">&nbsp;상위 주소와 동일한 경우 체크.<input type="checkbox" id="copyBtn" name="copyBtn" value="Y"/>
+          </li>
+          <li>
+            <input type="text" name="usrCompAddr1" id="usrCompAddr1"  class="MS_input_txt w415" value="<%=info.compaddr1%>" size="40" maxlength="100" readonly />
+          </li>
+          <li>
+            <input type="text" name="usrCompAddr2" id="usrCompAddr2"  class="MS_input_txt w415" value="<%=info.compaddr2%>" size="40" maxlength="100" />
+          </li>
+       </ul>
+      </td>
+    </tr>
+        <tr>
+            <th>
+                <span class="red">*</span> 사업자등록번호
+            </th>
+            <td>
+                <input type="text" name="usrSaupNo" id="usrSaupNo" value="<%=info.saupno%>"  class="w137" size="15" maxlength="30"  />
+            </td>
+        </tr>
+         </table>
+     </span>
+        </td>
+     </tr>
+     <tr>
+       <th>
+         &nbsp;&nbsp;업데이트/뉴스
+       </th>
+          <td>
+            <input type="radio" name="emailYn" id="emailYn" value="1" checked><label for="emailYn"><span><span></span></span>이메일수신을 허락합니다.</label>
+          </td>
+     </tr>
+     <tr>
+      <th>
+        &nbsp;&nbsp;정보활용확인여부
+      </th>
+        <td>
+          
+          <input type="radio" name="usrInfoYn" id="usrInfoYn1" value="Y" <% if(info.infoyn=="Y") { %> checked<% } %>><label for="usrInfoYn1"><span><span></span></span>예 </label>
+          <input type="radio" name="usrInfoYn" id="usrInfoYn2" value="N" <% if(info.infoyn=="Y") { %> checked<% } %>><label for="usrInfoYn2"><span><span></span></span>아니오</label>
+          
+        </td>
+     </tr>
+</table>
+<!-- #personInfo -->
+
+         <div class="btn-area">
+            <a id="aSubmitBtn" href="#" class="mfp-close btn btn-ok">회원정보 수정</a>
+        </div>
+        </form>
+        </div>
+</form>
+</div><!-- #join -->
+</body>
+</html>

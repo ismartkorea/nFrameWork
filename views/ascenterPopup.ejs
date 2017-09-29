@@ -1,0 +1,91 @@
+<!DOCTYPE HTML>
+<html lang="ko">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
+    <meta name="viewport" content="width=device-width" />
+        <title>회원가입</title>
+        <link rel="stylesheet" href="/css/join.css">
+        <script type="text/javascript" src="/js/jquery-1.11.3.min.js"></script>
+        <!-- Magnific Popup -->
+        <script type="text/javascript" src="/js/jquery.magnific-popup.min.js"></script>
+        <script type="text/javascript" src="/js/magnific-popup-options.js"></script>
+        <script type="text/javascript">
+            $(document).ready(function() {
+                // console.
+                $("#prevBtn").on('click', function() {
+                    location.href = '/ascenter';
+                });
+                // 닫기 버튼 이벤트 처리.
+                $("#closeBtn").on("click",function(e) {
+                    e.preventDefault();
+                    if(window.parent == window.top) {
+                        window.parent.$.magnificPopup.close();
+                    }
+                });
+            });
+        </script>
+    </head>
+<!--팝업창크기는 css/magnific-popup.css에 mfp-iframe-scaler2 클래스에 지정되어있음-->
+<body>
+<div id="join">
+    <h1 class="tit-join">공지사항</h1>
+    <form name="frm" id="frm">
+        <input type="hidden" id="no" name="no" value="<%=result.no%>"/>
+        <table border="0" cellspacing="0" width="100%" class="table_style11">
+            <tr>
+                <th>
+                    <label for="">글 번호</label>
+                </th>
+                <td>
+                    <%= result.no %>
+                </td>
+                <th>
+                    <label for="">제목</label>
+                </th>
+                <td colspan="3">
+                    <%= result.title %>
+                </td>
+            </tr>
+            <tr>
+                <th>
+                    <label for="">작성날짜</label>
+                </th>
+                <td>
+                    <%= result.date%>
+                </td>
+                <th>
+                    <label for="">작성자</label>
+                </th>
+                <td>
+                    <%= result.writer%>
+                </td>
+                <th>
+                    <label for="">조회수</label>
+                </th>
+                <td>
+                    <%= result.count%>
+                </td>
+            </tr>
+            <tr>
+                <th>
+                    <label for="">안내</label>
+                </th>
+                <td colspan="5"><%- result.content%></td>
+            </tr>
+<!--
+            <tr>
+                <td colspan="6" style="align : center; height : 20px">
+                    <input type="button" id="prevBtn" name="prevBtn" value="리스트 화면"/>&nbsp;
+                </td>
+            </tr>
+-->
+        </table>
+        <div class="btn-area">
+            <a id="closeBtn" href="#" class="mfp-close">닫기</a>
+        </div>
+    </form>
+</div>
+</body>
+</html>

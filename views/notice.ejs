@@ -1,0 +1,226 @@
+<!DOCTYPE HTML>
+<html lang="ko">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>고객센터</title>
+
+	<meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
+	<meta name="viewport" content="width=device-width" />
+
+	<!-- Facebook and Twitter integration -->
+	<meta property="og:title" content=""/>
+	<meta property="og:image" content=""/>
+	<meta property="og:url" content=""/>
+	<meta property="og:site_name" content=""/>
+	<meta property="og:description" content=""/>
+	<meta name="twitter:title" content="" />
+	<meta name="twitter:image" content="" />
+	<meta name="twitter:url" content="" />
+	<meta name="twitter:card" content="" />
+
+	<!-- <link href='https://fonts.googleapis.com/css?family=Work+Sans:400,300,600,400italic,700' rel='stylesheet' type='text/css'> -->
+
+	<!-- Animate.css -->
+	<link rel="stylesheet" href="/css/animate.css">
+	<!-- Icomoon Icon Fonts-->
+	<link rel="stylesheet" href="/css/icomoon.css">
+	<!-- Bootstrap  -->
+	<link rel="stylesheet" href="/css/bootstrap.css">
+
+	<!-- Magnific Popup -->
+	<link rel="stylesheet" href="/css/magnific-popup.css">
+
+	<!-- Theme style  -->
+	<link rel="stylesheet" href="/css/style.css">
+
+	<!-- Modernizr JS -->
+	<script src="/js/modernizr-2.6.2.min.js"></script>
+	<!-- FOR IE9 below -->
+	<!--[if lt IE 9]>
+	<script src="/js/respond.min.js"></script>
+	<![endif]-->
+
+</head>
+<div>
+
+<% include include/nav %>
+
+<div class="container">
+
+			<!--고객센터 타이틀 시작 -->
+			<div class="row animate-box">
+				<div class="col-md-8 col-md-offset-2 fh5co-heading text-center">
+					<h2 class="fh5co-lead ubar">고객센터</h2>
+					<p>
+						<a href="/ascenter" class="btn btn-arrow">1:1문의/FAQ</a>
+						<a href="/mypage/qna" class="btn btn-arrow">1:1문의내역</a>
+						<a href="/notice" class="btn btn-arrow active">공지사항</a>
+						<a href="tel:1644-0495" class="dispmo btn btn-arrow">바로전화</a>
+					</p>
+
+				</div>
+			</div> <!--고객센터 타이틀 end -->
+
+			<!--공지사항 시작 -->
+			<div class="col-md-12">
+				<h3>공지사항</h3>
+				<form id="frm" name="frm">
+					<table border="0" cellspacing="0" width="100%" class="table_style1">
+						<tr>
+							<th width="3%">번호</th>
+							<th>제목</th>
+							<th width="16%">날짜</th>
+							<th width="16%">글쓴이</th>
+							<th width="9%" class="brdno">조회</th>
+						</tr>
+                        <%
+						//console.log("board size : " + rList.length);
+						if(rList.length > 0) {
+						rList.forEach(function(item, index) {
+                        %>
+						<tr>
+							<td><%=item.num%></td>
+							<td class="left pdl20"><a href="/ascenter/view/<%=item.no%>" id="linkBtn" class="open-popup-link"><b><%=item.title%></b></a></td>
+							<td><%=item.date%></td>
+							<td><%=item.writer%></td>
+							<td><%=item.count%></td>
+						</tr>
+                        <%
+						})
+						} else {
+                        %>
+						<tr>
+							<td colspan="5" align="center">
+								No Data
+							</td>
+						</tr>
+                        <%
+						}
+                        %>
+						<!--<tr>
+                            <td colspan="7" class="pdt30 bbdno text-left">
+                                <input type="button" id="newBtn" name="newBtn" value="글작성" class="btn"/>
+                            </td>
+                        </tr>-->
+					</table>
+				</form>
+			</div><!--공지사항 end -->
+</div><!--container-->
+
+
+<% include include/footer %>
+
+<div class="gototop js-top">
+	<a href="#" class="js-gotop"><i class="icon-arrow-up"></i></a>
+</div>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+<!-- jQuery Easing -->
+<script src="/js/jquery.easing.1.3.js"></script>
+<!-- Bootstrap -->
+<script src="/js/bootstrap.min.js"></script>
+<!-- Waypoints -->
+<script src="/js/jquery.waypoints.min.js"></script>
+<!-- countTo -->
+<script src="/js/jquery.countTo.js"></script>
+<!-- Magnific Popup -->
+<script src="/js/jquery.magnific-popup.min.js"></script>
+<script src="/js/magnific-popup-options.js"></script>
+<!-- Main -->
+<script src="/js/main.js"></script>
+<!-- ckeditor -->
+<script src="/ckeditor/ckeditor.js"></script>
+<!-- script -->
+<script type="text/javascript">
+	var emailRegExp = /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i;
+	var telNoRegExp = /^\d{2,3}-\d{3,4}-\d{4}$/;
+	$(document).ready(function() {
+
+		// CKEditor 설정.
+		CKEDITOR.replace("content", {
+			toolbar : "Basic"
+		});
+
+		// 전송 버튼 이벤트 처리.
+		$("#submitBtn").on("click", function(e) {
+			e.preventDefault();
+
+			var guestNm = $.trim($("#name").val());
+			var guestUsrNo = $.trim($("#usrNo").val());
+			var guestEmail = $.trim($("#email").val());
+			var guestTelNo = $.trim($("#telNo").val());
+			var guestTitle = $.trim($("#title").val());
+			var guestContent = $.trim(CKEDITOR.instances.content.getData());
+
+			if(guestNm=="") {
+				alert("이름 또는 업체명을 입력하세요");
+				$("#name").focus();
+				return false;
+			}
+			if(guestEmail=="") {
+				alert("이메일을 입력하세요");
+				$("#email").focus();
+				return false;
+			}
+			if(guestTelNo=="") {
+				alert("연락처를 입력하세요");
+				$("#telNo").focus();
+				return false;
+			}
+			if(guestTitle=="") {
+				alert("제목을 입력하세요");
+				$("#title").focus();
+				return false;
+			}
+			if(guestContent=="") {
+				alert("문의 내용을 입력하세요");
+				$("#content").focus();
+				return false;
+			}
+			// Validation 체크.
+			if(!emailRegExp.test(guestEmail)) {
+				alert("올바른 이메일 형식이 아닙니다.\n확인하시고 다시 입력하세요");
+				("#email").focus();
+				return false;
+			}
+			if(!telNoRegExp.test(guestTelNo)) {
+				alert("올바른 전화 형식이 아닙니다.\n확인하시고 다시 입력하세요.");
+				$("#telNo").focus();
+				return false;
+			}
+
+			var dataVals = {
+				'name' : guestNm,
+				'usrNo' : guestUsrNo,
+				'email' : guestEmail,
+				'telNo' : guestTelNo,
+				'title' : guestTitle,
+				'content' : guestContent
+			};
+			// 전송 처리.
+			$.ajax({
+				url: "/ascenter/insert",
+				type: "post",
+				dataType: "json",
+				data: dataVals,
+				success: function (data) {
+					console.log(">>> data = " + data.result);
+					if(data.result=="OK") {
+						alert("전송처리하였습니다.");
+						$("form")[0].reset();
+						CKEDITOR.instances.content.setData("");
+					}
+				},
+				error: function (err) {
+					alert("errCode : " + err.message);
+				}
+			});
+
+		});
+	});
+</script>
+
+</body>
+</html>

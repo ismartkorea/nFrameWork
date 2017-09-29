@@ -1,0 +1,407 @@
+<% layout('../../admin/layout') -%>
+<style type="text/css">
+    .table_style11 { border-top:solid 5px #10c1bf; background:#fff;}
+    .table_style11 tr {}
+    .table_style11 th {border-bottom:#fff solid 1px; border-right:#E4E4E4 solid 1px; text-align:left; vertical-align:top; padding:14px 10px 10px 10px; background:#e9eff3; font-weight:400; line-height:18px;  font-size : 1em;}
+    .table_style11 td { border-bottom:#E4E4E4 solid 1px; padding:10px; text-align:left; word-break:keep-all; font-size:1em;}
+    .table_style11 td input {
+        box-shadow: none;
+        background: transparent;
+        border: 1px solid rgba(0, 0, 0, 0.3);
+        height: 20px;
+        font-weight: 300;
+    }
+    .table_style11 td input:active, .table_style11 td input:focus {
+        outline: none;
+        box-shadow: none;
+        border-color: #10c1bf;
+    }
+    .table_style11 td select {
+        box-shadow: none;
+        background: none;
+        border: 1px solid rgba(0, 0, 0, 0.3);
+        height: 22px;
+        font-weight: 300;
+    }
+    .table_style11 td select:active, .table_style11 td select:focus {
+        outline: none;
+        border-color: #10c1bf;
+        background: none;
+    }
+    @media screen and (max-width:480px) {
+        .table_style11 th {
+            letter-spacing: -0.05em;
+            padding: 6px 0 6px 4px;
+            font-size: 0.8em;
+        }
+
+        .table_style11 td {
+            letter-spacing: -0.05em;
+            padding: 3px 0 6px 8px;
+            font-size: 0.8em;
+        }
+    }
+
+</style>
+
+    <script type="text/javascript" src="/js/jquery-1.11.3.min.js"></script>
+    <script type="text/javascript" src="/js/common.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            // console.
+            console.log("on READY");
+
+            // 이전 버튼 이벤트 처리.
+            $("#prevBtn").on('click', function () {
+                location.href = '/admin';
+            });
+            // 검색 엔터키 이벤트 처리.
+            $("#srchText").on("keypress", function(e) {
+                if(e.which == 13) {
+                    $("#srchBtn").click();
+                    return false;
+                }
+            });
+            // 검색버튼 이벤트 처리.
+            $("#srchBtn").on("click", function (e) {
+                e.preventDefault();
+                var selectedVal = $("#srchType option:selected").val();
+
+                // 선택박스 체크.
+                if (selectedVal == null || selectedVal == "") {
+                    alert("검색할려는 항목을 선택하여 주세요.");
+                    $("#srchType").focus();
+                    return false;
+                }
+                // 검색할 텍스터 체크.
+                /*
+                 if($("#srchText").val() == null || $("#srchText").val() == "") {
+                 alert("검색 단어을 입력하여 주세요.");
+                 $("#srchText").focus();
+                 return false;
+                 }
+                 */
+                var srchText = $.trim($("#srchText").val());
+                // 전송 처리.
+                $("#srchType").val(selectedVal);
+                $("#srchText").val(srchText);
+                $("#searchForm").attr("method", "post");
+                $("#searchForm").attr("action", "/admin/pay/search");
+                $("#searchForm").submit();
+            });
+
+
+                // 저장 버튼 이벤트 처리.
+                $("#saveBtn").on("click", function(e) {
+                    e.preventDefault();
+
+                    // 체크된 항목 체크.
+                    var checkedCnt = $("input:checkbox[name='tChkBox']:checked").length;
+                    if(checkedCnt <= 0) {
+                        alert("처리할 항목을 선택하세요");
+                        return false;
+                    } else {
+
+                        var sPayCode = []; var sOrderNo = []; var sUsrId = []; var sPayStatus = []; var sTaxInvoiceYn = [];
+                        var HTML = "";
+                        // 저장 처리.
+                        $("input:checkbox[name=tChkBox]").each(function (idx, item) {
+                            if ($(this).is(":checked")) {
+                                //히든필드에 콤보박스체크된 필드의 값셋팅.
+                                /*
+                                sPayCode.push($("#tPayCode"+idx).val());
+                                sOrderNo.push($("#tOrderNo"+idx).val());
+                                sUsrId.push($("#tUsrId"+idx).val());
+                                sPayStatus.push($("#tPayStatus"+idx+" option:selected").val());
+                                sTaxInvoiceYn.push($("#tTaxInvoiceYn"+idx+" option:selected").val());
+                                */
+                                HTML += "<input type='hidden' name='payCode[]' value='"+ $("#tPayCode"+idx).val() + "'/>";
+                                HTML += "<input type='hidden' name='orderNo[]' value='"+ $("#tOrderNo"+idx).val() + "'/>";
+                                HTML += "<input type='hidden' name='usrId[]' value='"+ $("#tUsrId"+idx).val() + "'/>";
+                                HTML += "<input type='hidden' name='payStatus[]' value='"+ $("#tPayStatus"+idx).val() + "'/>";
+                                HTML += "<input type='hidden' name='taxInvoiceYn[]' value='"+ $("#tTaxInvoiceYn"+idx).val() + "'/>";
+                            }
+                        });
+
+                        //$("input[type='hidden'][name='payCode[]']").val(sPayCode);
+                        //$("input[type='hidden'][name='orderNo[]']").val(sOrderNo);
+                        //$("input[type='hidden'][name='usrId[]']").val(sUsrId);
+                        //$("input[type='hidden'][name='payStatus[]']").val(sPayStatus);
+                        //$("input[type='hidden'][name='taxInvoiceYn[]']").val(sTaxInvoiceYn);
+                        $("#frm").append(HTML);
+
+                        $("#checkBoxCnt").val(checkedCnt);
+
+                        alert("처리하였습니다.");
+
+                        $("#frm").attr("method", "post");
+                        $("#frm").attr("action", "/admin/pay/save");
+                        $("#frm").submit();
+                    }
+
+                });
+
+        });
+    // 상세 조회 처리.
+    function onOrderView(no) {
+        var url = "/admin/pay/view/"+no;
+        var name = "서비스 상세조회 화면";
+        var left = 0;
+        var top = 0;
+        var width = 1024;
+        var height = 470;
+        var toolbar = 0;
+        var menubar = 0;
+        var statusbar = 1;
+        var scrollbar = 0;
+        var resizable = 0;
+        var location = 0;
+        popup_window_common(url, name, left, top, width, height, toolbar, menubar, statusbar, scrollbar, resizable, location);
+    }
+    // 사용자 상세 조회 처리.
+    function onUserView(no) {
+        //location.href = "/admin/pay/user/view/"+no;
+        var url = "/admin/pay/user/view/"+no;
+        var name = "고객정보 화면";
+        var left = 0;
+        var top = 0;
+        var width = 800;
+        var height = 350;
+        var toolbar = 0;
+        var menubar = 0;
+        var statusbar = 1;
+        var scrollbar = 0;
+        var resizable = 0;
+        var location = 0;
+        popup_window_common(url, name, left, top, width, height, toolbar, menubar, statusbar, scrollbar, resizable, location);
+    }
+    // 환불요청 조회 팝업 호출.
+    function onRefundReqView(no) {
+        var url = "/admin/pay/refund/req/view/"+no;
+        var name = "환불요청 상세 화면";
+        var left = 0;
+        var top = 0;
+        var width = 800;
+        var height = 500;
+        var toolbar = 0;
+        var menubar = 0;
+        var statusbar = 1;
+        var scrollbar = 0;
+        var resizable = 0;
+        var location = 0;
+        popup_window_common(url, name, left, top, width, height, toolbar, menubar, statusbar, scrollbar, resizable, location);
+    }
+    // Div 레이어팝업 뷰
+    function onDivView(no) {
+        $("#openDiv"+no).css("display", "inline");
+    }
+    // Div 레이어팝업 닫기
+    function offDivView(no) {
+        $("#openDiv"+no).css("display", "none");
+    }
+    // 레이어팝업 수정 함수
+    function updateData() {
+
+        var pOrderNo = '';
+        var pTaxInvoiceYn = '';
+        var pUsrId = '';
+
+        $("input:checkbox[name=tChkBox]").each(function (idx, item) {
+            if($("#openDiv"+idx).css("display") != "none") {
+                //히든필드에 콤보박스체크된 필드의 값셋팅.
+                pOrderNo = $("#tOrderNo" + idx).val();
+                pUsrId = $("#tUsrId" + idx).val();
+                pTaxInvoiceYn = $("#tTaxInvoiceYn" + idx + " option:selected").val();
+            }
+        });
+
+        var dataValues = {
+            'orderNo' : pOrderNo,
+            'usrId' : pUsrId,
+            'taxInvoiceYn' : pTaxInvoiceYn
+        };
+
+        $.ajax({
+            url : "/admin/pay/update",
+            type : "post",
+            dataType : "json",
+            data : dataValues,
+            success : function(data) {
+                if(data.result == "OK") {
+                    alert("수정처리되었습니다.");
+                }
+            },
+            error : function(err) {
+                alert("errCode : " + JSON.stringify(err));
+            }
+        });
+
+    }
+    </script>
+<div class="container-fluid">
+
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="page-header">결제 관리 화면</h1>
+        </div>
+        <form id="searchForm" name="searchForm" method="post">
+            <div class="form-group text-right form-inline">
+                <div class="form-group">
+                    <select id="srchType" name="srchType" class="form-control">
+                        <option value="">선택하세요.</option>>
+                        <option value="orderNo" <%if(srchType=="orderNo") {%> selected <% }%>>주문번호</option>
+                        <option value="usrId" <%if(srchType=="usrId") {%> selected <% }%>>고객ID</option>
+                    </select>
+                </div>
+                <div class="input-group custom-search-form">
+                    <input type="text" id="srchText" name="srchText" class="form-control" value="<%=srchText%>" size="20" placeholder="Search...">
+                        <span class="input-group-btn">
+                            <button class="btn btn-primary" type="button" id="srchBtn" name="srchBtn">
+                                <i class="fa fa-search"></i>
+                            </button>
+                        </span>
+                </div>
+            </div>
+        </form>
+    </div>
+<form id="frm" name="frm">
+<input type="hidden" id="checkBoxCnt" name="checkBoxCnt" value=""/>
+</form>
+<table width="100%" border="0" class="table table-hover">
+    <tr>
+        <th>&nbsp;</th>
+        <th>결제번호</th>
+        <th>결제가격</th>
+        <th>결제수단</th>
+        <th>결제날짜</th>
+        <th>지불상태</th>
+        <th>환불요청여부</th>
+        <th>날짜</th>
+    </tr>
+    <%
+        console.log("board size : " + rList.length);
+        if(rList.length > 0) {
+            rList.forEach(function(item, index) {
+    %>
+    <tr id="listTr">
+        <td><input type="checkbox" id="tChkBox<%=index%>" name="tChkBox" value=""/>
+            <input type="hidden" id="tPayCode<%=index%>" name="tPayCode" value="<%=item.payCode%>"/>
+            <input type="hidden" id="tOrderNo<%=index%>" name="tOrderNo" value="<%=item.orderNo%>"/>
+            <input type="hidden" id="tUsrId<%=index%>" name="tUsrId" value="<%=item.usrId%>"/>
+        </td>
+        <td>
+            <a href="javascript:onDivView('<%=index%>');"><b><%=item.payCode%></b></a>
+            <!--주문번호 팝업 레이어 -->
+            <div id="openDiv<%=index%>" style="display:none; position:absolute; width:auto; padding:0 10px 10px 10px; background:#fff; border:2px solid #ccc; box-shadow: 0 10px 20px -12px rgba(0, 0, 0, 0.2), 0 4px 25px 0px rgba(0, 0, 0, 0.12), 0 8px 10px -8px rgba(0, 0, 0, 0.2);">
+                <div style="position:relative; text-align:left; padding:10px 0; font-size:14px;"><a href="javascript:offDivView('<%=index%>');">닫기</a></div>
+                <!--////---서비스이용내역 시작///////-->
+                <table border="0" cellspacing="0" width="auto" class="table_style11">
+                    <tr>
+                        <th>고객ID</th>
+                        <th>서비스일수</th>
+                        <th>서비스예정종료일</th>
+                        <th>세금계산서요청</th>
+                        <th>세금계산서발급처리</th>
+                    </tr>
+                    <tr>
+                        <td><a href="javascript:onUserView('<%=item.usrId%>')" class="open-popup-link"><b><%=item.usrId%></b></a></td>
+                        <td>
+<% if(item.useTermDays != "0" && item.useTermDays != null) {%>
+                            <%=item.useTermDays%> 일
+<% } else { %>
+                            해당사항없음.
+<% } %>
+                        </td>
+                        <td>
+<% if(item.useTermDays != "0" && item.useTermDays != null) {%>
+                            <%=item.useEndDate%> 일
+<% } else { %>
+                            해당사항없음.
+<% } %>
+                        </td>
+                        <td><%=item.taxInvoiceReqYn%></td>
+                        <td>
+                            <select id="tTaxInvoiceYn<%=index%>" name="tTaxInvoiceYn">
+                                <option value="N" <%if(item.taxInvoiceYn=='N') {%>selected<%}%>>미처리</option>
+                                <option value="Y" <%if(item.taxInvoiceYn=='Y') {%>selected<%}%>>처리</option>
+                            </select>
+                        </td>
+                    </tr>
+                </table>
+                <div style="position:relative; height:30px; margin:20px 0 -5px 0; text-align:center; width:100%;">
+                    <a href="javascript:onOrderView('<%=item.payCode%>')" class="open-popup-link" style="text-align:center; padding:8px 20px; color:#fff; background:#666; border-radius:2px;">결제서비스 상세조회 팝업</a>
+                    <a href="javascript:updateData()" style="text-align:center; padding:8px 20px; color:#fff; background:#666; border-radius:2px;">저장</a>
+                </div>
+            </div>
+            <!--주문번호 팝업 레이어 -->
+        </td>
+        <td><%=item.payPrice%> 원</td>
+        <td><%=item.payMethod%></td>
+        <td><%=item.payDate%></td>
+        <td>
+            <select id="tPayStatus<%=index%>" name="tPayStatus">
+                <option value="wait" <%if(item.payStatus=='wait') {%>selected<%}%>>승인대기</option>
+                <option value="paid" <%if(item.payStatus=='paid' && item.refundReqYn=='N') {%>selected<%}%>>결제완료</option>
+                <option value="cancelled" <%if(item.payStatus=='cancelled') {%>selected<%}%>>결제취소</option>
+                <option value="failed" <%if(item.payStatus=='failed') {%>selected<%}%>>결제실패</option>
+                <option value="ready" <%if(item.payStatus=='ready') {%>selected<%}%>>미결제</option>
+                <option value="paid" <%if(item.payStatus=='paid' && item.refundReqYn=='Y' || item.payStatus == 'reqRefund') {%>selected<%}%>>환불요청중</option>
+                <option value="refunded" <%if(item.payStatus=='refunded') {%>selected<%}%>>환불완료</option>
+                <option value="end" <%if(item.payStatus=='end') {%>selected<%}%>>서비스이용끝</option>
+            </select>
+        </td>
+<% if(item.refundReqYn == "Y") {%>
+        <td><a href="javascript:onRefundReqView('<%=item.orderNo%>')" class="open-popup-link"><%=item.refundReqYnNm%></a></td>
+<% } else {%>
+        <td><%=item.refundReqYnNm%></td>
+<% } %>
+        <td><%=item.insDate%></td>
+    </tr>
+    <%
+            });
+        } else {
+     %>
+    <tr>
+        <td colspan="9" align="center">
+            No Data
+        </td>
+    </tr>
+    <%
+            }
+    %>
+</table>
+    <!-- 페이징 처리 부분 -->
+    <p id="page" align="center">
+<%
+    console.log(">>> maxPage = " + maxPage);
+    for(var x=1; x<=maxPage;x++) {
+        if(x <= offset || x > maxPage - offset || (x >= page-(offset-1) && x <= page+(offset-1))) {
+            if(x != page) {
+                console.log(">>> * ["+x+"] page = " + page);
+%>
+        [<a href="/admin/pay?page=<%=x%>&srchType=<%=srchType%>&srchText=<%=srchText%>"><%=x%></a>]
+<%
+            } else {
+                console.log(">>> ["+x+"] page = " + page);
+%>
+        [<b><%=x%></b>]
+<%
+            }
+        } else if(x == offset+1 || x == maxPage-offset) {
+%>
+        ...
+<%
+        }
+    }
+%>
+    </p>
+    <!-- 페이징 처리 부분 -->
+<p align="right">
+<!--
+    <input type="button" id="newBtn" name="newBtn" class="btn btn-default" value="추가"/>
+    <input type="button" id="delBtn" name="delBtn" class="btn btn-default" value="삭제"/>
+-->
+    <input type="button" id="saveBtn" name="saveBtn" class="btn btn-default" value="저장"/>
+    <input type="button" id="prevBtn" name="prevBtn" class="btn btn-default" value="메인 화면"/>
+</p>
+</div>

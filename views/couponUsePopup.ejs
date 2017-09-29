@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
+    <meta name="viewport" content="width=device-width" />
+    <title>쿠폰 사용 화면.</title>
+    <link rel="stylesheet" href="/css/join.css">
+    <script type="text/javascript" src="/js/jquery.min.js"></script>
+    <!-- Magnific Popup -->
+    <script type="text/javascript" src="/js/jquery.magnific-popup.min.js"></script>
+    <script type="text/javascript" src="/js/magnific-popup-options.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            // 닫기 버튼 이벤트 처리.
+            $("#closeBtn").on("click",function(e) {
+                e.preventDefault();
+                if(window.parent == window.top) {
+                    window.parent.$.magnificPopup.close();
+                }
+            });
+
+            // 전송처리 버튼 이벤트 처리.
+            $("#submitBtn").on("click", function(e) {
+               e.preventDefault();
+               var couponNo = $.trim($("#couponNo").val());
+                // Validation 체크.
+                if(couponNo=="") {
+                    alert("쿠폰번호를 입력하여 주세요");
+                    $("#couponNo").focus();
+                    return;
+                } else {
+                    if(couponNo.length < 20) {
+                        alert("쿠폰번호는 20자 입니다.");
+                        $("#couponNo").focus();
+                        $("#couponNo").val("");
+                        return;
+                    }
+                }
+                // 전송처리.
+                $.ajax({
+                    type : "post",
+                    url : "/coupon/use",
+                    dataType : "json",
+                    data : {"couponNo" : couponNo},
+                    success : function(data) {
+                        if(data.result == "OK") {
+                            alert("쿠폰번호사용신청처리 되었습니다.\n 관리자가 확인하고 처리해드리겠습니다.");
+                            window.parent.$.magnificPopup.close();
+                        } else if(data.result == "NO") {
+                            alert("올바른 쿠폰번호가 아닙니다. 정확하게 입력하세요.");
+                            $("#couponNo").focus();
+                        }
+                    },
+                    error : function(request, status, error) {
+                        console.log("Code :  " + request.status + "\n" +
+                                "message : " + request.responseText + "\n" +
+                                "error : " + error);
+                    }
+                });
+            });
+        });
+    </script>
+</head>
+<!--팝업창크기는 css/magnific-popup.css에 mfp-iframe-scaler2 클래스에 지정되어있음-->
+<body>
+
+<div id="content">
+    <form id="frm" name="frm">
+        <div id="join">
+            <h1 class="tit-join">쿠폰 사용 화면</h1>
+            <div id="row">
+                <label for="">쿠폰 번호</label>
+                <input type="text" id="couponNo" name="couponNo" value="" size="40" maxlength="20"/>
+                <input type="button" id="submitBtn" name="submitBtn" value="전송"/>
+            </div>
+            <!--////---서비스이용내역 끝///////-->
+            <div class="btn-area">
+                <a id="closeBtn" href="#" class="mfp-close">닫기</a>
+            </div>
+        </div>
+    </form>
+</div><!-- #join -->
+</body>
+</html>

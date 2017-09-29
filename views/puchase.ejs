@@ -1,0 +1,2202 @@
+<%
+// 콤마 붙이기
+function fnComma(num) {
+    var reg = /(^[+-]?\d+)(\d{3})/;
+    num += '';
+    while(reg.test(num)) {
+        num = num.replace(reg, '$1' + ',' + '$2');
+    }
+    return num;
+}
+// 콤마 제거
+function fnUnComma(num) {
+    return (num.replace(/\,/g,""));
+}
+
+/**
+ * 잔여 일수 계산
+ * @param starDt
+ * @param endDt
+ */
+function fncRemainDay(endDt) {
+    var day = 1000 * 60 * 60 * 24;
+    var month = day * 30;
+    var year = month * 12;
+    var remainDay = 0;
+
+//console.log('fncRemainDay endDt : ', endDt);
+    if(endDt !=null) {
+        // 현재날짜
+        var dt = new Date();
+        var nowYear = dt.getFullYear();
+        var nowMonth = (dt.getMonth() + 1) > 9 ? '' + (dt.getMonth() + 1) : '0' + (dt.getMonth() + 1);
+        var nowDay = dt.getDate() > 9 ? '' + dt.getDate() : '0' + dt.getDate();
+        var nowDate = nowYear.toString() + "" + nowMonth.toString() + "" + nowDay.toString();
+
+        //var startDate = new Date(startDt.substr(0,4), startDt.substr(4,2)-1, startDt.substr(6,2));
+        var endDate = new Date(endDt.substr(0, 4), endDt.substr(4, 2), endDt.substr(6, 2));
+        var nDate = new Date(nowDate.substr(0, 4), nowDate.substr(4, 2), nowDate.substr(6, 2));
+//console.log('endDate : ', endDate + '\n');
+//console.log('nDate : ', nDate + '\n');
+
+        var interval = endDate - nDate;
+
+        //var remainYear = parseInt(interval / year);
+        //var remainMonth = parseInt(interval / month);
+        remainDay = parseInt(interval / day);
+    } else {
+        remainDay = 0;
+    }
+//console.log('fncRemainDay : ', remainDay + ' !!!!!!!!! \n');
+
+    return remainDay;
+}
+
+/**
+ * 잔여 월수 계산 함수.
+ * @param endDt
+ * @returns {Number}
+ */
+function fncRemainMonth(endDt) {
+    var day = 1000 * 60 * 60 * 24;
+    var month = day * 30;
+    var year = month * 12;
+    var remainMonth = 0;
+
+    if(endDt != null) {
+        // 현재날짜
+        var dt = new Date();
+        var nowYear = dt.getFullYear();
+        var nowMonth = (dt.getMonth() + 1) > 9 ? '' + (dt.getMonth() + 1) : '0' + (dt.getMonth() + 1);
+        var nowDay = dt.getDate() > 9 ? '' + dt.getDate() : '0' + dt.getDate();
+        var nowDate = nowYear.toString() + "" + nowMonth.toString() + "" + nowDay.toString();
+
+        //var startDate = new Date(startDt.substr(0,4), startDt.substr(4,2)-1, startDt.substr(6,2));
+        var endDate = new Date(endDt.substr(0, 4), endDt.substr(4, 2) - 1, endDt.substr(6, 2));
+        var nDate = new Date(nowDate.substr(0, 4), nowDate.substr(4, 2) - 1, nowDate.substr(6, 2));
+
+        var interval = endDate - nDate;
+
+        //var remainYear = parseInt(interval / year);
+        remainMonth = parseInt(interval / month);
+        //var remainDay = parseInt(interval / day);
+    }
+
+    return remainMonth;
+}
+
+/**
+ * SET DATEFORMAT
+ * @param date
+ * @param sep
+ * @returns {*}
+ */
+function setDateFormat(date, sep) {
+    var retDate = "";
+    if(date.length == 8) {
+        var year = date.substr(0,4);
+//console.log('year : ', year);
+        var month = date.substr(4,2);
+//console.log('month : ', month);
+        var day = date.substr(6,2);
+//console.log('day : ', day);
+        if(sep == null) {
+            sep = ".";
+        }
+        retDate = year + sep + month + sep + day;
+        return retDate;
+    } else {
+        return date;
+    }
+}
+var prvUseTermDays = 0;
+var productType = "";
+    if(rList.length > 0) {
+        rList.forEach(function(item, index) {
+            productType = item.pType;
+            console.log('productType = ', productType + '\n');
+    });
+} // end rList
+%>
+<!DOCTYPE HTML>
+<html lang="ko">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>서비스 구매</title>
+    <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
+    <meta name="viewport" content="width=device-width" />
+
+    <!-- Facebook and Twitter integration -->
+    <meta property="og:title" content=""/>
+    <meta property="og:image" content=""/>
+    <meta property="og:url" content=""/>
+    <meta property="og:site_name" content=""/>
+    <meta property="og:description" content=""/>
+    <meta name="twitter:title" content="" />
+    <meta name="twitter:image" content="" />
+    <meta name="twitter:url" content="" />
+    <meta name="twitter:card" content="" />
+
+    <!-- <link href='https://fonts.googleapis.com/css?family=Work+Sans:400,300,600,400italic,700' rel='stylesheet' type='text/css'> -->
+
+    <!-- Animate.css -->
+    <link rel="stylesheet" href="/css/animate.css">
+    <!-- Icomoon Icon Fonts-->
+    <link rel="stylesheet" href="/css/icomoon.css">
+    <!-- Bootstrap  -->
+    <link rel="stylesheet" href="/css/bootstrap.css">
+
+    <!-- Magnific Popup -->
+    <link rel="stylesheet" href="/css/magnific-popup.css">
+
+    <!-- Theme style  -->
+    <link rel="stylesheet" href="/css/style.css">
+
+    <!-- layer popup -->
+    <style type="text/css">
+        .setDiv {
+            padding-top: 100px;
+            text-align: center;
+        }
+        .mask {
+            position:absolute;
+            left:0;
+            top:0;
+            z-index:9999;
+            background-color:#000;
+            display:none;
+        }
+        .window {
+            display: none;
+            background-color: #ffffff;
+            width: 400px;
+            height: 160px;
+            z-index:99999;
+        }
+    </style>
+
+    <!-- Modernizr JS -->
+    <script src="/js/modernizr-2.6.2.min.js"></script>
+    <!-- FOR IE9 below -->
+    <!--[if lt IE 9]>
+    <script src="/js/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+
+<% include include/nav.ejs %>
+
+<!-- 레이어 팝업 부분 -->
+<div class="setDiv">
+    <div class="mask"></div>
+    <div class="window">
+        <div style="padding-top: 20px;"><h3>장바구니에 상품을 담았습니다.</h3></div>
+        <!--////---서비스이용내역 끝///////-->
+        <div>
+            <a href="/products" id="moveProductBtn" class="btn" target="_parent">쇼핑 계속하기</a>
+            <a href="/purchase/paypopup" id="movePayBtn" class="btn" target="_parent">장바구니 가기</a>
+        </div>
+    </div>
+</div>
+<!-- 레이어 팝업 부분 -->
+<!----- 구매하기 시작  ----->
+<div id="fh5co-about-section">
+    <div class="container pdrl5">
+
+        <!--구매하기  타이틀 시작 -->
+        <div class="fh5co-heading animate-box">
+            <h2 class="ubar">서비스 구매</h2>
+        </div>
+<%
+    // 승인대기 체크 하여 표시하는 부분.
+    if(rCnt == 0) {
+        // 상품유형이 서비스인 경우 처리.
+        if(productType == "SVC") {
+%>
+        <form id="Afrm" name="Afrm">
+            <input type="hidden" id="rePayLength" name="rePayLength" value="<%=rList4.length%>"/>
+<%
+        // 결제내역이 있는 경우 표시.
+        if(rList4.length > 0) {
+%>
+            <!-- 이용 내역 표시 부분 시작 -->
+            <!--1. 구매 서비스 선택 시작 -->
+            <div class="col-md-12 animate-box mb40 pdrl0m">
+                <h3>이용 내역</h3>
+                <table id="allTbl1" border="0" cellspacing="0" width="100%" class="table_style3 bd">
+                    <thead>
+                    <tr>
+                        <th>서비스번호</th>
+                        <th>서비스명</th>
+                        <th>서비스구분</th>
+                        <th>서비스가격</th>
+                        <th>상태</th>
+                    </tr>
+                    </thead>
+                    <tbody id="sList0">
+<%
+            rList4.forEach(function(item0, index0) {
+%>
+                    <tr>
+                        <td><%=item0.pCode%><input type="hidden" id="prvPcode<%=index0%>" name="prvPcode" value="<%=item0.pCode%>"/></td>
+                        <td><%=item0.pNm%></td>
+                        <td><%=item0.pDiv%><input type="hidden" id="prvDiv<%=index0%>" name="prvDiv" value="<%=item0.pDiv%>"/></td>
+                        <td><%=fnComma(item0.pPrice)%> 원</td>
+                        <td><%=item0.payStatus%><input type="hidden" id="prevPayResult<%=index0%>" name="prevPayResult" value="<%=item0.payResult%>"/></td>
+                    </tr>
+<%
+            });
+    console.log('>>> rList5.length : ', rList5.length + '\n');
+            if(rList5.length > 0) {
+                rList5.forEach(function(item1, index1) {
+                    prvUseTermDays = item1.useTermDays;
+%>
+                    <tr>
+                        <td colspan="5" class="totalprice"> 신청일
+                            <input type="hidden" id="prvOrderNo" name="prvOrderNo" value="<%=item1.orderNo%>"/>
+                            <span><%=item1.useTermDays%>일<input type="hidden" id="prvUsrTermDays" name="prvUsrTermDays" value="<%=item1.useTermDays%>"/></span>&nbsp;&nbsp;
+                            사용일<span><%=item1.usedDays%>일<input type="hidden" id="prvUsredDays" name="prvUsredDays" value="<%=item1.usedDays%>"/></span>&nbsp;&nbsp;
+                            잔여일<span><%=item1.remainDays%>일<input type="hidden" id="prvRemainDays" name="prvRemainDays" value="<%=item1.remainDays%>"/></span>&nbsp;&nbsp;
+                            잔액<span><%=fnComma(item1.remainPrice)%>원<input type="hidden" id="prvRemainPrice" name="prvRemainPrice" value="<%=item1.remainPrice%>"/></span>
+                        </td>
+                    </tr>
+<%
+                });
+            } // end rList5
+%>
+                    </tbody>
+                </table>
+            </div>
+            <%
+            } // end rList4
+            %>
+        </form>
+        <!-- 이용 내역 표시 부분 끝 -->
+<%
+        }
+%>
+
+        <!-- 신규 서비스 시작 -->
+        <form id="frm0" name="frm0" method="post">
+            <input type="hidden" id="pCode0" name="pCode0" value=""/>
+            <input type="hidden" id="pUniqCode0" name="pUniqCode0" value=""/>
+            <input type="hidden" id="pDiv0" name="pDiv0" value=""/>
+            <input type="hidden" id="pPairCodeYn0" name="pPairCodeYn0" value=""/>
+            <input type="hidden" id="pPairCode0" name="pPairCode0" value=""/>
+            <!--1. 구매 서비스 선택 시작 -->
+            <div class="col-md-12 animate-box mb40 pdrl0m">
+                <h3>서비스 선택</h3>
+
+                <table id="allTbl1" border="0" cellspacing="0" width="100%" class="table_style3 bd">
+                    <thead>
+                    <tr>
+                        <th>서비스번호</th>
+                        <th>서비스명</th>
+                        <th>서비스가격</th>
+                        <th>서비스설명</th>
+                        <th>서비스갯수</th>
+<%
+    if(productType=="HDW") {
+%>
+                        <th>개수</th>
+<%
+    }
+%>
+                        <th>선택</th>
+                    </tr>
+                    </thead>
+                    <tbody id="tList0">
+<%
+    if(rList.length > 0) {
+        rList.forEach(function(item, index) {
+%>
+                    <tr>
+                        <td><%=item.pCode%><input type="hidden" id="0pCode<%=index%>" name="0pCode" value="<%=item.pCode%>"/></td>
+                        <td><%=item.pNm%><input type="hidden" id="0pUniqCode<%=index%>" name="0pUniqCode" value="<%=item.pUniqCode%>"/></td>
+                        <td><%=fnComma(item.pPrice)%> 원</td>
+                        <td><%=item.pSmmry%></td>
+                        <td><%=item.pStockCount%></td>
+<%
+       if(item.pType=="HDW") {
+%>
+                        <td>
+                            <select id="pCount" name="pCount">
+                                <option value="">선택하세요.</option>
+    <%
+        for(var x=0; x < item.pStockCount; x++) {
+    %>
+                                <option value="<%=x+1%>" <%if(x+1=='1'){%>selected<%}%>><%=x+1%></option>
+    <%
+        }
+    %>
+                            </select>
+                        </td>
+<%
+        }
+%>
+                        <td>
+                            <input type="button" id="0btn<%=index%>" name="0btn" class="btn btn-small-grey btn-noradius"value="선택"/>
+                        </td>
+                    </tr>
+<%
+        });
+    } // end rList
+%>
+                    </tbody>
+                </table>
+            </div>
+        </form>
+        <!-- 신규 서비스 시작 -->
+        <form id="frm1" name="frm1" method="post">
+            <input type="hidden" id="pCode" name="pCode" value=""/>
+            <input type="hidden" id="pUniqCode" name="pUniqCode" value=""/>
+            <input type="hidden" id="pDiv" name="pDiv" value=""/>
+            <input type="hidden" id="pPairCodeYn" name="pPairCodeYn" value=""/>
+            <input type="hidden" id="pPairCode" name="pPairCode" value=""/>
+            <input type="hidden" id="optSelectedYn" name="optSelectedYn" value=""/>
+            <!--1. 구매 서비스 선택 시작 -->
+            <div class="col-md-12 animate-box mb40 pdrl0m">
+                <h3>옵션 선택</h3>
+
+                <table id="allTbl1" border="0" cellspacing="0" width="100%" class="table_style3 bd">
+                    <thead>
+                    <tr>
+                        <th>옵션 명</th>
+                        <th>옵션 가격</th>
+                        <th>옵션 설명</th>
+                        <th>선택</th>
+                    </tr>
+                    </thead>
+                    <tbody id="tList1">
+<%
+            if(rList1.length > 0) {
+                rList1.forEach(function(item, index) {
+%>
+                    <tr>
+                        <td><%=item.pNm%><input type="hidden" id="1pUniqCode<%=index%>" name="1pUniqCode" value="<%=item.pUniqCode%>"/></td>
+                        <td><%=fnComma(item.pPrice)%> 원</td>
+                        <td><%=item.pDesc%>
+                            <input type="hidden" id="1pCode<%=index%>" name="1pCode" value="<%=item.pCode%>"/>
+                            <input type="hidden" id="1pPairCodeYn<%=index%>" name="1pPairCodeYn" value="<%=item.pPairCodeYn%>"/>
+                            <input type="hidden" id="1pPairCode<%=index%>" name="1pPairCode" value="<%=item.pPairCode%>"/>
+                            <input type="hidden" id="1pDiv<%=index%>" name="1pDiv" value="<%=item.pDiv%>"/>
+                        </td>
+                        <td>
+                            <input type="button" id="1btn<%=index%>" name="1btn" class="btn btn-small-grey btn-noradius" value="선택"/>
+                        </td>
+                    </tr>
+<%
+                });
+            } // end rList1
+%>
+                    </tbody>
+                </table>
+            </div>
+        </form>
+        <form id="frm2" name="frm2" method="post">
+            <input type="hidden" id="productCode" name="productCode" value="<%=productCode%>"/>
+            <input type="hidden" id="productUniqCode" name="productUniqCode" value="<%=productUniqCode%>"/>
+            <input type="hidden" id="productDiv" name="productDiv" value=""/>
+            <input type="hidden" id="productPairCodeYn" name="productPairCodeYn" value=""/>
+            <input type="hidden" id="productPairCode" name="productPairCode" value=""/>
+            <input type="hidden" id="productType" name="productType" value="<%=productType%>"/>
+            <input type="hidden" id="cmpltYn" name="cmpltYn" value=""/>
+            <input type="hidden" id="prevOrderNo" name="prevOrderNo" value=""/>
+            <input type="hidden" id="useTermDays" name="useTermDays" value=""/>
+            <input type="hidden" id="remainDays" name="remainDays" value=""/>
+            <input type="hidden" id="usedDays" name="usedDays" value=""/>
+            <input type="hidden" id="remainPrice" name="remainPrice" value=""/>
+            <input type="hidden" id="subtractPrice" name="subtractPrice" value=""/>
+            <input type="hidden" id="dcntPercent" name="dcntPercent" value=""/>
+            <!--1. 장바구니 시작 -->
+            <div class="col-md-12 animate-box mb40 pdrl0m">
+                <h3>장바구니 추가</h3>
+
+                <table id="allTbl2" border="0" cellspacing="0" width="100%" class="table_style3 bd">
+                    <colgroup>
+                        <col width="22%">
+                        <col width="10%">
+                        <col>
+<%
+        if(productType=="HDW") {
+%>
+                        <col width="8%">
+<%
+        }
+%>
+                        <col width="20%">
+                        <col width="8%">
+                    </colgroup>
+                    <thead>
+                    <tr>
+                        <th>서버스번호</th>
+                        <th>서비스구분</th>
+                        <th>서비스명</th>
+<%
+        if(productType=="HDW") {
+%>
+                        <th>개수</th>
+<%
+        }
+%>
+                        <th>서비스가격</th>
+                        <th><input type="image" id="cartAllDelBtn" name="cartAllDelBtn" src="/images/remove.png" class="remove" vlaue="삭제"/></th>
+                    </tr>
+                    </thead>
+                    <tbody id="tList2">
+<%
+            if(rList2.length > 0) {
+                rList2.forEach(function(item, index2) {
+                    if(item.pDiv == "M") {
+%>
+                    <tr>
+                        <td colspan="<%if(item.pType=="HDW") {%>6<%} else {%>5<%}%>" class="pdno">
+                            <!-- -->
+                            <table border="0" cellspacing="0" width="100%" class="table_style0 bgc2 bbno">
+                                <colgroup>
+                                    <col width="22%">
+                                    <col width="10%">
+                                    <col>
+<%
+            if(productType=="HDW") {
+%>
+                                    <col width="8%">
+<%
+            }
+%>
+                                    <col width="20%">
+                                    <col width="8%">
+                                </colgroup>
+<%
+                    }
+%>
+                                <tr>
+                                    <td><%=item.pCode%><input type="hidden" id="2pCode<%=index2%>" name="2pCode" value="<%=item.pCode%>"/></td>
+                                    <td><%=item.pDivNm%><input type="hidden" id="2pDiv<%=index2%>" name="2pDiv" value="<%=item.pDiv%>"/></td>
+                                    <td><%=item.pNm%><input type="hidden" id="2pUniqCode<%=index2%>" name="2pUniqCode" value="<%=item.pUniqCode%>"/></td>
+<%
+            if(productType=="HDW") {
+%>
+                                    <td><%=item.pCount%><input type="hidden" id="2pCount<%=index2%>" name="2pCount" value="<%=item.pCount%>"/></td>
+<%
+            }
+%>
+                                    <td><%=fnComma(item.pPrice)%> 원
+                                        <input type="hidden" id="2pPrice<%=index2%>" name="2pPrice" value="<%=item.pPrice%>"/>
+                                        <input type="hidden" id="2pPairCodeYn<%=index2%>" name="2pPairCodeYn" value="<%=item.pPairCodeYn%>"/>
+                                        <input type="hidden" id="2pPairCode<%=index2%>" name="2pPairCode" value="<%=item.pPairCode%>"/>
+                                        <input type="hidden" id="2pPoptCnt<%=index2%>" name="2pPoptCnt" value="<%=item.optCnt%>"/>
+                                    </td>
+                                    <td>
+                                        <input type="image" id="delBtn<%=index2%>" name="delBtn" src="/images/remove.png" class="remove" value="삭제"/>
+                                    </td>
+                                </tr>
+<%
+                    if(item.pDiv == "M") {
+%>
+                            </table>
+                            <!-- -->
+                        </td>
+                    </tr>
+<%
+                    }
+            });
+        } // end rList2
+%>
+                    </tbody>
+<%
+        if(productType == "SVC") {
+%>
+                    <tr>
+                        <th colspan="5">이용기간</th>
+                    </tr>
+                    <tr>
+                        <td colspan="5" class="left bbdno">
+                            <input type="radio" id="termDays30" name="termDays" value="30" <%if(termDays=="30") {%>checked<%}%>/><label id="30" for="termDays30" class="payment"><span><span></span></span>30일</label>
+<!--
+                            <input type="radio" id="termDays360" name="termDays" value="360" <%if(termDays=="360") {%>checked<%}%>/><label id="360" for="termDays360" class="payment"><span><span></span></span>360일</label>
+-->
+                        </td>
+                    </tr>
+<%
+        }
+%>
+                    <tr>
+                        <td colspan="<%if(productType=="HDW") {%>6<%} else {%>5<%}%>" class="pdt10 pdbno bbdno">
+                            <!--결제 금액 <input type="text" id="calPayPrice" name="calPayPrice" value="" class="size13hh"readonly/> -
+				잔액 금액 <input type="text" id="calRemainPrice" name="calRemainPrice" value="<%//=price!=null ? fnComma(price) : 0%>" class="size13hh"readonly/> =
+				결제예정금액 <input type="text" id="calPrice" name="calPrice" value="" class="size13hh"readonly/>-->
+                            <div class="service-detail">
+                                <div class="wid93">
+                                    <div class="wid33">
+                                        <div class="wid33in">
+                                            <h3>서비스금액</h3>
+                                            <p>총금액:<input type="text" id="calPayPrice" name="calPayPrice" value="<%=price!=null ? fnComma(price) : 0%>" class="size7h" readonly/><span class="small">원</span></p>
+<%
+    if(productType == "HDW") {
+%>
+                                            <p>수량 : <input type="text" id="pCnt" name="pCnt" value=""/></p>
+<%
+    }
+%>
+
+                                        </div>
+                                    </div>
+                                    <div class="dispno orna"><img src="/images/minus.png" width="24px"></div>
+                                    <div class="wid33">
+                                        <div class="wid33in">
+                                            <h3>할인금액</h3>
+                                            <p>할인금액:<input type="text" id="discPrice" name="discPrice" value="0" class="size6h" readonly/><span class="small">원</span></p>
+                                            <p class="sub">정산 금액:<input type="text" id="calRemainPrice" name="calRemainPrice" value="0" class="size7h" readonly/><span class="small">원</span></p>
+                                            <p><input type="hidden" id="disCountPct" name="disCountPct" value="0"/></p>
+                                            <!--
+                                                                                                                    <p>할인율:<input type="text" id="disCountPct" name="disCountPct" value="0" class="size6h" readonly/><span class="small">%</span></p>
+
+                                                                                                                    <p class="sub">자료실<input type="text" id="" name="" value="100" class="size2"readonly/>%할인:<input type="text" id="" name="" value="3,870" class="size6h"readonly/>원</p>
+                                                                                                                    <p class="sub">원격지원<input type="text" id="" name="" value="10" class="size2"readonly/>%할인:<input type="text" id="" name="" value="870,000" class="size6h"readonly/>원</p>
+                                            -->
+                                        </div>
+                                    </div>
+                                    <div class="dispno orna2"><img src="/images/equal.png" width="24px"></div>
+                                    <div class="wid33">
+                                        <div class="wid33in">
+                                            <h3>결제예정금액</h3>
+                                            <p><span class="pricetext"><input type="text" id="totalCalPayPrice" name="totalCalPayPrice" value="<%=price!=null ? fnComma(price) : 0%>" class="size13hh" readonly/></span>원</p>
+                                            <p id="basePayPart" style="display:none;">(<span class="sub"><input type="text" id="baseCalPayPrice" name="baseCalPayPrice" value="<%=price!=null ? fnComma(price) : 0%>" class="size6h" readonly/></span>원)</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="<%if(productType=="HDW") {%>6<%} else {%>5<%}%>" class="left backno bbdno pdb5 pdt10"><a href="#" id="saveBtn" class="btn btn-warning btnwide100 pdtb15">장바구니 담기</a></td>
+                    </tr>
+                </table>
+            </div>
+        </form>
+        <% } else { %>
+        <div style="text-align: center;">
+            승인 대기 중입니다.
+        </div>
+        <% } %>
+    </div>
+</div>
+
+<% include include/footer.ejs %>
+
+<div class="gototop js-top">
+    <a href="#" class="js-gotop"><i class="icon-arrow-up"></i></a>
+</div>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+<!-- jQuery Easing -->
+<script src="/js/jquery.easing.1.3.js"></script>
+<!-- Bootstrap -->
+<script src="/js/bootstrap.min.js"></script>
+<!-- Waypoints -->
+<script src="/js/jquery.waypoints.min.js"></script>
+<!-- countTo -->
+<script src="/js/jquery.countTo.js"></script>
+<!-- Magnific Popup -->
+<script src="/js/jquery.magnific-popup.min.js"></script>
+<script src="/js/magnific-popup-options.js"></script>
+<!-- Main -->
+<script src="/js/main.js"></script>
+<!-- scripts -->
+<script type="text/javascript">
+    $(function() {
+        var usrId = '<%=session.usrId !=null ? session.usrId : ''%>';
+        var prevUseTermDays = '<%=prvUseTermDays%>';
+        var productType = '<%=productType%>';
+
+        // 계산 모듈.
+        var ajaxCalculate = function() {
+            var pCode = []; var pDiv = []; var pUniqCode = []; var pPrice = []; var pOptCnt = [];
+            var termDays = $("input:radio[name='termDays']:checked").val();
+            var selectedPcount = $("#pCount option:selected").val();
+            var prvRemainPrice = 0;
+
+            // 잔여금액 셋팅.
+            if($("#sList0").length > 0) {
+                prvRemainPrice = $("#prvRemainPrice").val() !='' ? $("#prvRemainPrice").val() : 0;
+                prvRemainPrice = unComma(prvRemainPrice);
+            }
+
+            if($("#tList2 > tr").length > 0) {
+                $("#tList2 > tr").each(function(idx) {
+                    pCode[idx] = $("#2pCode"+idx).val();
+                    pDiv[idx] = $("#2pDiv"+idx).val();
+                    pUniqCode[idx] = $("#2pUniqCode"+idx).val();
+                    pPrice[idx] = $("#2pPrice"+idx).val();
+                    pOptCnt[idx] = $("#2pPoptCnt"+idx).val();
+                });
+                $.ajax({
+                    url : "/purchase/calculate",
+                    type : "post",
+                    dataType : "json",
+                    data : { 'pCode' : pCode, 'pDiv' : pDiv, 'pUniqCode' : pUniqCode, 'pPrice' : pPrice,
+                        'pOptCnt' : pOptCnt, 'prvRemainPrice' : prvRemainPrice, 'termDays' : termDays,
+                        'pCount' : selectedPcount, 'productType' : productType
+                    },
+                    success : function(data) {
+                        // tList\2에 리스트 출력.
+                        // 총 금액
+                        $("#calPayPrice").val(comma(data.totalCalPrice));
+                        // 잔여 금액 셋팅.
+                        $("#calRemainPrice").val(comma(data.prvRemainPrice));
+                        // 할인금액
+                        $("#discPrice").val(comma(data.disCountPrice));
+                        // 결정예정금액
+                        $("#totalCalPayPrice").val(comma(data.calPayPrice));
+                        if(parseInt(data.baseCalPayPrice) < 0) {
+                            $("#basePayPart").css("display","inline");
+                            // 원 결정예정금액
+                            $("#baseCalPayPrice").val(comma(data.baseCalPayPrice));
+                        } else {
+                            $("#basePayPart").css("display","none");
+                            // 원 결정예정금액
+                            $("#baseCalPayPrice").val(comma(data.baseCalPayPrice));
+                        }
+                        // 할인율
+                        $("#disCountPct").val(data.disCountPct);
+                        // 정산결과가 0인 체크 셋팅.
+                        $("#cmpltYn").val(data.cmpltYn);
+                        // 하드웨어 인 경우, 처리.
+                        if(data.pType=="HDW") {
+                            $("#pCnt").val(data.pCnt !=null ? data.pCnt : 0);
+                        }
+                    },
+                    error : function(err) {
+                        alert("errCode : " + JSON.stringify(err));
+                    }
+                });
+            } else {
+                // 총 금액
+                $("#calPayPrice").val(0);
+                // 잔여 금액 셋팅.
+                $("#calRemainPrice").val(0);
+                // 할인금액
+                $("#discPrice").val(0);
+                // 결정예정금액
+                $("#totalCalPayPrice").val(0);
+                // 원 결정예정금액
+                $("#baseCalPayPrice").val(0);
+                // 할인율
+                $("#disCountPct").val(0);
+                // 정산결과가 0인 체크 셋팅.
+                $("#cmpltYn").val('N');
+                if(productType=="HDW") {
+                    // 수량 셋팅.
+                    $("#pCnt").val(0);
+                }
+            }
+        };
+
+        // 계산 모듈.
+        var ajaxPayCalculate = function() {
+            var pCode = []; var pDiv = []; var pUniqCode = []; var pPrice = []; var pOptCnt = [];
+            var termDays = $("input:radio[name='termDays']:checked").val();
+            var selectedPcount = $("#pCount option:selected").val();
+            var prvRemainPrice = 0;
+
+            // 잔여금액 셋팅.
+            if($("#sList0").length > 0) {
+                prvRemainPrice = $("#prvRemainPrice").val() !='' ? $("#prvRemainPrice").val() : 0;
+                prvRemainPrice = unComma(prvRemainPrice);
+            }
+
+            if($("#tList3 > tr").length > 0) {
+                $("#tList3 > tr").each(function(idx) {
+                    pCode[idx] = $("#3pPcode"+idx).val();
+                    pDiv[idx] = $("#3pDiv"+idx).val();
+                    pUniqCode[idx] = $("#3pUniqCode"+idx).val();
+                    pPrice[idx] = $("#3pPrice"+idx).val();
+                    pOptCnt[idx] = $("#3pPoptCnt"+idx).val();
+                });
+                $.ajax({
+                    url : "/purchase/calculate",
+                    type : "post",
+                    dataType : "json",
+                    data : { 'pCode' : pCode, 'pDiv' : pDiv, 'pUniqCode' : pUniqCode, 'pPrice' : pPrice,
+                        'pOptCnt' : pOptCnt, 'prvRemainPrice' : prvRemainPrice, 'termDays' : termDays,
+                        'pCount' : selectedPcount, 'productType' : productType
+                    },
+                    success : function(data) {
+                        // tList3에 리스트 출력.
+                        // 결정예정금액
+                        $("#totalPayPrice").val(comma(data.calPayPrice));
+                        if(data.pType=="HDW") {
+                            $("#pCnt").val(data.pCnt !=null ? data.pCnt : 0);
+                        }
+
+                    },
+                    error : function(err) {
+                        alert("errCode : " + JSON.stringify(err));
+                    }
+                });
+            } else {
+                // 결정예정금액
+                $("#totalPayPrice").val(0);
+                if(productType=="HDW") {
+                    // 수량 셋팅.
+                    $("#pCnt").val(0);
+                }
+            }
+        };
+        // 옵션 서비스 선택 화면 초기화 함수.
+        var reload1 = function() {
+            // 옵션 리스트
+            $("#tList1 > tr").each(function(idx) {
+
+                // 버튼 셋팅.
+                if($("#1pCode"+idx).val() == "APP170109ASS3") {
+                    //$("#1btn"+idx).css("display", "none");
+                }
+
+                // 장바구니 리스트 체크.
+                if($("#tList2 > tr").length > 0) {
+                    $("#tList2 > tr").each(function(idx2) {
+                        if($("#2pCode"+idx2).val()=="APP170109ASS2") {
+                            if($("#1pCode"+idx).val() == "APP170109ASS3") {
+                                $("#1btn" + idx).css("display", "inline-block");
+                            }
+                        }
+                    });
+                }
+
+
+                // 버튼 비/활성화 처리.
+                if($("#sList0").length > 0) {
+//console.log('test!');
+                    var arrPrvCode = [];
+                    var arrPayResult = [];
+                    $("#sList0 > tr").each(function(idx3) {
+                        //arrPrvCode[idx3] = $("#prvPcode"+idx3).val();
+                        //arrPayResult[idx3] = $("#prevPayResult"+idx3).val();
+//console.log('$("#1pCode"+idx).val()', $("#1pCode"+idx).val());
+//console.log('$("#prvPcode"+idx3).val()', $("#prvPcode"+idx3).val());
+                        if($("#1pCode"+idx).val()==$("#prvPcode"+idx3).val() && $("#prvDiv"+idx3).val() == "옵션") {
+//console.log('true');
+                            if($("#prevPayResult"+idx3).val()!="paid") {
+                                $("#1btn"+idx).css("display", "none");
+                            }
+                        }
+                    });
+
+                }
+
+
+                // 선택버튼 이벤트 처리.
+                $("#1btn"+idx).on("click", function(e) {
+                    console.log('1pCode['+idx+'] : ', $("#1pCode"+idx).val());
+                    console.log('1pUniqCode['+idx+'] : ', $.trim($("#1pUniqCode"+idx).val()));
+                    console.log('1pPairCodeYn['+idx+'] : ', $.trim($("#1pPairCodeYn"+idx).val()));
+                    console.log('1pPairCode['+idx+'] : ', $.trim($("#1pPairCode"+idx).val()));
+//console.log('usrId : ', usrId);
+
+                    e.preventDefault();
+
+                    if(usrId == '') {
+                        alert('로그인 하세요.');
+                        return false;
+                    }
+
+                    // 상품갯수
+                    var selectedPcount = "0";
+                    if(productType=="HDW") {
+                        selectedPcount = $("#pCount option:selected").val();
+                        if(selectedPcount == "") {
+                            alert("상품 갯수를 선택하여 주세요.");
+                            $("#pCount").focus();
+                            return;
+                        }
+                    }
+
+                    // 로그분석및 진단지원 서비스 선택한 경우 처리.
+                    var optSelectedYn = "N";
+                    if($("#1pCode"+idx).val() == "APP170109ASS2") {
+                        optSelectedYn = "Y";
+                    }
+
+                    $("#pCode").val($("#1pCode"+idx).val());
+                    $("#pUniqCode").val($.trim($("#1pUniqCode"+idx).val()));
+                    $("#pPairCodeYn").val($.trim($("#1pPairCodeYn"+idx).val()));
+                    $("#pPairCode").val($.trim($("#1pPairCode"+idx).val()));
+                    $("#pDiv").val($.trim($("#1pDiv"+idx).val()));
+                    $("#optSelectedYn").val(optSelectedYn);
+                    /*
+                     $("#frm1").attr("method", "post");
+                     $("#frm1").attr("action", "/purchase/cart/save");
+                     $("#frm1").submit();
+                     */
+
+
+                    // 조회 처리.
+                    $.ajax({
+                        url : "/purchase/cart/save",
+                        type : "post",
+                        dataType : "json",
+                        data : {
+                            'pCode' : $.trim($("#1pCode"+idx).val()),
+                            'pUniqCode' : $.trim($("#1pUniqCode"+idx).val()),
+                            'pPairCodeYn' : $.trim($("#1pPairCodeYn"+idx).val()),
+                            'pPairCode' : $.trim($("#1pPairCode"+idx).val()),
+                            'pDiv' : $.trim($("#1pDiv"+idx).val()),
+                            'optSelectedYn' : optSelectedYn
+                        },
+                        success : function(data) {
+                            // tList2에 리스트 출력.
+                            console.log('tList2 cnt : ', data.cnt);
+                            var addHTML = "";
+                            if(data.cnt > 0) {
+                                $("#tList2").html("");
+                                var calPrice = 0;
+                                $.each(data.list, function(i, item) {
+                                    if(item.pDiv=="M") {
+                                        if(item.pType=="HDW") {
+                                            addHTML += "<tr><td colspan='6' class='pdno'>";
+                                            addHTML += "<table border='0' cellspacing='0' width='100%' class='table_style0 bgc2 bbno'>";
+                                            addHTML += "<colgroup><col width='22%'><col width='10%'><col><col width='8%'><col width='20%'><col width='8%'></colgroup>";
+                                        } else {
+                                            addHTML += "<tr><td colspan='5' class='pdno'>";
+                                            addHTML += "<table border='0' cellspacing='0' width='100%' class='table_style0 bgc2 bbno'>";
+                                            addHTML += "<colgroup><col width='22%'><col width='10%'><col><col width='20%'><col width='8%'></colgroup>";
+                                        }
+                                    }
+                                    addHTML += "<tr>";
+                                    addHTML += "<td>"+item.pCode+"<input type='hidden' id='2pCode"+i+"' name='2pCode' value='"+item.pCode+"'/></td>";
+                                    addHTML += "<td>"+item.pDivNm+"<input type='hidden' id='2pDiv" + i + "' name='2pDiv' value='" + item.pDiv + "'/></td>";
+                                    addHTML += "<td>"+item.pNm+"<input type='hidden' id='2pUniqCode"+i+"' name='2pUniqCode' value='"+item.pUniqCode+"'/></td>";
+                                    if(item.pType=="HDW") {
+                                        addHTML += "<td>" + comma(parseInt(item.pPrice) * parseInt(item.pCount)) + "</td>";
+                                        addHTML += "<td>" + item.pCount;
+                                        addHTML += "<input type='hidden' id='2pPrice"+i+"' name='2pPrice' value='"+parseInt(item.pPrice) * parseInt(item.pCount)+"'/>";
+                                        addHTML += "<input type='hidden' id='2pCnt"+i+"' name='2pCnt' value='"+item.pCount+"'/>";
+                                    } else {
+                                        addHTML += "<td>" + comma(item.pPrice);
+                                        addHTML += "<input type='hidden' id='2pPrice"+i+"' name='2pPrice' value='"+item.pPrice+"'/>";
+                                    }
+                                    addHTML += "<input type='hidden' id='2pPairCodeYn"+i+"' name='2pPairCodeYn' value='"+item.pPairCodeYn+"'/>";
+                                    addHTML += "<input type='hidden' id='2pPairCode"+i+"' name='2pPairCode' value='"+item.pPairCode+"'/>";
+                                    addHTML += "<input type='hidden' id='2pPoptCnt"+i+"' name='2pPoptCnt' value='"+item.optCnt+"'/>";
+                                    addHTML += "</td>";
+                                    addHTML += "<td><input type='image' id='delBtn" + i + "' name='delBtn' src='/images/remove.png'' class='remove' value='삭제'/></td>";
+                                    addHTML += "</tr>";
+                                    if(item.pDiv=="M") {
+                                        addHTML += "</table></td></tr>";
+                                    }
+
+                                    // 총 예상 가격
+                                    calPrice += item.pPrice;
+                                }); // end each
+
+                                $("#tList2").html(addHTML);
+                                $("#totalCalPrice").val(comma(calPrice));
+
+                                // 원격지원 선택버튼 표시 처리.
+                                if(data.optSelectedYn == "Y") {
+
+                                    if($("#tList1 > tr").length > 0) {
+                                        $("#tList1 > tr").each(function(idx) {
+                                            if($("#1pCode"+idx).val() == "APP170109ASS3") {
+                                                $("#1btn"+idx).css("display", "inline");
+                                            }
+                                        });
+                                    }
+                                }
+                            } else {
+                                $("#tList2").html(addHTML);
+                            }
+                            //reload1();
+                            reload2();
+                            ajaxCalculate();
+                        },
+                        error : function(err) {
+                            alert("errCode : " + JSON.stringify(err));
+                        }
+                    }); // end ajax
+
+
+                }); // end 버튼 이벤트
+            });
+        };
+
+        // 장바구니 리스트 화면 초기화.
+        var reload2 = function() {
+            // 카트 관련
+            $("#tList2 > tr").each(function(idx) {
+
+                // 삭제 버튼 이벤트 처리.
+                $("#delBtn"+idx).click(function(e) {
+                    e.preventDefault();
+
+                    if(usrId == '') {
+                        alert('로그인 하세요.');
+                        return false;
+                    }
+
+                    console.log('장바구니 삭제 del val['+idx+'] : ', $("#2pCode"+idx).val());
+                    console.log('장바구니 삭제 del val['+idx+'] : ', $.trim($("#2pUniqCode"+idx).val()));
+                    console.log('optCnt : ', $.trim($("#2pPoptCnt"+idx).val()));
+
+                    // 조회 처리.
+                    $.ajax({
+                        url : "/purchase/cart/delete",
+                        type : "post",
+                        dataType : "json",
+                        data : {
+                            'pCode' : $.trim($("#2pCode"+idx).val()),
+                            'pUniqCode' : $.trim($("#2pUniqCode"+idx).val()),
+                            'pDiv' : $.trim($("#2pDiv"+idx).val()),
+                            'pPairCodeYn' : $.trim($("#2pPairCodeYn"+idx).val()),
+                            'pPairCode' : $.trim($("#2pPairCode"+idx).val()),
+                        },
+                        success : function(data) {
+                            // tList2에 리스트 출력.
+                            var addHTML = "";
+                            if(data.cnt > 0) {
+                                $.each(data.list, function (i, item) {
+                                    if(item.pDiv=="M") {
+                                        addHTML += "<tr><td colspan='5' class='pdno'>";
+                                        addHTML += "<table border='0' cellspacing='0' width='100%' class='table_style0 bgc2 bbno'>";
+                                        addHTML += "<colgroup><col width='22%'><col width='10%'><col><col width='20%'><col width='8%'></colgroup>";
+                                    }
+                                    addHTML += "<tr>";
+                                    addHTML += "<td>" + item.pCode + "<input type='hidden' id='2pCode" + i + "' name='2pCode' value='" + item.pCode + "'/></td>";
+                                    addHTML += "<td>" + item.pDivNm + "<input type='hidden' id='2pDiv" + i + "' name='2pDiv' value='" + item.pDiv + "'/></td>";
+                                    addHTML += "<td>" + item.pNm + "<input type='hidden' id='2pUniqCode" + i + "' name='2pUniqCode' value='" + item.pUniqCode + "'/></td>";
+                                    //addHTML += "<td>" + item.pPrice + "<input type='hidden' id='2pPrice" + i + "' name='2pPrice' value='" + item.pPrice + "'/></td>";
+                                    if(item.pType=="HDW") {
+                                        addHTML += "<td>" + comma(parseInt(item.pPrice) * parseInt(item.pCount)) + "</td>";
+                                        addHTML += "<td>" + item.pCount;
+                                        addHTML += "<input type='hidden' id='2pPrice"+i+"' name='2pPrice' value='"+parseInt(item.pPrice) * parseInt(item.pCount)+"'/>";
+                                        addHTML += "<input type='hidden' id='2pCnt"+i+"' name='2pCnt' value='"+item.pCount+"'/>";
+                                        addHTML += "</td>";
+                                    } else {
+                                        addHTML += "<td>" + comma(item.pPrice);
+                                        addHTML += "<input type='hidden' id='2pPrice"+i+"' name='2pPrice' value='"+item.pPrice+"'/>";
+                                        addHTML += "</td>";
+                                    }
+                                    addHTML += "<td><input type='button' id='delBtn" + i + "' name='delBtn' src='/images/remove.png'' class='remove' value='삭제'/>";
+                                    addHTML += "<input type='hidden' id='2pPoptCnt" + i + "' name='2pPoptCnt' value='" + item.optCnt + "'/>";
+                                    addHTML += "<input type='hidden' id='2pPairCodeYn"+i+"' name='2pPairCodeYn' value='"+item.pPairCodeYn+"'/>";
+                                    addHTML += "<input type='hidden' id='2pPairCode"+i+"' name='2pPairCode' value='"+item.pPairCode+"'/>";
+                                    addHTML += "</td></tr>";
+                                    if(item.pDiv=="M") {
+                                        addHTML += "</table></td></tr>";
+                                    }
+
+                                    // 선택버튼 활성화.
+                                    if(item.pCode=="APP170109ASS2") {
+                                        $("#tList1 > tr").each(function(idx) {
+                                            if($("#1pCode"+idx).val() == "APP170109ASS3") {
+                                                $("#1btn"+idx).css("display","inline");
+                                            }
+                                        });
+                                    } else {
+                                        $("#tList1 > tr").each(function(idx) {
+                                            if($("#1pCode"+idx).val() == "APP170109ASS3") {
+                                                $("#1btn"+idx).css("display","none");
+                                            }
+                                        });
+                                    }
+
+                                });
+                                $("#tList2").html(addHTML);
+                            } else {
+                                $("#tList2").html(addHTML);
+                                // 원격지원 버튼 지우기.
+                                if($("#tList1 > tr").length > 0) {
+                                    $("#tList1 > tr").each(function(idx) {
+                                        if($("#1pCode"+idx).val() == "APP170109ASS3") {
+                                            $("#1btn"+idx).css("display", "none");
+                                        }
+                                    });
+                                }
+                            }
+
+                            reload2();
+                            ajaxCalculate();
+                        },
+                        error : function(err) {
+                            alert("errCode : " + JSON.stringify(err));
+                        }
+                    });
+
+                });
+            });
+
+        };
+        // 결제하기 리스트 삭제 이벤트 처리.
+        var reload3 = function() {
+            // 결제하기 관련
+            $("#tList3 > tr").each(function (idx) {
+
+                // 결제 삭제 하기  버튼 이벤트 처리.
+                $("#del3Btn" + idx).click(function (e) {
+                    e.preventDefault();
+
+                    if (usrId == '') {
+                        alert('로그인 하세요.');
+                        return false;
+                    }
+
+                    console.log('결제 삭제 del val[' + idx + '] : ', $("#3pPcode" + idx).val());
+                    console.log('결제 삭제 del val[' + idx + '] : ', $.trim($("#3pUniqCode" + idx).val()));
+                    console.log('orderNo : ', $.trim($("#orderNo").val()));
+
+                    // 이용기간 서비스 라디오 버튼 값 취득.
+                    var termDays = $("input:radio[name='termDays']:checked").val();
+
+                    $("#pCode3").val($("#3pPcode" + idx).val());
+                    $("#pUniqCode3").val($("#3pUniqCode" + idx).val());
+                    $("#pDiv3").val($("#3pDiv" + idx).val());
+                    $("#pPairCodeYn3").val($("#3pPairCodeYn" + idx).val());
+                    $("#pPairCode3").val($("#3pPairCode" + idx).val());
+
+                    var dataValues = {
+                        'termDays': termDays,
+                        'totalCalPayPrice': $("#totalCalPayPrice").val(),
+                        'cmpltYn': $("#cmpltYn").val(),
+                        'useTermDays': $("#useTermDays").val(),
+                        'pCode3': $("#pCode3").val(),
+                        'pUniqCode3': $("#pUniqCode3").val(),
+                        'pDiv3': $("#pDiv3").val(),
+                        'pPairCodeYn3': $("#pPairCodeYn3").val(),
+                        'pPairCode3': $("#pPairCode3").val(),
+                        'orderNo' : $("#orderNo").val()
+                    };
+
+                    // 조회 처리.
+                    $.ajax({
+                        url: "/purchase/order/delete",
+                        type: "post",
+                        dataType: "json",
+                        data: dataValues,
+                        success: function (data) {
+                            // tList3에 리스트 출력.
+                            var addHTML = "";
+                            if (data.cnt > 0) {
+                                $("#tList3").html("");
+                                var payPrice = 0;
+                                $.each(data.list, function (i, item) {
+                                    if (item.pDiv == "M") {
+                                        addHTML += "<tr><td colspan='5' class='pdno'>";
+                                        addHTML += "<table border='0' cellspacing='0' width='100%' class='table_style0 bgc2 bbno'>";
+                                        addHTML += "<colgroup><col width='22%'><col width='10%'><col width='26%'><col><col width='15%'></colgroup>";
+                                    }
+                                    addHTML += "<tr>";
+                                    addHTML += "<td>" + item.pCode + "<input type='hidden' id='payOrderNo" + i + "' name='payOrderNo' value='" + item.orderNo + "'/></td>";
+                                    addHTML += "<td>" + item.pDivNm + "<input type='hidden' id='3pDiv" + i + "' name='3pDiv' value='" + item.pDiv + "'/></td>";
+                                    addHTML += "<td>" + item.pNm + "</td>";
+                                    addHTML += "<td>" + comma(item.pPrice) + "<input type='hidden' id='3pPrice" + i + "' name='3pPrice' value='" + item.pPrice + "'/>";
+                                    addHTML += "<input type='hidden' id='3pPcode" + i + "' name='3pPcode' value='" + item.pCode + "'/>";
+                                    addHTML += "<input type='hidden' id='3pPairCodeYn" + i + "' name='3pPairCodeYn' value='" + item.pPairCodeYn + "'/>";
+                                    addHTML += "<input type='hidden' id='3pPairCode" + i + "' name='3pPairCode' value='" + item.pPairCode + "'/>";
+                                    addHTML += "<input type='hidden' id='3pUniqCode" + i + "' name='3pUniqCode' value='" + item.pUniqCode + "'/>";
+                                    addHTML += "</td>";
+                                    addHTML += "<td><input type='image' id='del3Btn" + i + "' name='delBtn' src='/images/remove.png' class='remove' value='삭제'/></td>";
+                                    addHTML += "</tr>";
+                                    if (item.pDiv == "M") {
+                                        addHTML += "</table></td></tr>";
+                                    }
+                                    /*
+                                     if(item.pCode=="APP170109ASS2") {
+                                     $("#tList1 > tr").each(function(idx) {
+                                     if($("#1pCode"+idx).val() == "APP170109ASS3") {
+                                     $("#1btn"+idx).css("display", "inline");
+                                     }
+                                     });
+                                     }
+                                     */
+                                    // 총 예상 가격
+                                    //payPrice += item.totalPrice;
+                                });
+                                $("#tList3").html(addHTML);
+
+                            } else {
+                                $("#tList3").html(addHTML);
+                            }
+                            reload3();
+                            // 계산처리.
+                            ajaxPayCalculate();
+                        },
+                        error: function (err) {
+                            alert("errCode : " + JSON.stringify(err));
+                        }
+                    });
+
+
+                    //$("#frm3").attr("action","/purchase/order/delete");
+                    //$("#frm3").submit();
+                });
+            });
+        };
+
+        // 이용기간 라디오 버튼 셋팅.
+        if(prevUseTermDays == '360') {
+            $("#360").css("display", "none");
+        }
+
+        // 서비스 선택 리스트
+        $("#tList0 > tr").each(function(idx) {
+
+            // 선택버튼 이벤트 처리.
+            $("#0btn"+idx).on("click", function(e) {
+                console.log('val['+idx+'] : ', $("#0pCode"+idx).val());
+                console.log('val['+idx+'] : ', $.trim($("#0pUniqCode"+idx).val()));
+                e.preventDefault();
+
+                if(usrId == '') {
+                    alert('로그인 하세요.');
+                    location.href = "/";
+                    return false;
+                }
+
+                // 상품갯수
+                var selectedPcount = "0";
+                if(productType=="HDW") {
+                    selectedPcount = $("#pCount option:selected").val();
+                    if(selectedPcount == "") {
+                        alert("상품 갯수를 선택하여 주세요.");
+                        $("#pCount").focus();
+                        return;
+                    }
+                }
+
+                // 유니크코드 셋팅.
+                $("#pUniqCode0").val($.trim($("#0pUniqCode"+idx).val()));
+                console.log('pUniqCode0 : ', $("#pUniqCode0").val());
+
+                $.ajax({
+                    url : "/purchase/cart/save",
+                    type : "post",
+                    dataType : "json",
+                    data : {
+                        'pCode': $.trim($("#0pCode" + idx).val()),
+                        'pUniqCode': $.trim($("#0pUniqCode" + idx).val()),
+                        'pPairCodeYn': '',
+                        'pPairCode': '',
+                        'optSelectedYn': 'N',
+                        'pCount' : selectedPcount
+                    },
+                    success : function(data) {
+                        // tList2에 리스트 출력.
+                        console.log('tList2 cnt : ', data.cnt);
+                        var addHTML = "";
+                        if(data.cnt > 0) {
+                            $("#tList2").html("");
+                            var calPrice = 0;
+                            $.each(data.list, function(i, item) {
+                                if(item.pDiv=="M") {
+                                    if(item.pType=="HDW") {
+                                        addHTML += "<tr><td colspan='6' class='pdno'>";
+                                        addHTML += "<table border='0' cellspacing='0' width='100%' class='table_style0 bgc2 bbno'>";
+                                        addHTML += "<colgroup><col width='22%'><col width='10%'><col><col width='8%'><col width='20%'><col width='8%'></colgroup>";
+                                    } else {
+                                        addHTML += "<tr><td colspan='5' class='pdno'>";
+                                        addHTML += "<table border='0' cellspacing='0' width='100%' class='table_style0 bgc2 bbno'>";
+                                        addHTML += "<colgroup><col width='22%'><col width='10%'><col><col width='20%'><col width='8%'></colgroup>";
+                                    }
+                                }
+                                addHTML += "<tr>";
+                                addHTML += "<td>"+item.pCode+"<input type='hidden' id='2pCode"+i+"' name='2pCode' value='"+item.pCode+"'/></td>";
+                                addHTML += "<td>"+item.pDivNm+"<input type='hidden' id='2pDiv" + i + "' name='2pDiv' value='" + item.pDiv + "'/></td>";
+                                addHTML += "<td>"+item.pNm+"<input type='hidden' id='2pUniqCode"+i+"' name='2pUniqCode' value='"+item.pUniqCode+"'/></td>";
+                                //addHTML += "<td>"+ comma(item.pPrice);
+                                if(item.pType=="HDW") {
+                                    addHTML += "<td>" + item.pCount + "</td>";
+                                    addHTML += "<td>" + comma(parseInt(item.pPrice) * parseInt(item.pCount));
+                                    addHTML += "<input type='hidden' id='2pPrice"+i+"' name='2pPrice' value='"+parseInt(item.pPrice) * parseInt(item.pCount)+"'/>";
+                                    addHTML += "<input type='hidden' id='2pCnt"+i+"' name='2pCnt' value='"+item.pCount+"'/>";
+                                } else {
+                                    addHTML += "<td>" + comma(item.pPrice);
+                                    addHTML += "<input type='hidden' id='2pPrice"+i+"' name='2pPrice' value='"+item.pPrice+"'/>";
+                                }
+                                //addHTML += "<input type='hidden' id='2pPrice"+i+"' name='2pPrice' value='"+item.pPrice+"'/>";
+                                addHTML += "<input type='hidden' id='2pPairCodeYn"+i+"' name='2pPairCodeYn' value='"+item.pPairCodeYn+"'/>";
+                                addHTML += "<input type='hidden' id='2pPairCode"+i+"' name='2pPairCode' value='"+item.pPairCode+"'/>";
+                                addHTML += "<input type='hidden' id='2pPoptCnt"+i+"' name='2pPoptCnt' value='"+item.optCnt+"'/>";
+                                addHTML += "</td>";
+                                addHTML += "<td><input type='image' id='delBtn" + i + "' name='delBtn' src='/images/remove.png'' class='remove' value='삭제'/></td>";
+                                addHTML += "</tr>";
+                                if(item.pDiv=="M") {
+                                    addHTML += "</table></td></tr>";
+                                }
+
+                                // 총 예상 가격
+                                calPrice += item.pPrice;
+                            });
+                            $("#tList2").html(addHTML);
+                            $("#totalCalPrice").val(comma(calPrice));
+
+                            // 원격지원 선택버튼 표시 처리.
+                            if(data.optSelectedYn == "Y") {
+
+                                if($("#tList1 > tr").length > 0) {
+                                    $("#tList1 > tr").each(function(idx) {
+                                        if($("#1pCode"+idx).val() == "APP170109ASS3") {
+                                            $("#1btn"+idx).css("display", "inline");
+                                        }
+                                    });
+                                }
+
+                            } else {
+                                if($("#tList1 > tr").length > 0) {
+                                    $("#tList1 > tr").each(function(idx) {
+                                        if($("#1pCode"+idx).val() == "APP170109ASS3") {
+                                            $("#1btn"+idx).css("display", "none");
+                                        }
+                                    });
+                                }
+                            }
+
+                        } else {
+                            $("#tList2").html(addHTML);
+                        }
+                        reload2();
+                        ajaxCalculate();
+
+                    },
+                    error : function(err) {
+                        alert("errCode : " + JSON.stringify(err));
+                    }
+                });
+
+                // 조회 처리.
+                $.ajax({
+                    url : "/purchase/opt",
+                    type : "post",
+                    dataType : "json",
+                    data : { 'pCode' : $.trim($("#0pCode"+idx).val()), 'pUniqCode' : $.trim($("#0pUniqCode"+idx).val()) },
+                    success : function(data) {
+                        // tList1에 리스트 출력.
+                        console.log('cnt : ', data.cnt);
+                        var addHTML = "";
+                        if(data.cnt > 0) {
+                            $("#tList1").html("");
+                            var calPrice = 0;
+                            $.each(data.list, function(i, item) {
+                                addHTML += "<tr>";
+                                addHTML += "<td>"+item.pNm+"<input type='hidden' id='1pCode"+i+"' name='1pCode' value='"+item.pCode+"'/></td>";
+                                addHTML += "<td>"+ comma(item.pPrice) +"<input type='hidden' id='1pUniqCode"+i+"' name='1pUniqCode' value='"+item.pUniqCode+"'/></td>";
+                                addHTML += "<td>"+ item.pDesc +"<input type='hidden' id='1pPairCode"+i+"' name='1pPairCode' value='"+item.pPairCode+"'/><input type='hidden' id='1pPairCodeYn"+i+"' name='1pPairCodeYn' value='"+item.pPairCodeYn+"'/></td>";
+                                if(item.pCode=="APP170109ASS3") {
+                                    addHTML += "<td><input type='button' id='1btn"+i+"' name='1btn' class='btn btn-small-grey btn-noradius'' value='선택' style='display:none;'/></td>";
+                                } else {
+                                    addHTML += "<td><input type='button' id='1btn"+i+"' name='1btn' class='btn btn-small-grey btn-noradius'' value='선택'/></td>";
+                                }
+
+                                addHTML += "</tr>";
+                            });
+                            $("#tList1").html(addHTML);
+                        } else {
+                            $("#tList1").html(addHTML);
+                        }
+                        reload1();
+                    },
+                    error : function(err) {
+                        alert("errCode : " + JSON.stringify(err));
+                    }
+                });
+            });
+        });
+
+        // 옵션 리스트
+        $("#tList1 > tr").each(function(idx) {
+
+            // 버튼 셋팅.
+            if($("#1pCode"+idx).val() == "APP170109ASS3") {
+                $("#1btn"+idx).css("display", "none");
+            }
+
+            // 장바구니 리스트 체크.
+            if($("#tList2 > tr").length > 0) {
+                $("#tList2 > tr").each(function(idx2) {
+                    if($("#2pCode"+idx2).val()=="APP170109ASS2") {
+                        if($("#1pCode"+idx).val() == "APP170109ASS3") {
+                            $("#1btn" + idx).css("display", "inline-block");
+                        }
+                    }
+                });
+            }
+            /*
+             // 선택 버튼 활성화 처리.
+             if($("#tList2 > tr").length > 0) {
+             $("#tList2 > tr").each(function (idx2) {
+             if ($("#2pCode" + idx2).val() == "APP170109ASS2") {
+             $("#tList1 > tr").each(function(idx) {
+             if($("#1pCode"+idx).val() == "APP170109ASS3") {
+             var addHTML2 = "<input type='button' id='1btn"+idx+"' name='1btn' class='btn btn-small-grey' value='선택'/>";
+             $("#tList1 > tr").eq(idx).find("td:eq(3)").html(addHTML2);
+             }
+             });
+             }
+             });
+             }
+             */
+            // 버튼 비/활성화 처리.
+            if($("#sList0").length > 0) {
+                var arrPrvCode = [];
+                var arrPayResult = [];
+                $("#sList0 > tr").each(function(idx3) {
+                    //arrPrvCode[idx3] = $("#prvPcode"+idx3).val();
+                    //arrPayResult[idx3] = $("#prevPayResult"+idx3).val();
+//console.log('$("#1pCode"+idx).val()', $("#1pCode"+idx).val());
+//console.log('$("#prvPcode"+idx3).val()', $("#prvPcode"+idx3).val());
+                    if($("#1pCode"+idx).val()==$("#prvPcode"+idx3).val() && $("#prvDiv"+idx3).val() == "옵션") {
+//console.log('true');
+                        if($("#prevPayResult"+idx3).val()!="paid") {
+                            $("#1btn"+idx).css("display", "none");
+                        }
+                    }
+                });
+            }
+
+            // 선택버튼 이벤트 처리.
+            $("#1btn"+idx).on("click", function(e) {
+                console.log('1pCode['+idx+'] : ', $("#1pCode"+idx).val());
+                console.log('1pUniqCode['+idx+'] : ', $.trim($("#1pUniqCode"+idx).val()));
+                console.log('1pPairCodeYn['+idx+'] : ', $.trim($("#1pPairCodeYn"+idx).val()));
+                console.log('1pPairCode['+idx+'] : ', $.trim($("#1pPairCode"+idx).val()));
+//console.log('usrId : ', usrId);
+
+                e.preventDefault();
+
+                if(usrId == '') {
+                    alert('로그인 하세요.');
+                    location.href = "/";
+                    return false;
+                }
+
+                // 상품갯수
+                var selectedPcount = "0";
+                if(productType=="HDW") {
+                    selectedPcount = $("#pCount option:selected").val();
+                    if(selectedPcount == "") {
+                        alert("상품 갯수를 선택하여 주세요.");
+                        $("#pCount").focus();
+                        return;
+                    }
+                }
+
+                // 로그분석및 진단지원 서비스 선택한 경우 처리.
+                var optSelectedYn = "N";
+                if($("#1pCode"+idx).val() == "APP170109ASS2") {
+                    optSelectedYn = "Y";
+                }
+
+                $("#pCode").val($("#1pCode"+idx).val());
+                $("#pUniqCode").val($.trim($("#1pUniqCode"+idx).val()));
+                $("#pPairCodeYn").val($.trim($("#1pPairCodeYn"+idx).val()));
+                $("#pPairCode").val($.trim($("#1pPairCode"+idx).val()));
+                $("#pDiv").val($.trim($("#1pDiv"+idx).val()));
+                $("#optSelectedYn").val(optSelectedYn);
+
+                /*
+                 $("#frm1").attr("method", "post");
+                 $("#frm1").attr("action", "/purchase/cart/save");
+                 $("#frm1").submit();
+                 */
+
+                // 조회 처리.
+                $.ajax({
+                    url : "/purchase/cart/save",
+                    type : "post",
+                    dataType : "json",
+                    data : {
+                        'pCode' : $.trim($("#1pCode"+idx).val()),
+                        'pUniqCode' : $.trim($("#1pUniqCode"+idx).val()),
+                        'pPairCodeYn' : $.trim($("#1pPairCodeYn"+idx).val()),
+                        'pPairCode' : $.trim($("#1pPairCode"+idx).val()),
+                        'optSelectedYn' : optSelectedYn,
+                        'pCount' : selectedPcount
+                    },
+                    success : function(data) {
+                        // tList2에 리스트 출력.
+                        console.log('tList2 cnt : ', data.cnt);
+                        var addHTML = "";
+                        if(data.cnt > 0) {
+                            $("#tList2").html("");
+                            var calPrice = 0;
+                            $.each(data.list, function(i, item) {
+                                if(item.pDiv=="M") {
+                                    if(item.pType=="HDW") {
+                                        addHTML += "<tr><td colspan='6' class='pdno'>";
+                                        addHTML += "<table border='0' cellspacing='0' width='100%' class='table_style0 bgc2 bbno'>";
+                                        addHTML += "<colgroup><col width='22%'><col width='10%'><col><col width='8%'><col width='20%'><col width='8%'></colgroup>";
+                                    } else {
+                                        addHTML += "<tr><td colspan='5' class='pdno'>";
+                                        addHTML += "<table border='0' cellspacing='0' width='100%' class='table_style0 bgc2 bbno'>";
+                                        addHTML += "<colgroup><col width='22%'><col width='10%'><col><col width='20%'><col width='8%'></colgroup>";
+                                    }
+                                }
+                                addHTML += "<tr>";
+                                addHTML += "<td>"+item.pCode+"<input type='hidden' id='2pCode"+i+"' name='2pCode' value='"+item.pCode+"'/></td>";
+                                addHTML += "<td>"+item.pDivNm+"<input type='hidden' id='2pDiv" + i + "' name='2pDiv' value='" + item.pDiv + "'/></td>";
+                                addHTML += "<td>"+item.pNm+"<input type='hidden' id='2pUniqCode"+i+"' name='2pUniqCode' value='"+item.pUniqCode+"'/></td>";
+                               //addHTML += "<td>"+ comma(item.pPrice);
+                                if(item.pType=="HDW") {
+                                    addHTML += "<td>" + item.pCount + "</td>";
+                                    addHTML += "<td>" + comma(parseInt(item.pPrice) * parseInt(item.pCount));
+                                    addHTML += "<input type='hidden' id='2pPrice"+i+"' name='2pPrice' value='"+parseInt(item.pPrice) * parseInt(item.pCount)+"'/>";
+                                    addHTML += "<input type='hidden' id='2pCnt"+i+"' name='2pCnt' value='"+item.pCount+"'/>";
+                                } else {
+                                    addHTML += "<td>" + comma(item.pPrice);
+                                    addHTML += "<input type='hidden' id='2pPrice"+i+"' name='2pPrice' value='"+item.pPrice+"'/>";
+                                }
+                                //addHTML += "<input type='hidden' id='2pPrice"+i+"' name='2pPrice' value='"+item.pPrice+"'/>";
+                                addHTML += "<input type='hidden' id='2pPairCodeYn"+i+"' name='2pPairCodeYn' value='"+item.pPairCodeYn+"'/>";
+                                addHTML += "<input type='hidden' id='2pPairCode"+i+"' name='2pPairCode' value='"+item.pPairCode+"'/>";
+                                addHTML += "<input type='hidden' id='2pPoptCnt"+i+"' name='2pPoptCnt' value='"+item.optCnt+"'/>";
+                                addHTML += "</td>";
+                                addHTML += "<td><input type='image' id='delBtn" + i + "' name='delBtn' src='/images/remove.png'' class='remove' value='삭제'/></td>";
+                                addHTML += "</tr>";
+                                if(item.pDiv=="M") {
+                                    addHTML += "</table></td></tr>";
+                                }
+
+                                // 총 예상 가격
+                                calPrice += item.pPrice;
+                            });
+                            $("#tList2").html(addHTML);
+                            $("#totalCalPrice").val(comma(calPrice));
+
+                            // 원격지원 선택버튼 표시 처리.
+                            if(data.optSelectedYn == "Y") {
+
+                                if($("#tList1 > tr").length > 0) {
+                                    $("#tList1 > tr").each(function(idx) {
+                                        if($("#1pCode"+idx).val() == "APP170109ASS3") {
+                                            $("#1btn"+idx).css("display", "inline");
+                                        }
+                                    });
+                                }
+
+                            } else {
+                                if($("#tList1 > tr").length > 0) {
+                                    $("#tList1 > tr").each(function(idx) {
+                                        if($("#1pCode"+idx).val() == "APP170109ASS3") {
+                                            $("#1btn"+idx).css("display", "none");
+                                        }
+                                    });
+                                }
+                            }
+
+                        } else {
+                            $("#tList2").html(addHTML);
+                        }
+                        reload1();
+                        ajaxCalculate();
+
+                    },
+                    error : function(err) {
+                        alert("errCode : " + JSON.stringify(err));
+                    }
+                }); // ajax 끝.
+
+
+            }); // 선택버튼 이벤트 처리 끝.
+
+        }); // 옵션 리스트 끝.
+
+        // 카트(장바구니) 관련
+        $("#tList2 > tr").each(function(idx) {
+
+            // 잔여금액 셋팅.
+            if($("#sList0").length > 0) {
+                var prvRemainPrice = $("#prvRemainPrice").val() !=null ? $("#prvRemainPrice").val() : 0;
+                $("#prvRemainPrice").val(comma(prvRemainPrice));
+            }
+            // 계산 셋팅.
+            var calPayPrice = $("#calPayPrice").val() !=null ? parseInt(unComma($("#calPayPrice").val())) : 0;
+            var totalCalPayPrice = parseInt(calPayPrice) - parseInt(unComma(prvRemainPrice));
+            if(totalCalPayPrice < 0) totalCalPayPrice = 0;
+
+            console.log('totalCalPayPrice : ', totalCalPayPrice);
+            $("#totalCalPayPrice").val(totalCalPayPrice);
+//console.log('totalCalPayPrice2 : ', $("#totalCalPayPrice").val());
+
+            // 장바구니 삭제 버튼 이벤트 처리.
+            $("#delBtn"+idx).click(function(e) {
+                e.preventDefault();
+
+                if(usrId == '') {
+                    alert('로그인 하세요.');
+                    location.href = "/";
+                    return false;
+                }
+
+                console.log('장바구니 2pCode del val['+idx+'] : ', $("#2pCode"+idx).val());
+                console.log('장바구니 2pUniqCode del val['+idx+'] : ', $.trim($("#2pUniqCode"+idx).val()));
+                console.log('2pUniqCode : ', $("#2pUniqCode ").val());
+
+                // 조회 처리.
+                $.ajax({
+                    url : "/purchase/cart/delete",
+                    type : "post",
+                    dataType : "json",
+                    data : {
+                        'pCode' : $.trim($("#2pCode"+idx).val()),
+                        'pUniqCode' : $.trim($("#2pUniqCode"+idx).val()),
+                        'pDiv' : $.trim($("#2pDiv"+idx).val()),
+                        'pPairCodeYn' : $.trim($("#2pPairCodeYn"+idx).val()),
+                        'pPairCode' : $.trim($("#2pPairCode"+idx).val()),
+                    },
+                    success : function(data) {
+                        // tList2에 리스트 출력.
+                        var addHTML = "";
+                        if(data.cnt > 0) {
+                            $.each(data.list, function (i, item) {
+                                if(item.pDiv=="M") {
+                                    addHTML += "<tr><td colspan='5' class='pdno'>";
+                                    addHTML += "<table border='0' cellspacing='0' width='100%' class='table_style0 bgc2 bbno'>";
+                                    addHTML += "<colgroup><col width='22%'><col width='10%'><col><col width='20%'><col width='8%'></colgroup>";
+                                }
+                                addHTML += "<tr>";
+                                addHTML += "<td>" + item.pCode + "<input type='hidden' id='2pCode" + i + "' name='2pCode' value='" + item.pCode + "'/></td>";
+                                addHTML += "<td>" + item.pDivNm + "<input type='hidden' id='2pDiv" + i + "' name='2pDiv' value='" + item.pDiv + "'/></td>";
+                                addHTML += "<td>" + item.pNm + "<input type='hidden' id='2pUniqCode" + i + "' name='2pUniqCode' value='" + item.pUniqCode + "'/></td>";
+                                if(item.pType=="HDW") {
+                                    addHTML += "<td>" + item.pCount +"</td>";
+                                    addHTML += "<td>" + comma(parseInt(item.pPrice) * parseInt(item.pCount)) + "<input type='hidden' id='2pPrice" + i + "' name='2pPrice' value='" + parseInt(item.pPrice) * parseInt(item.pCount) + "'/>";
+                                    addHTML += "<input type='hidden' id='2pCnt" + i + "' name='2pCnt' value='" + item.pCount + "'/>";
+                                    addHTML += "</td>";
+                                } else {
+                                    addHTML += "<td>" + comma(item.pPrice) + "<input type='hidden' id='2pPrice" + i + "' name='2pPrice' value='" + item.pPrice + "'/></td>";
+                                }
+                                //addHTML += "<td>" + comma(item.pPrice) + "<input type='hidden' id='2pPrice" + i + "' name='2pPrice' value='" + item.pPrice + "'/></td>";
+                                addHTML += "<td><input type='button' id='delBtn" + i + "' name='delBtn' src='/images/remove.png'' class='remove' value='삭제'/>";
+                                addHTML += "<input type='hidden' id='2pPoptCnt" + i + "' name='2pPoptCnt' value='" + item.optCnt + "'/>";
+                                addHTML += "<input type='hidden' id='2pPairCodeYn"+i+"' name='2pPairCodeYn' value='"+item.pPairCodeYn+"'/>";
+                                addHTML += "<input type='hidden' id='2pPairCode"+i+"' name='2pPairCode' value='"+item.pPairCode+"'/>";
+                                addHTML += "</td></tr>";
+                                if(item.pDiv=="M") {
+                                    addHTML += "</table></td></tr>";
+                                }
+                                // 선택버튼 활성화.
+                                if(item.pCode=="APP170109ASS2") {
+                                    $("#tList1 > tr").each(function(idx) {
+                                        if($("#1pCode"+idx).val() == "APP170109ASS3") {
+                                            $("#1btn"+idx).css("display","inline");
+                                        }
+                                    });
+                                } else {
+                                    $("#tList1 > tr").each(function(idx) {
+                                        if($("#1pCode"+idx).val() == "APP170109ASS3") {
+                                            $("#1btn"+idx).css("display","none");
+                                        }
+                                    });
+                                }
+                            });
+                            $("#tList2").html(addHTML);
+                        } else {
+                            $("#tList2").html(addHTML);
+                            // 원격지원 버튼 지우기.
+                            if($("#tList1 > tr").length > 0) {
+                                $("#tList1 > tr").each(function(idx) {
+                                    if($("#1pCode"+idx).val() == "APP170109ASS3") {
+                                        $("#1btn"+idx).css("display", "none");
+                                    }
+                                });
+                            }
+                        }
+                        reload2();
+                        ajaxCalculate();
+                    },
+                    error : function(err) {
+                        alert("errCode : " + JSON.stringify(err));
+                    }
+                });
+
+            });
+        });
+
+        // 계산모듈 호출 처리.
+        ajaxCalculate();
+
+        // 주문 저장 처리.
+        $("#saveBtn").click(function(e) {
+            e.preventDefault();
+
+            if(usrId == '') {
+                alert('로그인 하세요.');
+                location.href = "/";
+                return false;
+            }
+
+            if ($("#tList2 > tr").length > 0) {
+
+                var termDays = "0";
+                // 기간 서비스 인 경우 체크.
+                if(productType == "SVC") {
+                    // 이용기간 서비스 라디오 버튼 값 취득.
+                    termDays = $("input:radio[name='termDays']:checked").val();
+                    $("#useTermDays").val(termDays);
+                    $("#dcntPercent").val($("#disCountPct").val());
+                    // Validation 체크
+                    var prvUsrTermDays = $("#prvUsrTermDays").val();
+                    var prvRemainDays = $("#prvRemainDays").val();
+
+                    var optCnt1 = 0;
+                    var optCnt2 = 0;
+                    // 이용내역 리스트 취득.
+                    $("#sList0 > tr").each(function (idx) {
+                        if ($("#prvDiv" + idx).val() == "옵션") {
+                            optCnt1 += 1;
+                        }
+                    });
+                    console.log('opt1 : ', optCnt1);
+                    $("#tList2 > tr").each(function (idx2) {
+                        if ($("#2pDiv" + idx2).val() == "O") {
+                            optCnt2 += 1;
+                        }
+                    });
+                    console.log('opt2 : ', optCnt2);
+                    if (optCnt1 == optCnt2 && prvUsrTermDays == termDays) {
+                        alert("이미 사용중인 서비스입니다.");
+                        return false;
+                    } else if (optCnt1 > optCnt2 && prvUsrTermDays == termDays) {
+                        alert("이미 사용중인  서비스가 있습니다.");
+                        return false;
+                    } else if (optCnt1 == optCnt2 && prvUsrTermDays > termDays) {
+                        alert("사용중인 서비스 360 일에서 30일로 전환할 수 없습니다.");
+                        return false;
+                    } else if (optCnt1 > optCnt2 && prvUsrTermDays > termDays) {
+                        alert("사용중인 서비스 360 일에서 30일로 전환할 수 없습니다.");
+                        return false;
+                    }
+
+                    // 기존 결제 정보 (잔여일) 취득.
+                    if ($("#rePayLength").val() > 0) {
+                        console.log('prvOrderNo : ', $("#prvOrderNo").val());
+                        console.log('remainDays : ', $("#remainDays").val());
+                        console.log('usedDays : ', $("#usedDays").val());
+                        console.log('remainPrice : ', $("#remainPrice").val());
+                        console.log('subtractPrice : ', $("#subtractPrice").val());
+
+                        $("#prevOrderNo").val($("#prvOrderNo").val());
+                        $("#remainDays").val($("#prvRemainDays").val());
+                        $("#usedDays").val($("#prvUsredDays").val());
+                        $("#remainPrice").val($("#prvRemainPrice").val());
+                        $("#subtractPrice").val($("#discPrice").val());
+
+                    }
+                }
+/*
+                var selectedPcount = "0";
+                // 서비스 타입이 하드웨어인 경우
+                if(productType == "HDW") {
+                    selectedPcount = $("#pCount option:selected").val();
+                    if(selectedPcount == "") {
+                        alert("상품 갯수를 선택하여 주세요.");
+                        $("#pCount").focus();
+                        return;
+                    }
+                }
+*/
+                // 정산결과가 0 인 체크.
+                if($("#totalCalPayPrice").val()=="0" && $("#cmpltYn") == null || $("#totalCalPayPrice").val()=="0" && $("#cmpltYn") == "N") {
+                    alert("결제예정금액이 0원입니다.\n 다시 확인하시고 처리해주세요!");
+                    return false;
+                }
+
+                var dataValues = {
+                    'termDays' : termDays,
+                    'totalCalPayPrice' : $("#totalCalPayPrice").val(),
+                    'cmpltYn' : $("#cmpltYn").val(),
+                    'useTermDays' : $("#useTermDays").val(),
+                    'prevOrderNo' : $("#prevOrderNo").val(),
+                    'remainDays' : $("#remainDays").val(),
+                    'usedDays' : $("#usedDays").val(),
+                    'remainPrice' : $("#remainPrice").val(),
+                    'subtractPrice' : $("#subtractPrice").val(),
+                    'dcntPercent' : $("#dcntPercent").val(),
+                    'productCode' : $("#productCode").val(),
+                    'productUniqCode' : $("#productUniqCode").val()
+                    //'productCount' : selectedPcount
+                };
+
+                // 조회 처리.
+                $.ajax({
+                    url: "/purchase/order",
+                    type: "post",
+                    dataType: "json",
+                    data : dataValues,
+                    success: function (data) {
+                        // result 데이타셋팅.
+                        //var result = data.result;
+                        //location.href = "/purchase/paypopup";
+                        wrapWindowByMask();
+                    },
+                    error: function (err) {
+                        alert("errCode : " + JSON.stringify(err));
+                    }
+                });
+
+            } else {
+                alert("선택된 서비스가 없습니다.");
+            }
+        });
+
+
+        // 결제하기 관련
+        $("#tList3 > tr").each(function(idx) {
+
+            // 결제하기 삭제 버튼 이벤트 처리.
+            $("#del3Btn"+idx).click(function(e) {
+                e.preventDefault();
+
+                if(usrId == '') {
+                    alert('로그인 하세요.');
+                    location.href = "/";
+                    return false;
+                }
+
+//console.log('결제 삭제 del val['+idx+'] : ', $("#3pPcode"+idx).val());
+//console.log('결제 삭제 del val['+idx+'] : ', $.trim($("#3pUniqCode"+idx).val()));
+                console.log('orderNo : ', $.trim($("#orderNo").val()));
+
+                // 이용기간 서비스 라디오 버튼 값 취득.
+                var termDays = $("input:radio[name='termDays']:checked").val();
+
+                $("#pCode3").val($("#3pPcode"+idx).val());
+                $("#pUniqCode3").val($("#3pUniqCode"+idx).val());
+                $("#pDiv3").val($("#3pDiv"+idx).val());
+                $("#pPairCodeYn3").val($("#3pPairCodeYn"+idx).val());
+                $("#pPairCode3").val($("#3pPairCode"+idx).val());
+
+                var dataValues = {
+                    'termDays' : termDays,
+                    'totalCalPayPrice' : $("#totalCalPayPrice").val(),
+                    'cmpltYn' : $("#cmpltYn").val(),
+                    'useTermDays' : $("#useTermDays").val(),
+                    'pCode3' : $("#pCode3").val(),
+                    'pUniqCode3' : $("#pUniqCode3").val(),
+                    'pDiv3' : $("#pDiv3").val(),
+                    'pPairCodeYn3' : $("#pPairCodeYn3").val(),
+                    'pPairCode3' : $("#pPairCode3").val(),
+                    'orderNo' : $("#orderNo").val()
+                };
+
+                // 조회 처리.
+                $.ajax({
+                    url: "/purchase/order/delete",
+                    type: "post",
+                    dataType: "json",
+                    data : dataValues,
+                    success: function (data) {
+                        // tList3에 리스트 출력.
+                        var addHTML = "";
+                        if (data.cnt > 0) {
+                            $("#tList3").html("");
+                            var payPrice = 0;
+                            $.each(data.list, function (i, item) {
+                                if(item.pDiv=="M") {
+                                    addHTML += "<tr><td colspan='5' class='pdno'>";
+                                    addHTML += "<table border='0' cellspacing='0' width='100%' class='table_style0 bgc2 bbno'>";
+                                    addHTML += "<colgroup><col width='22%'><col width='10%'><col width='26%'><col><col width='15%'></colgroup>";
+                                }
+                                addHTML += "<tr>";
+                                addHTML += "<td>" + item.pCode + "<input type='hidden' id='payOrderNo"+i+"' name='payOrderNo' value='"+item.orderNo+"'/></td>";
+                                addHTML += "<td>" + item.pDivNm + "<input type='hidden' id='3pDiv"+i+"' name='3pDiv' value='"+item.pDiv+"'/></td>";
+                                addHTML += "<td>" + item.pNm + "</td>";
+                                addHTML += "<td>" + comma(item.pPrice) + "<input type='hidden' id='3pPrice"+i+"' name='3pPrice' value='"+item.pPrice+"'/>";
+                                addHTML += "<input type='hidden' id='3pPcode"+i+"' name='3pPcode' value='"+item.pCode+"'/>";
+                                addHTML += "<input type='hidden' id='3pPairCodeYn"+i+"' name='3pPairCodeYn' value='"+item.pPairCodeYn+"'/>";
+                                addHTML += "<input type='hidden' id='3pPairCode"+i+"' name='3pPairCode' value='"+item.pPairCode+"'/>";
+                                addHTML += "<input type='hidden' id='3pUniqCode"+i+"' name='3pUniqCode' value='"+item.pUniqCode+"'/>";
+                                addHTML += "</td>";
+                                addHTML += "<td><input type='image' id='del3Btn"+ i +"' name='delBtn' src='/images/remove.png' class='remove' value='삭제'/></td>";
+                                addHTML += "</tr>";
+                                if(item.pDiv=="M") {
+                                    addHTML += "</table></td></tr>";
+                                }
+                                if(item.pCode=="APP170109ASS2") {
+                                    $("#tList1 > tr").each(function(idx) {
+                                        if($("#1pCode"+idx).val() == "APP170109ASS3") {
+                                            $("#1btn"+idx).css("display", "inline");
+                                        }
+                                    });
+                                }
+                                // 총 예상 가격
+                                //payPrice += item.totalPrice;
+                            });
+                            $("#tList3").html(addHTML);
+
+                        } else {
+                            $("#tList3").html(addHTML);
+                        }
+                        reload3();
+                        // 계산처리.
+                        //ajaxPayCalculate();
+                    },
+                    error: function (err) {
+                        alert("errCode : " + JSON.stringify(err));
+                    }
+                });
+
+
+                //$("#frm3").attr("action","/purchase/order/delete");
+                //$("#frm3").submit();
+            });
+        });
+
+        // 카트 전체 삭제 버튼 이벤트 처리.
+        $("#cartAllDelBtn").click(function(e) {
+            e.preventDefault();
+
+            if(usrId == '') {
+                alert('로그인 하세요.');
+                return false;
+            }
+
+            if($("#tList2 > tr").length <= 0) {
+                return false;
+            }
+
+            // 조회 처리.
+            $.ajax({
+                url : "/purchase/cart/alldel",
+                type : "post",
+                dataType : "json",
+                success : function(data) {
+                    // tList2에 리스트 출력.
+                    var addHTML = "";
+                    if(data.cnt > 0) {
+                        $.each(data.list, function (i, item) {
+                            addHTML += "<tr>";
+                            if(item.pDiv=="M") {
+                                addHTML += "<td colspan='5' class='pdno'>";
+                                addHTML += "<table border='0' cellspacing='0' width='100%' class='table_style0 bgc2 bbno'>";
+                                addHTML += "<colgroup><col width='22%'><col width='10%'><col><col width='20%'><col width='8%'></colgroup>";
+                            }
+                            addHTML += "<td>" + item.pCode + "<input type='hidden' id='2pCode" + i + "' name='2pCode' value='" + item.pCode + "'/></td>";
+                            addHTML += "<td>" + item.pDivNm + "<input type='hidden' id='2pDiv" + i + "' name='2pDiv' value='" + item.pDiv + "'/></td>";
+                            addHTML += "<td>" + item.pNm + "<input type='hidden' id='2pUniqCode" + i + "' name='2pUniqCode' value='" + item.pUniqCode + "'/></td>";
+                            if(item.pType=="HDW") {
+                                addHTML += "<td>" + comma(parseInt(item.pPrice) * parseInt(item.pCount)) + "</td>";
+                                addHTML += "<td>" + item.pCount + "<input type='hidden' id='2pPrice" + i + "' name='2pPrice' value='" + parseInt(item.pPrice) * parseInt(item.pCount) + "'/>";
+                                addHTML += "<input type='hidden' id='2pCnt" + i + "' name='2pCnt' value='" + item.pCount + "'/>";
+                                addHTML += "</td>";
+                            } else {
+                                addHTML += "<td>" + comma(item.pPrice) + "<input type='hidden' id='2pPrice" + i + "' name='2pPrice' value='" + item.pPrice + "'/></td>";
+                            }
+                            addHTML += "<td><input type='button' id='delBtn" + i + "' name='delBtn' src='/images/remove.png'' class='remove' value='삭제'/>";
+                            addHTML += "<input type='hidden' id='2pPoptCnt" + i + "' name='2pPoptCnt' value='" + item.optCnt + "'/>";
+                            addHTML += "</td></tr>";
+                        });
+                        $("#tList2").html(addHTML);
+                    } else {
+                        $("#tList2").html(addHTML);
+                    }
+                    // 원격지원 버튼 지우기.
+                    if($("#tList1 > tr").length > 0) {
+                        $("#tList1 > tr").each(function(idx) {
+                            if($("#1pCode"+idx).val() == "APP170109ASS3") {
+                                $("#1btn"+idx).css("display", "none");
+                            }
+                        });
+                    }
+
+                    reload2();
+                    ajaxCalculate();
+                },
+                error : function(err) {
+                    alert("errCode : " + JSON.stringify(err));
+                }
+            });
+            /*
+             $("#frm2").attr("method", "post");
+             $("#frm2").attr("action", "/purchase/cart/alldel");
+             $("#frm2").submit();
+             */
+
+        });
+
+        // (결제하기) 전체 삭제 버튼 이벤트 처리.
+        $("#allDelBtn").click(function(e) {
+            e.preventDefault();
+
+            console.log('tList3 : ', $("#tList3 > tr").length);
+
+            if($("#tList3 > tr").length <= 0) {
+                return false;
+            }
+            var termDays = $("input:radio[name='termDays']:checked").val();
+
+            var dataValues = {
+                'termDays' : termDays,
+                'orderNo' : $("#orderNo").val()
+            };
+
+            // 조회 처리.
+            $.ajax({
+                url: "/purchase/order/alldel",
+                type: "post",
+                dataType: "json",
+                data : dataValues,
+                success: function (data) {
+                    // tList3에 리스트 출력.
+                    var addHTML = "";
+                    if (data.cnt > 0) {
+                        $("#tList3").html("");
+                        var payPrice = 0;
+                        $.each(data.list, function (i, item) {
+                            if(item.pDiv=="M") {
+                                addHTML += "<tr><td colspan='5' class='pdno'>";
+                                addHTML += "<table border='0' cellspacing='0' width='100%' class='table_style0 bgc2 bbno'>";
+                                addHTML += "<colgroup><col width='22%'><col width='10%'><col width='26%'><col><col width='15%'></colgroup>";
+                            }
+                            addHTML += "<tr>";
+                            addHTML += "<td>" + item.pCode + "<input type='hidden' id='orderNo"+i+"' name='orderNo' value='"+item.orderNo+"'/></td>";
+                            addHTML += "<td>" + item.pDivNm + "<input type='hidden' id='3pDiv"+i+"' name='3pDiv' value='"+item.pDiv+"'/></td>";
+                            addHTML += "<td>" + item.pNm + "</td>";
+                            addHTML += "<td>" + comma(item.pPrice) + "<input type='hidden' id='3pPrice"+i+"' name='3pPrice' value='"+item.pPrice+"'/>";
+                            addHTML += "<input type='hidden' id='3pPcode"+i+"' name='3pPcode' value='"+item.pCode+"'/>";
+                            addHTML += "<input type='hidden' id='3pPairCodeYn"+i+"' name='3pPairCodeYn' value='"+item.pPairCodeYn+"'/>";
+                            addHTML += "<input type='hidden' id='3pPairCode"+i+"' name='3pPairCode' value='"+item.pPairCode+"'/>";
+                            addHTML += "<input type='hidden' id='3pUniqCode"+i+"' name='3pUniqCode' value='"+item.pUniqCode+"'/>";
+                            addHTML += "</td>";
+                            addHTML += "<td><input type='image' id='del3Btn'"+ i +"' name='delBtn' src='/images/remove.png' class='remove' value='삭제'/></td>";
+                            addHTML += "</tr>";
+                            if(item.pDiv=="M") {
+                                addHTML += "</table></td></tr>";
+                            }
+                            if(item.pCode=="APP170109ASS2") {
+                                $("#tList1 > tr").each(function(idx) {
+                                    if($("#1pCode"+idx).val() == "APP170109ASS3") {
+                                        $("#1btn"+idx).css("display", "inline");
+                                    }
+                                });
+                            }
+                            // 총 예상 가격
+                            //payPrice += item.totalPrice;
+                        });
+                        $("#tList3").html(addHTML);
+
+                    } else {
+                        $("#tList3").html(addHTML);
+                    }
+                    // 계산처리.
+                    ajaxPayCalculate();
+                },
+                error: function (err) {
+                    alert("errCode : " + JSON.stringify(err));
+                }
+            });
+
+            /*
+             $("#frm3").attr("method", "post");
+             $("#frm3").attr("action", "/purchase/order/alldel");
+             $("#frm3").submit();
+             */
+
+        });
+
+        // 이용기간 라디오버튼 이벤트 처리.
+        $("input:radio[name='termDays']").click(function() {
+
+            var pCode = []; var pDiv = []; var pUniqCode = []; var pPrice = []; var pOptCnt = [];
+            var termDays = $("input:radio[name='termDays']:checked").val();
+            var selectedPcount = $("#pCount option:selected").val();
+            var prvRemainPrice = 0;
+
+            // 잔여금액 셋팅.
+            if($("#sList0").length > 0) {
+                prvRemainPrice = $("#prvRemainPrice").val() !=null ? $("#prvRemainPrice").val() : 0;
+                prvRemainPrice = unComma(prvRemainPrice);
+            }
+
+            if($("#tList2 > tr").length > 0) {
+                $("#tList2 > tr").each(function(idx) {
+                    pCode[idx] = $("#2pCode"+idx).val();
+                    pDiv[idx] = $("#2pDiv"+idx).val();
+                    pUniqCode[idx] = $("#2pUniqCode"+idx).val();
+                    pPrice[idx] = $("#2pPrice"+idx).val();
+                    pOptCnt[idx] = $("#2pPoptCnt"+idx).val();
+                });
+                $.ajax({
+                    url : "/purchase/calculate",
+                    type : "post",
+                    dataType : "json",
+                    data : { 'pCode' : pCode, 'pDiv' : pDiv, 'pUniqCode' : pUniqCode, 'pPrice' : pPrice, 'pOptCnt' : pOptCnt,
+                        'pCount' : selectedPcount, 'prvRemainPrice' : prvRemainPrice, 'termDays' : termDays,
+                        'productType' : productType
+                    },
+                    success : function(data) {
+                        // tList\2에 리스트 출력.
+                        // 총 금액
+                        $("#calPayPrice").val(comma(data.totalCalPrice));
+                        // 잔여 금액 셋팅.
+                        $("#calRemainPrice").val(comma(data.prvRemainPrice));
+                        // 할인금액
+                        $("#discPrice").val(comma(data.disCountPrice));
+                        // 결정예정금액
+                        $("#totalCalPayPrice").val(comma(data.calPayPrice));
+                        if(parseInt(data.baseCalPayPrice) < 0) {
+                            $("#basePayPart").css("display","inline");
+                            // 원 결정예정금액
+                            $("#baseCalPayPrice").val(comma(data.baseCalPayPrice));
+                        } else {
+                            $("#basePayPart").css("display","none");
+                            // 원 결정예정금액
+                            $("#baseCalPayPrice").val(comma(data.baseCalPayPrice));
+                        }
+                        // 할인율
+                        $("#disCountPct").val(data.disCountPct);
+                        // 정산결과가 0인 체크 셋팅.
+                        $("#cmpltYn").val(data.cmpltYn);
+                        // 사용기간 라디오버튼 셋팅.
+                        if(data.termDays=="30") {
+                            $("#termDays30").attr("checked", true);
+                        } else {
+                            $("#termDays360").attr("checked", true);
+                        }
+                        // 하드웨어 인경우 갯수표시.
+                        if(data.pType=="HDW") {
+                            $("#pCnt").val(data.pCnt !=null ? data.pCnt : 0);
+                        }
+                    },
+                    error : function(err) {
+                        alert("errCode : " + JSON.stringify(err));
+                    }
+                });
+            }
+        });
+
+        // 결제 처리버튼 이벤트 처리.
+        $("#payBtn").click(function(e) {
+            e.preventDefault();
+            // 이용기간 서비스 라디오 버튼 값 취득.
+            //var termDays = $("input:radio[name='termDays']:checked").val();
+            //$("#uTermDays").val(termDays);
+            //$("#dcntPercent").val($("#disCountPct").val());
+
+
+            // 결제가격 0 인지 체크.
+            var totalPayPrice = $("#totalPayPrice").val() !=null ? parseInt(unComma($("#totalPayPrice").val())) : 0;
+            var payCmpltYn = $("#payCmpltYn").val() !=null ? $("#payCmpltYn").val() : '';
+            if(totalPayPrice == 0 && payCmpltYn == '' || totalPayPrice == 0 && payCmpltYn == "N") {
+                alert("결제금액이 0원입니다. 다시 확인하시고 결제 신청해주세요.");
+                return false;
+            }
+
+            // 결제 수단 체크.
+            var payMethodChk = $(":radio[name='payMethod']:checked").val();
+            if(payMethodChk == null) {
+                alert("결제수단을 선택하여 주세요!");
+                $("#payMethod4").focus();
+                return false;
+            }
+
+            var ret = confirm("결제 하시겠습니까?");
+            if(ret==false) {
+                alert("결제취소 하셨습니다.");
+                return false;
+            }
+
+            $("#frm2").attr("method", "post");
+            $("#frm2").attr("action", "/pay/new");
+            $("#frm2").submit();
+
+        });
+
+        // 팝업 호출 함수.
+        function openPopup(el) {
+
+            $('.'+el).magnificPopup({
+                items : {
+                    src : '/purchase/paypopup',
+                    type : 'iframe'
+                }
+            });
+        }
+
+        /*
+         // 팝업 클릭 처리.
+         $('#saveBtn').click(function () {
+
+         if ($("#tList2 > tr").length > 0) {
+         openPopup('btn btn-warning btnwide100 pdtb15 open-popup-link');
+         } else {
+         alert("선택된 서비스가 없습니다.\n다시 확인하시고 선택해주세요");
+         return false;
+         }
+         });
+         $(document).on('click', '.closePopup', function (e) {
+         e.preventDefault();
+         $.magnificPopup.close();
+         });
+         */
+
+        // 뒤 검은 마스크를 클릭시에도 모두 제거하도록 처리합니다.
+        $('.mask').click(function () {
+            $(this).hide();
+            $('.window').hide();
+        });
+
+    });
+
+    // 콤마 붙이기
+    function comma(num) {
+        var reg = /(^[+-]?\d+)(\d{3})/;
+        num += '';
+        while(reg.test(num)) {
+            num = num.replace(reg, '$1' + ',' + '$2');
+        }
+        return num;
+    }
+    // 콤마 제거
+    function unComma(num) {
+        if(num!=null && num!='') {
+            return (num.replace(/\,/g, ""));
+        } else {
+            num = 0;
+            return num;
+        }
+    }
+    /**
+     * 월을 일로 변환 처리.
+     * @param month
+     * @returns {number}
+     */
+    function monthToDay(month) {
+        var day = 30;
+        var retVal = 0;
+        if(month != null) {
+            retVal = parseInt(month) * day;
+        }
+        return retVal;
+    }
+
+    // 레이어 팝업 함수.
+    function wrapWindowByMask(){
+        // 화면의 높이와 너비를 변수로 만듭니다.
+        var maskHeight = $(document).height();
+        var maskWidth = $(window).width();
+
+        // 마스크의 높이와 너비를 화면의 높이와 너비 변수로 설정합니다.
+        $('.mask').css({'width':maskWidth,'height':maskHeight});
+
+        // fade 애니메이션 : 1초 동안 검게 됐다가 80%의 불투명으로 변합니다.
+        $('.mask').fadeIn(1000);
+        $('.mask').fadeTo("slow",0.8);
+
+        // 레이어 팝업을 가운데로 띄우기 위해 화면의 높이와 너비의 가운데 값과 스크롤 값을 더하여 변수로 만듭니다.
+        var left = ( $(window).scrollLeft() + ( $(window).width() - $('.window').width()) / 2 );
+        var top = ( $(window).scrollTop() + ( $(window).height() - $('.window').height()) / 2 );
+
+        // css 스타일을 변경합니다.
+        $('.window').css({'left':left,'top':top, 'position':'absolute'});
+
+        // 레이어 팝업을 띄웁니다.
+        $('.window').show();
+    }
+</script>
+
+</body>
+</html>

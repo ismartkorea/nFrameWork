@@ -1,0 +1,262 @@
+<%
+// 콤마 붙이기
+function fnComma(num) {
+    var reg = /(^[+-]?\d+)(\d{3})/;
+    num += '';
+    while(reg.test(num)) {
+        num = num.replace(reg, '$1' + ',' + '$2');
+    }
+    return num;
+}
+// 콤마 제거
+function fnUnComma(num) {
+    return (num.replace(/\,/g,""));
+}
+%>
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>결제상태</title>
+
+    <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
+    <meta name="viewport" content="width=device-width" />
+
+    <!-- Facebook and Twitter integration -->
+    <meta property="og:title" content=""/>
+    <meta property="og:image" content=""/>
+    <meta property="og:url" content=""/>
+    <meta property="og:site_name" content=""/>
+    <meta property="og:description" content=""/>
+    <meta name="twitter:title" content="" />
+    <meta name="twitter:image" content="" />
+    <meta name="twitter:url" content="" />
+    <meta name="twitter:card" content="" />
+
+    <!-- <link href='https://fonts.googleapis.com/css?family=Work+Sans:400,300,600,400italic,700' rel='stylesheet' type='text/css'> -->
+
+    <!-- Animate.css -->
+    <link rel="stylesheet" href="/css/animate.css">
+    <!-- Icomoon Icon Fonts-->
+    <link rel="stylesheet" href="/css/icomoon.css">
+    <!-- Bootstrap  -->
+    <link rel="stylesheet" href="/css/bootstrap.css">
+
+    <!-- Magnific Popup -->
+    <link rel="stylesheet" href="/css/magnific-popup.css">
+
+    <!-- Theme style  -->
+    <link rel="stylesheet" href="/css/style.css">
+
+    <!-- Modernizr JS -->
+    <script src="/js/modernizr-2.6.2.min.js"></script>
+    <!-- FOR IE9 below -->
+    <!--[if lt IE 9]>
+    <script src="/js/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+<body>
+
+
+<% include ../include/nav.ejs %>
+
+
+<div id="fh5co-about-section">
+    <div class="container">
+        <div class="about-content">
+
+<%
+    if(parseInt(payPrice) > 0) {
+%>
+
+            <div class="fh5co-heading animate-box">
+                <h2 class="ubar">주문이 완료되었습니다</h2>
+            </div>
+
+            <div class="col-md-12 mb30">
+                <div class="desc">
+                    <h3>주문 정보 (주문번호 : <%=orderNo%>)</h3>
+                    <table border="0" cellspacing="0" width="100%" class="table_style2">
+                        <colgroup>
+                            <col>
+                            <col>
+                            <col>
+                        </colgroup>
+                        <tr>
+                            <th>서비스명</th>
+                            <th>서비스구분</th>
+                            <th>서비스가격</th>
+                        </tr>
+<%
+    if(rList.length > 0) {
+        rList.forEach(function (item, index) {
+%>
+                        <tr>
+                            <td><%=item.pNm%></td>
+                            <td><%=item.pDivNm%></td>
+                            <td><%=fnComma(item.pPrice)%></td>
+                        </tr>
+<%
+        });
+    }
+%>
+                        <tr>
+                            <td colspan="3" class="red bdg2">총 금액 : <b><%=fnComma(payPrice)%></b><span class="black small"> 원</span></td>
+                        </tr>
+                    </table>
+
+                </div>
+            </div>
+
+            <div class="col-md-12 mb30">
+                <div class="desc">
+                    <h3>입금은행 정보</h3>
+                    <table border="0" cellspacing="0" width="100%" class="table_style2">
+                        <colgroup>
+                            <col width="20%">
+                            <col width="80%">
+                        </colgroup>
+                        <tr>
+                            <th>입금정보</th>
+                            <td class="fstretch">농협 302-9992-3210-21</td>
+                        </tr>
+                        <tr>
+                            <th>예금주명</th>
+                            <td>황경록(제이티랩(JTLAB))</td>
+                        </tr>
+                        <tr>
+                            <th class="bdg2">입금할 금액</th>
+                            <td class="red bdg2"><b><%=fnComma(payPrice)%></b><span class="black small"> 원</span></td>
+                        </tr>
+                    </table>
+
+                </div>
+            </div>
+
+            <div class="col-md-12 mb20">
+                <div class="desc">
+                    <h3>결제안내</h3>
+                    <ul>
+                        <li>회원가입 시 이름(또는 업체명)과 입금자명이 동일해야 빠른 처리가 가능합니다.</li>
+                        <li>입금 시 예금주명은 "황경록(제이티랩(JTLAB))"으로 확인될 수 있습니다.</li>
+                        <li>입금이 확인 되면 회원가입 시 입력한 이메일/전화번호로 연락 드립니다.</li>
+                        <li>입금확인 연락 받으실 이메일이나 전화번호를 변경 하시려면 고객센터를 통해 연락을 주시기 바랍니다.</li>
+                        <li>주문 후 3영업일 이내 입금이 확인되지 않으면 주문은 자동취소처리 됩니다.</li>
+                        <li>해외은행 계좌에서 입금 시 원화로 입금 해 주셔야 합니다.</li>
+                    </ul>
+
+                </div><!--desc-->
+            </div><!--col-md-12-->
+<%
+    } else {
+%>
+            <div class="row animate-box">
+                <div class="col-md-12 text-center fh5co-heading">
+                    <h2 class="ubar">주문완료</h2>
+                    <p>Assist Pro 서비스 이용 신청해주셔서 감사합니다.</p>
+                    <p>24시간 이내 확인하고 서비스 이용처리 해드리겠습니다.</p>
+                </div>
+            </div>
+
+            <div class="col-md-12 mb30">
+                <div class="desc">
+                    <h3>주문 정보</h3>
+                    <table border="0" cellspacing="0" width="100%" class="table_style2">
+                        <colgroup>
+                            <col>
+                            <col>
+                            <col>
+                        </colgroup>
+                        <tr>
+                            <th>서비스명</th>
+                            <th>서비스구분</th>
+                            <th>서비스가격</th>
+                        </tr>
+<%
+        if(rList.length > 0) {
+            rList.forEach(function (item, index) {
+%>
+                        <tr>
+                            <td><%=item.pNm%></td>
+                            <td><%=item.pDivNm%></td>
+                            <td><%=fnComma(item.pPrice)%></td>
+                        </tr>
+<%
+            });
+        }
+%>
+                        <tr>
+                            <td colspan="3" class="red bdg2">총 금액 : <b><%=fnComma(payPrice)%></b><span class="black small"> 원</span></td>
+                        </tr>
+                    </table>
+
+                </div>
+            </div>
+
+            <div class="col-md-12">
+                <div class="desc">
+                    <h3>결제 정보</h3>
+                    <table border="0" cellspacing="0" width="100%" class="table_style2">
+                        <colgroup>
+                            <col width="20%">
+                            <col width="80%">
+                        </colgroup>
+                        <tr>
+                            <th class="bdg2">결제된 금액</th>
+                            <td class="red bdg2"><b><%=fnComma(payPrice)%></b><span class="black small"> 원 (할인금액 포함)</span></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">* 결제에 문의 사항이 있으시면 고객센터에 연락주세요.</td>
+                        </tr>
+                    </table>
+
+                </div>
+            </div>
+
+<%
+    }
+%>
+            <div class="col-md-12 text-center">
+                <form class="form-inline">
+                    <a href="/" class="btn btn-warning">홈</a>
+                    <a href="/mypage" class="btn btn-warning">마이페이지</a>
+                </form>
+            </div>
+
+
+
+        </div><!--about-content-->
+    </div><!--container-->
+</div><!--fh5co-about-section-->
+
+
+
+<% include ../include/footer.ejs %>
+
+
+
+<div class="gototop js-top">
+    <a href="#" class="js-gotop"><i class="icon-arrow-up"></i></a>
+</div>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+<!-- jQuery Easing -->
+<script src="/js/jquery.easing.1.3.js"></script>
+<!-- Bootstrap -->
+<script src="/js/bootstrap.min.js"></script>
+<!-- Waypoints -->
+<script src="/js/jquery.waypoints.min.js"></script>
+<!-- countTo -->
+<script src="/js/jquery.countTo.js"></script>
+<!-- Magnific Popup -->
+<script src="/js/jquery.magnific-popup.min.js"></script>
+<script src="/js/magnific-popup-options.js"></script>
+<!-- Main -->
+<script src="/js/main.js"></script>
+
+</body>
+</html>
+

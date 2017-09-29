@@ -1,0 +1,477 @@
+<!doctype html>
+<html lang="ko">
+<head>
+    <meta charset="utf-8" />
+    <link rel="apple-touch-icon" sizes="76x76" href="/assist/img/apple-icon.png" />
+    <link rel="icon" type="image/png" href="/assist/img/favicon.png" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+
+    <title>AssistPro 어시스트프로</title>
+
+    <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
+    <meta name="viewport" content="width=device-width" />
+
+    <!-- jquery-ui CSS -->
+    <link href="/admin/css/jquery-ui.min.css" rel="stylesheet">
+
+    <!-- Bootstrap core CSS     -->
+    <link href="/assist/css/bootstrap.min.css" rel="stylesheet" />
+
+    <!--  Material Dashboard CSS    -->
+    <link href="/assist/css/material-dashboard.css" rel="stylesheet"/>
+
+    <!--  Animation CSS    -->
+    <link href="/assist/css/animate.css" rel="stylesheet"/>
+
+    <!-- Fonts and icons     -->
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href='https://fonts.googleapis.com/css?family=Roboto:400,700,300|Material+Icons' rel='stylesheet' type='text/css'>
+
+    <!-- Modernizr JS 애니메이션 나올때 화면 페이드인 시키는 -->
+    <script src="/assist/js/modernizr-2.6.2.min.js"></script>
+
+</head>
+
+<body>
+
+<!-- 자료실 목록 시작 -->
+<div class="row mt30 animate-box">
+    <h3 class="title mb20 animate-box" data-animate-effect="fadeInLeft">자료열람</h3>
+    <div class="col-md-12">
+
+        <div class="card">
+            <!--검색 시작-->
+            <div class="card-header pdl20" data-background-color="green2">
+                날짜 :
+                <input type="text" id="fromDate" name="fromDate" value="" class="darkblue" size="5"/> -
+                <input type="text" id="toDate" name="toDate" value="" value="" class="darkblue" size="5"/>
+                <button class="btn btn-sm darkgreyb empty" type="button" id="srchDateBtn" name="srchDateBtn">
+                    <i class="fa fa-search"></i>
+                </button>
+                    <select id="srchType1" name="srchType1" class="darkblue ml5 height28">
+                        <option value="srchDataNm">자료명</option>
+                        <option value="srchCategory">분류별</option>
+                        <option value="srchMakerNm">메이커</option>
+                        <option value="srchModelNm">모델</option>
+                        <option value="srchModelNo">연식</option>
+                    </select>
+                   <div style="display:inline-block;">
+                    <input type="text" id="srchText1" name="srchText1" value="" size="17" maxlength="17" placeholder="" class="darkblue"/>
+                    <!--
+                                    <div id="srchCategoryBox" style="float:left; margin-left: 50px;">
+                                        <select id="category1" name="category1" class="darkblue libraryselect ml20"></select>
+                                        <select id="category2" name="category2" class="darkblue libraryselect"></select>
+                                        <select id="category3" name="category3" class="darkblue libraryselect mr10"></select>
+                                    </div>
+                    //-->
+<!--
+                <select id="srchMakerNmBox" name="srchMakerNmBox" class="darkblue ml5 height28" style="display:none;"></select>
+                <div id="srchModelNmBox" style="display:none;">
+                    <select id="srchModelNmBox1" name="srchModelNmBox1" class="darkblue ml5 height28"></select>
+                    <select id="srchModelNmBox2" name="srchModelNmBox2" class="darkblue ml5 height28"></select>
+                </div>
+                <select id="srchModelNoBox" name="srchModelNoBox" class="darkblue ml5 height28" style="display:none;"></select>
+//-->
+                  </div>
+                    <input type="button" id="searchBtn" name="searchBtn" class="btn btn-sm darkgreyb empty" value="&#xf002;" placeholder="&#xf002;"/>
+            </div><!--검색 끝-->
+        </div>
+    </div>
+</div>
+</body>
+<!--   Core JS Files   -->
+<script src="/admin/js/jquery.min.js"></script>
+<script src="/admin/js/jquery-ui.min.js"></script>
+
+<script src="/assist/js/bootstrap.min.js"></script>
+<script src="/assist/js/material.min.js"></script>
+
+<!--  Notifications Plugin    -->
+<script src="/assist/js/bootstrap-notify.js"></script>
+
+<!-- Material Dashboard javascript methods -->
+<script src="/assist/js/material-dashboard.js"></script>
+
+<!--아코디언, 애니메이션-->
+<!-- Waypoints-->
+<script src="/assist/js/accordian/jquery.waypoints.min.js"></script>
+<!-- Main -->
+<script src="/assist/js/accordian/main.js"></script>
+<!-- jQuery Easing -->
+<script src="/assist/js/accordian/jquery.easing.1.3.js"></script>
+<script src="/assist/js/jquery.countTo.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        // 초기 설정.
+        // 카테고리(대중소분류) 콤보박스 초기화.
+        var optionHTML1 = "<option value=''>선택하세요.</option>";
+        var optionHTML2 = "<option value=''>선택하세요.</option>";
+        var optionHTML3 = "<option value=''>선택하세요.</option>";
+        var optionHTMLZ = "<option value=''>선택하세요.</option>";
+        var optionHTMLY = "<option value=''>선택하세요.</option>";
+        var optionHTMLH = "<option value=''>선택하세요.</option>";
+        var optionHTMLK = "<option value=''>선택하세요.</option>";
+        var optionHTMLM = "<option value=''>선택하세요.</option>";
+
+        // 카테고리 콤보박스 세팅.
+        $("#category1").html(optionHTML1);
+        $("#category2").html(optionHTML2);
+        $("#category3").html(optionHTML3);
+
+        // Datepicker 셋팅.
+        $("#fromDate").datepicker();
+        $("#toDate").datepicker();
+
+        // 왼쪽 메뉴 콤보박스 셋팅
+        if (document.documentElement.clientWidth < 900) {
+            $(".dispno1000").css("display", "block");
+        } else if (document.documentElement.clientWidth > 980) {
+            $(".dispno1000").css("display", "none");
+        }
+        // 대분류 콤보박스 변경 이벤트 처리.
+        $("#category1").on('change', function() {
+            var getSelBoxVal = $.trim($("#category1 option:selected").val());
+            var dataValue = { 'setDataVal' : getSelBoxVal};
+
+            $.ajax({
+                type : "post",
+                url : "/assist/data/getcate2",
+                dataType : "json",
+                data : dataValue,
+                success : function(data) {
+                    if(data.result == "OK") {
+
+                        if(data.rList != null && data.rList.length > 0) {
+
+                            $("select#category2").removeAttr("disabled");
+                            // 기존 option 제거.
+                            $("select#category2 option").remove();
+                            optionHTML2 = "<option value=''>선택하세요.</option>";
+                            // option 추가.
+                            $.each(data.rList, function (i) {
+                                if(data.rList[i]["cateNo2"] != null) {
+                                    optionHTML2 += "<option value='" + data.rList[i]["cateNo2"] + "'>" + data.rList[i]["cateName2"] + "</option>"
+                                }
+                            });
+                        }
+                        $("#category2").html(optionHTML2);
+                    }
+                },
+                error : function(request, status, error) {
+                    console.log("Code :  " + request.status + "\n" +
+                            "message : " + request.responseText + "\n" +
+                            "error : " + error);
+                }
+            });
+        });
+        // 중분류 콤보박스 변경 이벤트 처리.
+        $("#category2").on('change', function() {
+            var getSelBoxVal = $.trim($("#category2 option:selected").val());
+            var dataValue = { 'setDataVal' : getSelBoxVal};
+            $.ajax({
+                type : "post",
+                url : "/assist/data/getcate3",
+                dataType : "json",
+                data : dataValue,
+                success : function(data) {
+                    if(data.result == "OK") {
+                        $("#category3").removeAttr("disabled");
+                        // 기존 option 제거.
+                        $("#category3 option").remove();
+                        optionHTML2 = "<option value=''>선택하세요.</option>";
+                        // option 추가.
+                        if(data.rList != null && data.rList.length > 0) {
+                            $.each(data.rList, function (i) {
+                                if(data.rList[i]["cateNo3"] != null) {
+                                    optionHTML3 += "<option value='" + data.rList[i]["cateNo3"] + "'>" + data.rList[i]["cateName3"] + "</option>";
+                                }
+                            });
+                        }
+                        $("#category3").html(optionHTML3);
+                    }
+                },
+                error : function(request, status, error) {
+                    console.log("Code :  " + request.status + "\n" +
+                            "message : " + request.responseText + "\n" +
+                            "error : " + error);
+                }
+            });
+        });
+
+        // 작성확인 후 전송하기 버튼 이벤트 처리.
+        $("#searchBtn").on('click', function(e) {
+            e.preventDefault();
+
+            $("#frm").attr("method", "post");
+            $("#frm").attr("action", "/assist/data/search");
+            $("#frm").submit();
+
+        });
+
+        // 나의 자료목록 콤보박스 이벤트 처리.
+        $("#selCarMakerNm").on('change', function() {
+
+            $("#frm").attr("method", "post");
+            $("#frm").attr("action", "/assist/data/search");
+            $("#frm").submit();
+        });
+
+        // 메이커명 콤보박스 변경 이벤트 처리.
+        $("#srchModelNmBox1").on('change', function() {
+            var getSelBoxVal = $.trim($("#srchModelNmBox1 option:selected").val());
+            var dataValue = { 'setDataVal' : getSelBoxVal};
+
+            $.ajax({
+                type : "post",
+                url : "/assist/data/getModel",
+                dataType : "json",
+                data : dataValue,
+                success : function(data) {
+                    // 기존 option 제거.
+                    $("#srchModelNmBox2 option").remove();
+                    if(data.result == "OK") {
+                        if(data.mList != null && data.mList.length > 0) {
+
+                            $("select#srchModelNmBox2").removeAttr("disabled");
+                            optionHTMLM = "<option value=''>선택하세요.</option>";
+                            // option 추가.
+                            $.each(data.mList, function (i) {
+                                if(data.mList[i]["cateNo2"] != null) {
+                                    optionHTMLM += "<option value='" + data.mList[i]["cateNo2"] + "'>" + data.mList[i]["cateName2"] + "</option>"
+                                }
+                            });
+                        } else {
+                            $("select#srchModelNmBox2 option").remove();
+                            optionHTMLM = "<option value=''>선택하세요.</option>";
+                        }
+                        $("#srchModelNmBox2").html(optionHTMLM);
+                    }
+                },
+                error : function(request, status, error) {
+                    console.log("Code :  " + request.status + "\n" +
+                            "message : " + request.responseText + "\n" +
+                            "error : " + error);
+                }
+            });
+        });
+
+        // Navi 콤보박스 버튼 이벤트 처리.
+        $("#naviBtn").on("change", function() {
+            var selVal = $("#naviBtn option:selected").val();
+
+            if(selVal=="01") {
+                // 홈페이지
+                location.href = "/";
+            } else if(selVal=="02") {
+                // 회사소개
+                location.href = "/aboutus";
+            } else if(selVal=="03") {
+                // 서비스/솔루션
+                location.href = "/products";
+            } else if(selVal=="04") {
+                // 구매안내
+                location.href = "/purchase";
+            } else if(selVal=="05") {
+                // 고객센터
+                location.href = "/ascenter";
+            } else if(selVal=="06") {
+                // 마이페이지
+                location.href = "/mypage";
+            }
+        });
+
+        // 자료 검색 부분 이벤트 처리.
+        $("#srchType1").on("change", function() {
+            var selVal = $("#srchType1 option:selected").val();
+            console.log(">>>selVal : " + selVal);
+            if(selVal == "srchCategory") {
+                $("#srchText1").css("display","none");
+                $("#srchModelNmBox").css("display","none");
+                $("#srchModelNoBox").css("display","none");
+                $("#srchMakerNmBox").css("display","none");
+                $("#srchCategoryBox").css("display","block");
+            } else if(selVal == "srchMakerNm") {
+                $("#srchText1").css("display","none");
+                $("#srchCategoryBox").css("display","none");
+                $("#srchModelNmBox").css("display","none");
+                $("#srchModelNoBox").css("display","none");
+                $("#srchMakerNmBox").css("display","block");
+            } else if(selVal == "srchModelNm") {
+                $("#srchText1").css("display","none");
+                $("#srchCategoryBox").css("display","none");
+                $("#srchModelNoBox").css("display","none");
+                $("#srchMakerNmBox").css("display","none");
+                $("#srchModelNmBox").css("display","block");
+            } else if(selVal == "srchModelNo") {
+                $("#srchText1").css("display","none");
+                $("#srchCategoryBox").css("display","none");
+                $("#srchMakerNmBox").css("display","none");
+                $("#srchModelNmBox").css("display","none");
+                $("#srchModelNoBox").css("display","block");
+            } else {
+                $("#srchCategoryBox").css("display","none");
+                $("#srchMakerNmBox").css("display","none");
+                $("#srchModelNmBox").css("display","none");
+                $("#srchModelNoBox").css("display","none");
+                $("#srchText1").css("display","block");
+            }
+        });
+
+    });
+
+    // 자료목록 삭제 처리.
+    function itemAdd(dataNo) {
+        //alert(dataNo);
+        var dataValue = { 'dataNo' : dataNo};
+        $.ajax({
+            type : "post",
+            url : "/assist/data/mydata/insert",
+            dataType : "json",
+            data : dataValue,
+            success : function(data) {
+                if(data.result == "OK") {
+                    alert('북마크 되었습니다.');
+                    location.href = "/assist/data";
+                } else if(data.result == "FAIL") {
+                    alert('이미 북마크 되어 있는 자료입니다.');
+                } else {
+                    alert("정상처리되지 않았습니다.");
+                }
+            },
+            error : function(request, status, error) {
+                console.log("Code :  " + request.status + "\n" +
+                        "message : " + request.responseText + "\n" +
+                        "error : " + error);
+            }
+        });
+    }
+
+    // 자료목록 삭제 처리.
+    function itemDel(dataNo) {
+        var dataValue = { 'dataNo' : dataNo};
+        $.ajax({
+            type : "post",
+            url : "/assist/data/mydata/delete",
+            dataType : "json",
+            data : dataValue,
+            success : function(data) {
+                if(data.result == "OK") {
+                    alert('북마크 삭제 처리되었습니다.');
+                    location.href = "/assist/data";
+                }
+            },
+            error : function(request, status, error) {
+                console.log("Code :  " + request.status + "\n" +
+                        "message : " + request.responseText + "\n" +
+                        "error : " + error);
+            }
+        });
+    }
+
+    // 알람 조회 업데이트.
+    function goToCheck(reqNo) {
+        //alert(reqNo);
+        var dataVals = { reqNo : reqNo };
+        $.ajax({
+            url : "/assist/checked",
+            type : "post",
+            dataType : "json",
+            data : dataVals,
+            success : function(data) {
+                if(data.result == "OK") {
+                    //alert(data.rCount);
+                    if(data.rCount == 0 ) {
+                        $("span#alarmIconCnt").removeClass();
+                        $("span#alarmIconCnt").addClass("hidden");
+                    } else {
+                        $("span#alarmIconCnt").text(data.rCount);
+                        $("span#alarmCnt").text(data.rCount);
+                    }
+                    location.href = "/assist/service";
+                }
+            },
+            error : function(err) {
+                alert("errCode : " + err);
+            }
+        });
+    }
+
+    // 왼쪽메뉴 링크 이벤트 처리.
+    function linkEvent(n) {
+        // 왼쪽 메뉴 콤보 박스 셋팅.
+        if (document.documentElement.clientWidth < 900) {
+            $(".dispno1000").css("display", "block");
+        } else if (document.documentElement.clientWidth > 980) {
+            $(".dispno1000").css("display", "none");
+        }
+        $("#lnk0").removeClass();
+        $("#lnk1").removeClass();
+        $("#lnk2").removeClass();
+        $("#lnk3").removeClass();
+        $("#lnk4").removeClass();
+        $("#lnk5").removeClass();
+        $("#lnk6").removeClass();
+        <%
+        //console.log(">>> usrID : ", session.usrId);
+        var alertMsg = "";
+        if(session.usrId==null) {alertMsg = "로그인 하세요.";} else if(session.useAppYn==null) {alertMsg = "접근권한이 없습니다.";}
+        if(session.usrId!=null && session.useAppYn == "Y") {
+        %>
+        if(n=='1') {
+            $("#lnk1").addClass("active");
+            location.href = "/assist/#srcLink";
+        } else if(n=='2') {
+            $("#lnk2").addClass("active");
+            location.href = "/assist/request";
+        } else if(n=='3') {
+            $("#lnk3").addClass("active");
+            location.href = "/assist/service";
+        } else if (n == '4') {
+            $("#lnk4").addClass("active");
+            location.href = "/assist/announce";
+        } else if(n=='5') {
+            $("#lnk5").addClass("active");
+            location.href = "/assist/qna";
+        } else if(n=='6') {
+            $("#lnk6").addClass("active");
+            location.href = "/assist/data";
+        }
+        <%
+        } else {
+        %>
+        if(n=='1') {
+            $("#lnk1").addClass("active");
+            location.href = "/assist/#srcLink";
+        } else if(n=='2') {
+            $("#lnk2").addClass("active");
+            alert("<%=alertMsg%>");
+        } else if(n=='3') {
+            $("#lnk3").addClass("active");
+            alert("<%=alertMsg%>");
+        } else if (n == '4') {
+            $("#lnk4").addClass("active");
+            location.href = "/assist/announce";
+        } else if(n=='5') {
+            $("#lnk5").addClass("active");
+            alert("<%=alertMsg%>");
+        } else if(n=='6') {
+            $("#lnk6").addClass("active");
+            alert("<%=alertMsg%>");
+        }
+        <%
+        }
+        %>
+    }
+
+    // 파일다운로드
+    function attachFileDownload(url) {
+
+        var frm = document.fileForm;
+        frm.action = "/assist/data/download";
+        frm.fileName.value = url;
+        frm.submit();
+    }
+
+</script>
+</html>

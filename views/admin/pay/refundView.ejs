@@ -1,0 +1,147 @@
+<%
+// 콤마 붙이기
+function fnComma(num) {
+    var reg = /(^[+-]?\d+)(\d{3})/;
+    num += '';
+    while(reg.test(num)) {
+        num = num.replace(reg, '$1' + ',' + '$2');
+    }
+    return num;
+}
+// 콤마 제거
+function fnUnComma(num) {
+    return (num.replace(/\,/g,""));
+}
+%>
+<!doctype html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>환불 요청 상세 화면.</title>
+    <!-- Bootstrap Core CSS -->
+    <link href="/admin/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/join.css">
+    <script type="text/javascript" src="/js/jquery-1.11.3.min.js"></script>
+    <!-- Magnific Popup -->
+    <script type="text/javascript" src="/js/jquery.magnific-popup.min.js"></script>
+    <script type="text/javascript" src="/js/magnific-popup-options.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+
+            // 저장 버튼 이벤트 처리.
+            $("#saveBtn").on("click", function(e) {
+                e.preventDefault();
+                // 견적처리
+                var dataVals = {
+                    'payNo' : $.trim($("#payNo").val())
+                };
+                // 데이타 전송 처리.
+                $.ajax({
+                    url : "/admin/pay/refund/process",
+                    type : "post",
+                    dataType : "json",
+                    data : dataVals,
+                    success : function(data) {
+                        //console.log(">>> data = " + data.count);
+                        var result = data.result;
+                        var resultVals = data.resultVals;
+                        var remainMonth = resultVals.remainMonth;
+                        var remainPaidPrice = fnComma(resultVals.remainPaidPrice);
+                        var usedPrice = fnComma(resultVals.usedPrice);
+                        var refundPrice = fnComma(resultVals.refundPrice);
+                        if(result == "OK") {
+                            $("#result").css("display", "inline-block");
+                            $("#remainMonth").text(remainMonth + '개월, ');
+                            $("#remainPaidPrice").text(remainPaidPrice + ' 원, ');
+                            $("#usedPrice").text(usedPrice + ' 원, ');
+                            $("#refundPrice").text(refundPrice + ' 원 ');
+                            alert("환불처리 하였습니다.");
+                        } else {
+                            $("#result").css("display", "none");
+                            alert("환불처리 건이 없습니다.\n다시 확인해주세요.");
+                        }
+                    },
+                    error : function(err) {
+                        alert("errCode : " + err.message);
+                    }
+                });
+            });
+
+            // 닫기 버튼 이벤트 처리.
+            $("#closeBtn").on("click",function(e) {
+                e.preventDefault();
+                self.close();
+            });
+        });
+        // 콤마 붙이기
+        function fnComma(num) {
+            var reg = /(^[+-]?\d+)(\d{3})/;
+            num += '';
+            while(reg.test(num)) {
+                num = num.replace(reg, '$1' + ',' + '$2');
+            }
+            return num;
+        }
+        // 콤마 제거
+        function fnUnComma(num) {
+            return (num.replace(/\,/g,""));
+        }
+    </script>
+</head>
+<body>
+<div id="content">
+    <form id="frm" name="frm" method="post">
+        <input type="hidden" id="orderNo" name="orderNo" value="<%=result.orderNo%>"/>
+        <div id="join">
+            <h1 class="tit-join">고객 환불 요청 상세 조회</h1>
+        <!--////---서비스이용내역 시작///////-->
+        <table border="0" cellspacing="0" width="100%" class="table_style11">
+            <tr>
+                <th>주문번호</th>
+                <th>주문자ID</th>
+                <th>신청이용일</th>
+                <th>결제일</th>
+                <th>결제 총가격</th>
+                <th>잔여일</th>
+                <th>환불요청 날짜</th>
+            </tr>
+            <tr>
+                <td><%=result.orderNo%></td>
+                <td><%=result.usrId%></td>
+                <td><%=result.termDays%></td>
+                <td><%=result.payDate%></td>
+                <td><%=fnComma(result.totalPayPrice)%> 원</td>
+                <td><%=result.leftDays%></td>
+                <td><%=result.refundReqDate%></td>
+            </tr>
+            <tr>
+                <th colspan="7">환불신청 이유</th>
+            </tr>
+            <tr>
+                <td colspan="7">
+                    <textarea style="width: 100%;" rows="10" readonly><%-result.memo%></textarea>
+                </td>
+            </tr>
+        </table>
+        <div id="result" style="display: none;">
+            <b>남은 달</b>     : <span id="remainMonth"></span>&nbsp;
+            <b>남은 금액</b>   : <span id="remainPaidPrice"></span>&nbsp;
+            <b>사용된 결제 금액</b> : <span id="usedPrice"></span>&nbsp;
+            <b>환불 금액</b>   : <span id="refundPrice"></span>&nbsp;
+        </div>
+<!--
+        <div id="rows" style="padding-top: 10px;">
+            <p align="right">
+                <input type="button" id="saveBtn" name="saveBtn" class="btn btn-default" value="환불 처리"/>
+            </p>
+        </div>
+-->
+        <div class="btn-area">
+            <a id="closeBtn" href="#" class="mfp-close">닫기</a>
+        </div>
+    </div>
+    </form>
+</div>
+</body>
+</html>

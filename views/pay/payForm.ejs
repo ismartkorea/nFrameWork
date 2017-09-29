@@ -1,0 +1,109 @@
+<script type="text/javascript" src="/js/jquery-1.11.3.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+       var today = new Date();
+       var day =  today.getDate();
+       var year = today.getFullYear().toString();
+       var month = today.getMonth()+1;
+        if(day<10) {
+            day = '0'+ day;
+        }
+        if(month<10) {
+            month = '0' + month;
+        }
+       var currentDate = year + "" + month + "" + day;
+        $("#payDate").val(currentDate);
+
+        $("#submitBtn").on("click", function(e) {
+            e.preventDefault();
+/*
+            var datas = {
+                payPgNm : $("#payPgNm option:selected").val(),
+                payMethod : $("#payMethod option:selected").val(),
+                orderNo : $("#orderNo").val(),
+                payName : $("#payName").val(),
+                amount : $("#amount").val(),
+                email : $("#bEmail").val(),
+                name : $("#bName").val(),
+                telno : $("#bTelNo").val(),
+                address : $("#bAddress").val(),
+                postno : $("#bPostNo").val()
+            };
+            // 전송 처리.
+            $.ajax({
+                url: "/pay/pgcall",
+                type: "post",
+                dataType: "json",
+                data: datas
+            });
+*/
+
+            $("#frm").attr("action", "/pay/pgcall");
+            $("#frm").submit();
+        });
+    });
+</script>
+<form id="frm" name="frm" method="post">
+<div>
+    <div>
+        <table>
+            <tr>
+                <td>지원PG사</td>
+                <td>
+                    <select id="payPgNm" name="payPgNm">
+                        <option>선택하세요.</option>
+                        <option value="html5_inicis" <% if(data.payPgNm == 'html5_inicis') {%> selected <%}%>>이니시스(html5)</option>
+                        <option value="inicis" <% if(data.payPgNm == 'inicis') {%> selected <%}%>>이니시스</option>
+                        <option value="nice" <% if(data.payPgNm == 'nice') {%> selected <%}%>>나이스</option>
+                        <option value="jtnet" <% if(data.payPgNm == 'jtnet') {%> selected <%}%>>jtnet</option>
+                        <option value="uplus" <% if(data.payPgNm == 'uplus') {%> selected <%}%>>LG유플러스</option>
+                        <option value="kakao" <% if(data.payPgNm == 'kakao') {%> selected <%}%>>카카오페이</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>결제수단</td>
+                <td>
+                    <select id="payMethod" name="payMethod">
+                        <option>선택하세요.</option>
+                        <option value="card" <% if(data.payMethod == 'card') {%> selected <%}%>>신용카드</option>
+                        <option value="trans"<% if(data.payMethod == 'trans') {%> selected <%}%>>실시간계좌이체</option>
+                        <option value="vbank"<% if(data.payMethod == 'vbank') {%> selected <%}%>>가상계좌</option>
+                        <option value="phone"<% if(data.payMethod == 'phone') {%> selected <%}%>>휴대폰소액결제</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>주문번호</td><td><input type="text" id="orderNo" name="orderNo" value="<%=data.orderNo%>" readonly/></td>
+            </tr>
+            <tr>
+                <td>결제명</td><td><input type="text" id="payName" name="payName" value="<%=data.payName%>" readonly/></td>
+            </tr>
+            <tr>
+                <td>금액</td><td><input type="text" id="amount" name="amount" value="<%=data.amount%>" readonly/></td>
+            </tr>
+            <tr>
+                <td>이메일주소</td><td><input type="text" id="bEmail" name="bEmail" value="<%=data.email%>" readonly/></td>
+            </tr>
+            <tr>
+                <td>성함</td><td><input type="text" id="bName" name="bName" value="<%=data.name%>" readonly/></td>
+            </tr>
+            <tr>
+                <td>전화번호</td><td><input type="text" id="bTelNo" name="bTelNo" value="<%=data.telno%>" readonly/></td>
+            </tr>
+            <tr>
+                <td>주소</td><td><input type="text" id="bAddress" name="bAddress" value="<%=data.address%>" readonly/></td>
+            </tr>
+            <tr>
+                <td>우편번호</td><td><input type="text" id="bPostNo" name="bPostNo" value="<%=data.postno%>" readonly/></td>
+            </tr>
+            <tr>
+                <td>가상계좌 입금일자</td><td><input type="text" id="payDate" name="payDate" value="" readonly/></td>
+            </tr>
+            <tr>
+                <td colspan="2" align="center"><input type="button" id="submitBtn" name="submitBtn" value="결제"/></td>
+            </tr>
+        </table>
+    </div>
+</div>
+</form>

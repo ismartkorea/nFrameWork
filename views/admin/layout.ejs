@@ -1,0 +1,492 @@
+<%
+    // USER 등급 조회.
+    var usrLevel = session.usrLevel;
+    console.log(">>> usrLevel : " + usrLevel);
+%>
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>JT-LAB - Admin Page</title>
+
+    <!-- jquery ui CSS -->
+    <link href="/admin/css/jquery-ui.min.css" rel="stylesheet">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="/admin/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- MetisMenu CSS -->
+    <link href="/admin/css/metisMenu.min.css" rel="stylesheet">
+
+    <!-- Timeline CSS -->
+    <link href="/admin/css/timeline.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="/admin/css/startmin.css" rel="stylesheet">
+
+    <!-- Morris Charts CSS -->
+    <link href="/admin/css/morris.css" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link href="/admin/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+    <!-- Notification CSS -->
+    <link href="/admin/css/jquery_notification.css" type="text/css" rel="stylesheet"/>
+    <style type="text/css">
+        .nav-counter {
+            right: 1px;
+            min-width: 8px;
+            height: 20px;
+            line-height: 20px;
+            margin-top: -11px;
+            padding: 0 6px;
+            font-weight: normal;
+            color: white;
+            text-align: center;
+            text-shadow: 0 1px rgba(0, 0, 0, 0.2);
+            background: #e23442;
+            border: 1px solid #911f28;
+            border-radius: 11px;
+            background-image: -webkit-linear-gradient(top, #e8616c, #dd202f);
+            background-image: -moz-linear-gradient(top, #e8616c, #dd202f);
+            background-image: -o-linear-gradient(top, #e8616c, #dd202f);
+            background-image: linear-gradient(to bottom, #e8616c, #dd202f);
+            -webkit-box-shadow: inset 0 0 1px 1px rgba(255, 255, 255, 0.1), 0 1px rgba(0, 0, 0, 0.12);
+            box-shadow: inset 0 0 1px 1px rgba(255, 255, 255, 0.1), 0 1px rgba(0, 0, 0, 0.12);
+        }
+        .loading {
+            position: fixed;
+            left: 0px;
+            top: 0px;
+            width: 100%;
+            height: 100%;
+            z-index: 9999;
+            background: url(/admin/images/loading.gif) center no-repeat #fff;
+            opacity:.9;
+        }
+    </style>
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body>
+<div id="loading" class="loading"></div>
+<div id="wrapper">
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="/admin">JTLAB ADMIN</a>
+        </div>
+
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </button>
+
+        <!-- Top Navigation: Left Menu -->
+        <ul class="nav navbar-nav navbar-left navbar-top-links">
+            <li><a href="/" data-toggle="tooltip" title="JT-LAB 메인화면으로 이동."><i class="fa fa-home fa-fw"></i> Website</a></li>
+        </ul>
+
+        <!-- Top Navigation: Right Menu -->
+        <ul class="nav navbar-right navbar-top-links">
+            <li class="dropdown navbar-inverse">
+<!--
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                    신규접수 <span class="nav-counter" id="qnaCnt"></span><b class="caret"></b>
+                </a>
+                <ul id="newUL" class="dropdown-menu dropdown-alerts"></ul>
+            </li>
+            <li class="dropdown navbar-inverse">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                    신규댓글 <span class="nav-counter" id="commentCnt"></span><b class="caret"></b>
+                </a>
+                <ul id="replyUL" class="dropdown-menu dropdown-alerts"></ul>
+            </li>
+-->
+            <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                    <i class="fa fa-user fa-fw"></i> <%=session.usrName%> <b class="caret"></b>
+                </a>
+                <ul class="dropdown-menu dropdown-user">
+                    <li><a href="/admin/login/logout"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+
+        <!-- Sidebar -->
+        <div class="navbar-default sidebar" role="navigation">
+            <div class="sidebar-nav navbar-collapse">
+
+                <ul class="nav" id="side-menu">
+                    <li>
+                        <a href="/admin/" data-toggle="tooltip" title="대쉬보드 화면입니다." class="active"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
+                    </li>
+<%
+    if(usrLevel=="000" || usrLevel == "002") {
+%>
+                    <li>
+                        <a href="/admin/managers" data-toggle="tooltip" title="담당자 관리화면입니다." class="active"><i class="fa fa-dashboard fa-fw"></i> 담당자 관리</a>
+                    </li>
+                    <li>
+                        <a href="/admin/members" data-toggle="tooltip" title="JT-LAB 회원관리화면입니다." class="active"><i class="fa fa-dashboard fa-fw"></i> 회원 관리</a>
+                    </li>
+<%
+    }
+    if(usrLevel=="000" || usrLevel=="001" || usrLevel == "002") {
+%>
+                    <li>
+                        <a href="/admin/announces" data-toggle="tooltip" title="JT-LAB 공지사항관리화면입니다.." class="active"><i class="fa fa-dashboard fa-fw"></i> 공지사항 관리</a>
+                    </li>
+<%
+    }
+
+    if(usrLevel=="000" || usrLevel=="001" || usrLevel == "002") {
+%>
+                    <li>
+                        <a href="/admin/data" data-toggle="tooltip" title="JT-LAB 자료실 관리화면입니다." class="active"><i class="fa fa-dashboard fa-fw"></i> 자료실 관리</a>
+                    </li>
+                    <li>
+                        <a href="/admin/qnas" data-toggle="tooltip" title="JT-LAB Q&A문의 관리화면입니다." class="active"><i class="fa fa-dashboard fa-fw"></i> 1:1 문의 관리</a>
+                    </li>
+<%
+    }
+    if(usrLevel=="000" || usrLevel == "002") {
+%>
+                    <li>
+                        <a href="#" data-toggle="tooltip" title="결제관리화면입니다." class="active"><i class="fa fa-sitemap fa-fw"></i> 결제 관리</a>
+                        <ul class="nav nav-second-level">
+                            <li>
+                                <a href="/admin/pays" data-toggle="tooltip" title="결제 리스트 조회 화면입니다."> 결제 조회</a>
+                            </li>
+                            <li>
+                                <a href="/admin/pay/settling/list" data-toggle="tooltip" title="일/월/년 결산조회 화면입니다."> 결산 조회</a>
+                            </li>
+                            <li>
+                                <a href="/admin/pay/order/list" data-toggle="tooltip" title="주문 테이블 상세 조회 화면입니다."> 주문 상세 테이블 조회</a>
+                            </li>
+                        </ul>
+                    </li>
+<%
+    }
+    if(usrLevel=="000" || usrLevel == "002") {
+%>
+                    <li>
+                        <a href="#" data-toggle="tooltip" title="JT-LAB 서비스(상품),콘텐츠 관리화면입니다." class="active"><i class="fa fa-sitemap fa-fw"></i> 상품 관리</a>
+                        <ul class="nav nav-second-level">
+                            <li>
+                                <a href="/admin/product" data-toggle="tooltip" title="JT-LAB 서비스(상품) 메인 관리화면입니다."><i class="fa fa-dashboard fa-fw"></i> 상품 메인 관리</a>
+                            </li>
+                            <li>
+                                <a href="/admin/product/banner" data-toggle="tooltip" title="JT-LAB 상품 배너 영역 관리화면입니다."><i class="fa fa-dashboard fa-fw"></i> 상품 배너 관리</a>
+                            </li>
+                            <li>
+                                <a href="#" data-toggle="tooltip" title="카테고리(대중소) 관리" class="active"><i class="fa fa-sitemap fa-fw"></i> 분류코드 관리</a>
+                                <ul class="nav nav-second-level">
+                                    <li>
+                                        <a href="/admin/product/category">대분류코드 관리</a>
+                                    </li>
+                                    <li>
+                                        <a href="/admin/product/category2">중분류코드 관리</a>
+                                    </li>
+                                    <li>
+                                        <a href="/admin/product/category3">소분류코드 관리</a>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+<%
+    }
+    //if(usrLevel=="000" || usrLevel == "001" || usrLevel == "002") {
+%>
+<!--
+                    <li>
+                        <a href="#" data-toggle="tooltip" title="AssistPro 관리메뉴" class="active"><i class="fa fa-sitemap fa-fw"></i> Assist Pro</a>
+                        <ul class="nav nav-second-level">
+                            <li>
+                                <a href="/admin/assist/request" data-toggle="tooltip" title="AssistPro Q&A 관리화면입니다."><i class="fa fa-dashboard fa-fw"></i>  접수(Q&A) 관리</a>
+                            </li>
+                            <li>
+                                <a href="/admin/assist/data" data-toggle="tooltip" title="AssistPro 자료 관리화면입니다."><i class="fa fa-dashboard fa-fw"></i> 자료실 관리</a>
+                            </li>
+                            <li>
+                                <a href="#" data-toggle="tooltip" title="카테고리(대중소) 관리" class="active"><i class="fa fa-sitemap fa-fw"></i> 분류코드 관리</a>
+                                <ul class="nav nav-second-level">
+                                    <li>
+                                        <a href="/admin/code/category">대분류코드 관리</a>
+                                    </li>
+                                    <li>
+                                        <a href="/admin/code/category2">중분류코드 관리</a>
+                                    </li>
+                                    <li>
+                                        <a href="/admin/code/category3">소분류코드 관리</a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a href="/admin/assist/announce" data-toggle="tooltip" title="AssistPro 공지사항 관리 화면입니다."><i class="fa fa-dashboard fa-fw"></i> 공지사항 게시판</a>
+                            </li>
+                        </ul>
+                    </li>
+//-->
+<%
+    //}
+    if(usrLevel=="000" || usrLevel == "002") {
+%>
+                    <li>
+                        <a href="/admin/visit" data-toggle="tooltip" title="접속 관리화면입니다." class="active"><i class="fa fa-dashboard fa-fw"></i> 접속 관리</a>
+                    </li>
+                    <li>
+                        <a href="/admin/commoncd" data-toggle="tooltip" title="공통코드 관리화면입니다." class="active"><i class="fa fa-dashboard fa-fw"></i> 공통코드 관리</a>
+                    </li>
+                    <li>
+                        <a href="#" class="active"><i class="fa fa-sitemap fa-fw"></i> 쿠폰 관리</a>
+                        <ul class="nav nav-second-level">
+                            <li>
+                                <a href="/admin/coupon/use/" data-toggle="tooltip" title="쿠폰 접수 관리 화면입니다.">쿠폰 접수 관리</a>
+                            </li>
+                            <li>
+                                <a href="/admin/coupon/" data-toggle="tooltip" title="쿠폰 관리 화면입니다.">쿠폰 관리</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="/admin/notification" data-toggle="tooltip" title="접속 관리화면입니다." class="active"><i class="fa fa-dashboard fa-fw"></i> Admin 공지사항 관리</a>
+                    </li>
+<%
+    }
+    if(usrLevel=="000" || usrLevel == "001" || usrLevel == "002") {
+%>
+                    <li>
+                        <a href="#" data-toggle="tooltip" title="자동차모델(코드) 관리화면입니다." class="active"><i class="fa fa-sitemap fa-fw"></i> 자동차모델(코드) 관리</a>
+                        <ul class="nav nav-second-level">
+                            <li>
+                                <a href="/admin/model/category">브랜드코드 관리</a>
+                            </li>
+                            <li>
+                                <a href="/admin/model/category2">모델코드 관리</a>
+                            </li>
+                        </ul>
+                    </li>
+<!--
+                    <li>
+                        <a href="/admin/session" data-toggle="tooltip" title="로그인 세션 관리화면입니다." class="active"><i class="fa fa-dashboard fa-fw"></i> 로그인 세션 관리</a>
+                    </li>
+-->
+<!--
+작업중임.
+                    <li>
+                        <a href="/admin/email" data-toggle="tooltip" title="Email 전송 관리화면입니다." class="active"><i class="fa fa-dashboard fa-fw"></i> Email 전송 관리</a>
+                    </li>
+//-->
+                    <li>
+                        <a href="/admin/board" data-toggle="tooltip" title="버그 관리화면입니다." class="active"><i class="fa fa-dashboard fa-fw"></i> 프로그램 버그 신고</a>
+                    </li>
+<%
+    }
+    if(usrLevel=="000" || usrLevel == "002") {
+%>
+                    <li>
+                        <a href="/admin/board" data-toggle="tooltip" title="로그 관리화면입니다." class="active"><i class="fa fa-dashboard fa-fw"></i> 로그 관리</a>
+                        <ul class="nav nav-second-level">
+                            <li>
+                                <a href="/admin/log/sql/error">SQL Error Logs</a>
+                            </li>
+                        </ul>
+                    </li>
+<%
+    }
+    if(usrLevel=="000" || usrLevel == "001" || usrLevel == "002") {
+%>
+<!--
+                    <li>
+                        <a href="#"><i class="fa fa-sitemap fa-fw"></i> Multi-Level Dropdown<span class="fa arrow"></span></a>
+                        <ul class="nav nav-second-level">
+                            <li>
+                                <a href="#">Second Level Item</a>
+                            </li>
+                            <li>
+                                <a href="#">Third Level <span class="fa arrow"></span></a>
+                                <ul class="nav nav-third-level">
+                                    <li>
+                                        <a href="#">Third Level Item</a>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+-->
+                    <li>
+                        <a href="/admin/delivery" data-toggle="tooltip" title="배송 관리화면입니다." class="active"><i class="fa fa-dashboard fa-fw"></i> 배송 관리</a>
+                        <ul class="nav nav-second-level">
+                            <li>
+                                <a href="/admin/delivery">배송 조회</a>
+                            </li>
+                        </ul>
+                    </li>
+<%
+    }
+%>
+                </ul>
+
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Content -->
+    <div id="page-wrapper">
+        <%-body -%>
+    </div>
+
+</div>
+
+<!-- jQuery -->
+<script src="/admin/js/jquery.min.js"></script>
+<script src="/admin/js/jquery-ui.min.js"></script>
+<script src="/admin/js/jquery.form.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/admin/js/bootstrap.min.js"></script>
+
+<!-- Metis Menu Plugin JavaScript -->
+<script src="/admin/js/metisMenu.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/admin/js/startmin.js"></script>
+
+<!-- print JavaScript -->
+<script src="/admin/js/printThis.js"></script>
+
+<!-- notification js -->
+<script src="/admin/js/jquery_notification.js"></script>
+
+<script type="text/javascript">
+    $("document").ready(function() {
+
+        // 로딩완료 처리.
+        $("#loading").removeClass("loading");
+
+        // 툴팁 처리.
+        $('[data-toggle="tooltip"]').tooltip();
+        var ssUserId = "<%=session.usrId%>";
+        //alert("ssUserId = " + ssUserId);
+        if(ssUserId == "undefined" || ssUserId == "") {
+            location.href = "/admin/login";
+        }
+        //
+        $("#commentCnt").css("display", "none");
+        $("#qnaCnt").css("display", "none");
+
+        // 알림 조회 처리.
+        $.ajax({
+            url : "/admin/getNotification",
+            type : "post",
+            dataType : "json",
+            data : {},
+            success : function(data) {
+                if(data.result == "OK") {
+                    var info = data.info;
+                    //alert(JSON.stringify(info));
+                    if(info[0]!=null) {
+                        showNotification({
+                            message: info[0].title + " (" + info[0].date + ")",
+                            type: "info",
+                            autoClose: true,
+                            duration: 5
+                        });
+                    }
+                }
+            },
+            error : function(err) {
+                alert("errCode : " + JSON.stringify(err));
+            }
+        });
+
+        // 알림 조회 처리.
+        $.ajax({
+            url : "/admin/getNewQnaCount",
+            type : "post",
+            dataType : "json",
+            data : {},
+            success : function(data) {
+                if(data.result == "OK") {
+                    var cnt = data.count;
+                    if(cnt > 0) {
+                        var addHTML = "";
+                        $("#qnaCnt").css("display", "inline-block");
+                        $("#qnaCnt").text(cnt);
+                        $.each(data.rList1, function(i, item) {
+                            addHTML = "<li>";
+                            addHTML += "<a href='/admin/assist/request/view/"+item.reqNo+"/"+item.replyViewYn+"/"+item.replyerViewYn+"'>";
+                            addHTML += "<div>";
+                            addHTML += "<i class='fa fa-comment fa-fw'></i>"+item.troStatDesc;
+                            addHTML += "<span class='pull-right text-muted small'>"+item.date+"</span>";
+                            addHTML += "</div></a></li>";
+                            $("#newUL").append(addHTML);
+                        });
+                    } else {
+                        $("#qnaCnt").css("display", "none");
+                        $("#newUL").html("<li>No DATA</li>");
+                    }
+                }
+            },
+            error : function(err) {
+                alert("errCode : " + JSON.stringify(err));
+            }
+        });
+
+        // 신규 코멘트 카운트 호출.
+        $.ajax({
+            url : "/admin/getNewCommentCount",
+            type : "post",
+            dataType : "json",
+            data : {},
+            success : function(data) {
+                if(data.result == "OK") {
+                    var cnt = data.count;
+                    //alert(JSON.stringify(info));
+                    if(cnt > 0) {
+                        var addHTML = "";
+                        $("#commentCnt").css("display", "inline-block");
+                        $("#commentCnt").text(cnt);
+                        $.each(data.rList2, function(i, item) {
+                            addHTML = "<li>";
+                            addHTML += "<a href='/admin/assist/request/view/"+item.reqNo+"/comment/"+item.viewYn+"'>";
+                            addHTML += "<div>";
+                            addHTML += "<i class='fa fa-comment fa-fw'></i>"+item.writerNm+" ("+item.reqNo+")";
+                            addHTML += "<span class='pull-right text-muted small'>"+item.date+"</span>";
+                            addHTML += "</div></a></li>";
+                            $("#replyUL").append(addHTML);
+                        });
+                    } else {
+                        $("#commentCnt").css("display", "none");
+                        $("#replyUL").html("<li>No DATA</li>");
+                    }
+                }
+            },
+            error : function(err) {
+                alert("errCode : " + JSON.stringify(err));
+            }
+        });
+
+        // AssistPro 접수관리 카운트 조회
+
+    });
+</script>
+
+</body>
+</html>

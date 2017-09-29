@@ -1,0 +1,122 @@
+<% layout('../../../admin/layout') -%>
+<script type="text/javascript" src="/js/jquery-1.11.3.min.js"></script>
+<script type="text/javascript" src="/js/jquery.form.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+
+        // 수정 화면 버튼 이벤트 처리.
+        $("#editBtn").on("click", function(e) {
+            e.preventDefault();
+            location.href = "/admin/product/banner/edit";
+        });
+
+        // 이전 화면 버튼 이벤트 처리.
+        $("#prevBtn").on("click", function(e) {
+            e.preventDefault();
+            location.href = "/admin/product";
+        });
+    });
+</script>
+<div class="container-fluid">
+
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="page-header">상품 배너 관리 화면</h1>
+        </div>
+        <div>
+            <h6>* 서비스/솔루션 메뉴의 상품 메인 배너 관리를 하는 화면입니다. </h6>
+            <h6>* 수정할 수 있는 항목은 "배너 이미지 사이즈", "버튼 링크"만 가능합니다.</h6>
+            <h6>* 배너이미지는 퍼블리셔(디자이너)만 수정 추가할 수 있습니다.</h6>
+        </div><hr/>
+    </div>
+    <div>
+        <img src="/admin/images/banner_02.png" width="1024px" height="200px" border="0"/>
+    </div>
+    <div>
+        <form name='frm' id="frm" class="form-horizontal">
+            <input type="hidden" id="attImg" name="attImg" value=""/>
+            <div class="form-group form-group-sm form-inline">
+                <label class="col-sm-2 control-label" for="productNo">배너 이미지 URL :</label>
+                <div class="col-sm-10">
+                    <%=result.imgUrl !=null ? result.imgUrl : ''%>
+                </div>
+            </div>
+            <div class="form-group form-group-sm form-inline">
+                <label class="col-sm-2 control-label" for="productNo">배너 이미지 가로 크기:</label>
+                <div class="col-sm-10">
+                    <%=result.imgWidth !=null ? result.imgWidth : '1057'%> px
+                </div>
+            </div>
+            <div class="form-group form-group-sm form-inline">
+                <label class="col-sm-2 control-label" for="productNo">배너 이미지 세로 크기:</label>
+                <div class="col-sm-10">
+                    <%=result.imgHeight !=null ? result.imgHeight : '264'%> px
+                </div>
+            </div>
+            <div class="form-group form-group-sm form-inline">
+                <label class="col-sm-2 control-label" for="productNo">배너버튼1 링크URL:</label>
+                <div class="col-sm-10">
+                    <%=result.btn1LinkUrl !=null ? result.btn1LinkUrl : ''%>
+                </div>
+            </div>
+            <div class="form-group form-group-sm form-inline">
+                <label class="col-sm-2 control-label" for="productNo">배너버튼1 링크명:</label>
+                <div class="col-sm-10">
+                    <%=result.btn1LinkNm !=null ? result.btn1LinkNm : ''%>
+                </div>
+            </div>
+            <div class="form-group form-group-sm form-inline">
+                <label class="col-sm-2 control-label" for="productNo">배너버튼2 링크URL:</label>
+                <div class="col-sm-10">
+                    <%=result.btn2LinkUrl !=null ? result.btn2LinkUrl : ''%>
+                </div>
+            </div>
+            <div class="form-group form-group-sm form-inline">
+                <label class="col-sm-2 control-label" for="productNo">배너버튼2 링크명:</label>
+                <div class="col-sm-10">
+                    <%=result.btn2LinkNm !=null ? result.btn2LinkNm : ''%>
+                </div>
+            </div>
+            <div class="form-group form-group-sm form-inline">
+                <label class="col-sm-2 control-label" for="productNo">배너버튼3 링크URL:</label>
+                <div class="col-sm-10">
+                    <%=result.btn3LinkUrl !=null ? result.btn3LinkUrl : ''%>
+                </div>
+            </div>
+            <div class="form-group form-group-sm form-inline">
+                <label class="col-sm-2 control-label" for="productNo">배너버튼3 링크명:</label>
+                <div class="col-sm-10">
+                    <%=result.btn3LinkNm !=null ? result.btn3LinkNm : ''%>
+                </div>
+            </div>
+            <div class="form-group form-group-sm form-inline">
+                <label class="col-sm-2 control-label" for="productNo">배너버튼4 링크URL:</label>
+                <div class="col-sm-10">
+                    <%=result.btn4LinkUrl !=null ? result.btn4LinkUrl : ''%>
+                </div>
+            </div>
+            <div class="form-group form-group-sm form-inline">
+                <label class="col-sm-2 control-label" for="productNo">배너버튼4 링크명:</label>
+                <div class="col-sm-10">
+                    <%=result.btn4LinkNm !=null ? result.btn4LinkNm : ''%>
+                </div>
+            </div>
+            <div class="form-group form-group-sm form-inline">
+                <label class="col-sm-2 control-label" for="productNo">배너버튼5 링크URL:</label>
+                <div class="col-sm-10">
+                    <%=result.btn5LinkUrl !=null ? result.btn5LinkUrl : ''%>
+                </div>
+            </div>
+            <div class="form-group form-group-sm form-inline">
+                <label class="col-sm-2 control-label" for="productNo">배너버튼5 링크명:</label>
+                <div class="col-sm-10">
+                    <%=result.btn5LinkNm !=null ? result.btn5LinkNm : ''%>
+                </div>
+            </div>
+            <p align="right">
+                <input type="button" id="editBtn" name="editBtn" class="btn btn-default" value="수정" />
+                <input type="button" id="prevBtn" name="prevBtn" class="btn btn-default" value="이전 화면" />
+            </p>
+        </form>
+    </div>
+</div>

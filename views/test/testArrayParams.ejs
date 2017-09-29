@@ -1,0 +1,44 @@
+<!DOCTYPE>
+<html lang="ko">
+<head>
+    <title>에디터 테스트</title>
+    <!-- Bootstrap core CSS     -->
+    <link href="/css/bootstrap.css" rel="stylesheet" />
+    <!--   Core JS Files   -->
+    <script src="/js/jquery-1.11.3.min.js" type="text/javascript"></script>
+    <script src="/js/bootstrap.min.js" type="text/javascript"></script>
+    <script type="text/javascript" src="/ckeditor/ckeditor.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $("#submitBtn").on('click', function(e) {
+                $("#frm").attr('method', 'post');
+                $("#frm").attr('action', '/test/arrays');
+                $("#frm").submit();
+            });
+        });
+    </script>
+</head>
+<body>
+<form id="frm" name="frm">
+<div id="nav">
+    <h1>테스터</h1>
+</div>
+<div id="content">
+    테스트1 : <input type="text" id="val1" name="val1[]" value=""/><br/>
+    테스트2 : <input type="text" id="val2" name="val2[]" value=""/><br/>
+    테스트3 : <input type="text" id="val3" name="val3[]" value=""/><br/>
+    테스트4 : <input type="text" id="val4" name="val4[]" value=""/><br/>
+    테스트5 : <input type="text" id="val5" name="val5[]" value=""/><br/>
+    테스트11 : <input type="text" id="val1" name="val1[]" value=""/><br/>
+    테스트12 : <input type="text" id="val2" name="val2[]" value=""/><br/>
+    테스트13 : <input type="text" id="val3" name="val3[]" value=""/><br/>
+    테스트14 : <input type="text" id="val4" name="val4[]" value=""/><br/>
+    테스트15 : <input type="text" id="val5" name="val5[]" value=""/><br/>
+    <input type="button" id="submitBtn" name="submitBtn" value="전송"/>
+</div>
+<div id="footer`">
+    푸터
+</div>
+</form>
+</body>
+</html>

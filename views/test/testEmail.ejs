@@ -1,0 +1,77 @@
+<style type="text/css">
+    /* app/css/main.css */
+    * {
+        box-sizing: border-box;
+    }
+    body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        padding-top: 50px;
+        background-color: #ccc;
+    }
+    input {
+        margin-bottom: 20px;
+        width: 300px;
+        height: 25px;
+        font-size: 16px;
+        color: #3e3e3e;
+    }
+    textarea {
+        font-size: 16px;
+        width: 300px;
+        margin-bottom: 20px;
+        color: #3e3e3e;
+    }
+    button {
+        padding: 15px 25px;
+        font-size: 16px;
+        cursor: pointer;
+        color: #3e3e3e;
+    }
+    button:hover {
+        background-color: #3e3e3e;
+        color: #fefefe;
+    }
+    .alert {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+        color: #fff;
+        margin: 20px;
+        padding: 15px;
+        border-radius: 5px;
+    }
+    .error {
+        background-color: #c43c35;
+        background-repeat: repeat-x;
+        background-image: linear-gradient(top, #ee5f5b, #c43c35);
+        border-color: #c43c35 #c43c35 #882a25;
+    }
+    .success {
+        background-color: #57a957;
+        background-repeat: repeat-x;
+        background-image: linear-gradient(top, #62c462, #57a957);
+        border-color: #57a957 #57a957 #3d773d;
+    }
+</style>
+<script type="text/javascript">
+
+    function onSubmit() {
+        var frm = document.frm;
+        frm.action = '/test/sendContact';
+        frm.submit();
+    }
+</script>
+<!-- app/index.html -->
+<body>
+<div class="alert"></div>
+<form id="frm" name="frm" method="post">
+<input type="text" id="name" name="name" placeholder="Name">
+<input type="email" name="email" id="email" placeholder="Email">
+<textarea name="message" id="message" cols="30" rows="10" placeholder="Enter your message."></textarea>
+<button id="send-contact" type="submit" onclick="onSubmit();">Send</button>
+</form>
+</body>

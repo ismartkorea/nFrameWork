@@ -1,0 +1,62 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>TextArea TEST</title>
+    <!-- Bootstrap  -->
+    <link rel="stylesheet" href="/css/bootstrap.css">
+    <style type="text/css">
+        button {
+            background: #cccccc;
+            border: 1px solid #dedede;
+            cursor: pointer;
+            padding: 10px;
+            width: 100px;
+        }
+        button.btn1:hover{
+            background-color: #e6efc2;
+            border:1px solid #dedede;
+            color:#ee88ee;
+        }
+    </style>
+    <!-- jQuery -->
+    <script src="/js/jquery.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+
+            $("#submitBtn").on('click', function(e) {
+                e.preventDefault();
+
+                $("#frm").attr("action", "/test/textarea/process");
+                $("#frm").submit();
+
+            });
+
+            $("#resetBtn").on('click', function(e) {
+                e.preventDefault();
+
+                $("#txtarea2").val("");
+            });
+
+        });
+    </script>
+</head>
+<body>
+<form id="frm" name="frm" method="post">
+<div class="container">
+    <div class="row">
+        <h1>TextArea</h1>
+    </div>
+    <div class="col-md-6">
+        <textarea id="txtarea" name="txtarea" rows="30" style="width:80%;" wrap="hard"></textarea>
+        <button type="submit" id="submitBtn" class="btn1" name="submitBtn">전송</button>
+    </diV>
+    <div class="col-md-6">
+        <textarea id="txtarea2" name="txtarea" rows="30" style="width:80%;" wrap="soft"><%=result%></textarea>
+        <button id="resetBtn" class="btn1" name="resetBtn">리셋</button>
+    </div>
+</div>
+</form>
+</body>
+</html>

@@ -1,0 +1,65 @@
+<% layout('../../admin/layout') -%>
+<script type="text/javascript" src="/js/jquery-1.11.3.min.js"></script>
+<script type="text/javascript" src="/ckeditor/ckeditor.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        // 이전 화면 이동 버튼 이벤트 처리.
+        $("#prevBtn").on("click", function(e) {
+            e.preventDefault();
+            location.href = "/admin/coupon";
+        });
+        // 수정 버튼 이벤트 처리.
+        $("#submitBtn").on("click", function(e) {
+            e.preventDefault();
+            var optValue = $.trim($("#couponStatus option:selected").val());
+            if(optValue=="") {
+                alert("쿠폰상태를 선택하여주세요.");
+                $("#couponStatus").focus();
+                return;
+            }
+
+            // 전송처리.
+            $("#frm").attr("method", "post");
+            $("#frm").attr("action", "/admin/coupon/edit/do");
+            $("#frm").submit();
+        });
+    });
+</script>
+<div class="container-fluid">
+
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="page-header">쿠폰 관리 화면</h1>
+        </div>
+        <form name="frm" id="frm" method="post" class="form-horizontal">
+            <input type="hidden" id="couponNo" name="couponNo" value="<%=result.couponNo%>"/>
+            <table class="table table-bordered">
+                <tr>
+                    <td>
+                        <label for="couponNo">쿠폰번호</label>
+                    </td>
+                    <td><%= result.couponNo %></td>
+                </tr>
+                <tr>
+                    <td>
+                        <label for="couponStatus">쿠폰상태</label>
+                    </td>
+                    <td>
+                        <select id="couponStatus" name="couponStatus">
+                            <option>선택하세요.</option>
+                            <option value="NOTUSED" <% if(result.couponStatus == "NOTUSED") {%> selected <% } %>>미사용</option>
+                            <option value="USED" <% if(result.couponStatus == "USED") {%> selected <% } %>>사용</option>
+                            <option value="DISUSE" <% if(result.couponStatus == "DISUSE") {%> selected <% } %>>폐기</option>
+                        </select>
+                    </td>
+                </tr>
+            </table>
+            <p class="form-group">
+            <div class="col-sm-offset-2 col-sm-10 text-right">
+                <input type="button" id="submitBtn" name="submitBtn" class="btn btn-default" value="전송"/>&nbsp;
+                <input type="button" id="prevBtn" name="prevBtn" class="btn btn-default" value="이전화면"/>
+            </div>
+            </p>
+        </form>
+    </div>
+</div>

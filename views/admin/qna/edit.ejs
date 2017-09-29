@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title><%= title %></title>
+    <link rel='stylesheet prefetch' href='/css/bootstrap.min.css'>
+    <style type="text/css">
+        #wrapper {
+            width: 80%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+    </style>
+    <script type="text/javascript" src="/js/jquery-1.11.3.min.js"></script>
+    <script type="text/javascript" src="/ckeditor/ckeditor.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            //
+            CKEDITOR.replace("editBox");
+
+            $("#prevBtn").on('click', function() {
+                location.href = "/board";
+            });
+            $("#submitBtn").on('click', function() {
+                var content = CKEDITOR.instances.editBox.getData();
+                $("#content").val(content);
+                $("#frm").attr("action", "/board/edit/do");
+                $("#frm").submit();
+            });
+        });
+    </script>
+</head>
+<body>
+<div id="wrapper">
+    <form name="frm" id="frm" method="post">
+        <input type="hidden" id="no" name="no" value="<%=board.no%>"/>
+        <input type="hidden" id="content" name="content" value=""/>
+        <table style="margin: 0 auto">
+            <tr>
+                <td>
+                    <label for="">글 번호</label>
+                </td>
+                <td>
+                    <%= board.no %>
+                </td>
+                <td>
+                    <label for="">제목</label>
+                </td>
+                <td>
+                    <input type="text" name="title" id="title" value="<%= board.title %>"/>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="">작성자</label>
+                </td>
+                <td>
+                    <input type="text" name="writer" id="writer" value="<%=board.writer%>"/>
+                </td>
+                <td>
+                    <label for="">작성날짜</label>
+                </td>
+                <td><%=board.date%></td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="">글 내용</label>
+                </td>
+                <td>
+                    <textarea id="editBox" name="editBox" cols="80" rows="10"><%=board.content%></textarea>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="6" style="align : center; height : 20px">
+                    <input type="button" id="prevBtn" name="prevBtn" value="리스트 화면"/>&nbsp;
+                    <input type="button" id="submitBtn" name="submitBtn" value="확인"/>
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
+</body>
+</html>

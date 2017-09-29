@@ -1,0 +1,40 @@
+<!DOCTYPE>
+<html lang="ko">
+<head>
+    <title>에디터 테스트</title>
+    <!-- Bootstrap core CSS     -->
+    <link href="/css/bootstrap.css" rel="stylesheet" />
+    <style>
+        textarea {
+            margin : 0px;
+            padding : 0px;
+            line-height : 8px;
+        }
+    </style>
+    <!--   Core JS Files   -->
+    <script src="/js/jquery-1.11.3.min.js" type="text/javascript"></script>
+    <script src="/js/bootstrap.min.js" type="text/javascript"></script>
+    <script type="text/javascript" src="/ckeditor/ckeditor.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            var editText = $("#editText").val();
+            var re = /<br *\/?>/gi;
+            $("#editText").val(editText.replace(re, "\n").replace(/&nbsp;/g, ''));
+            //$('#editText').css('line-height', '14px');
+        });
+    </script>
+</head>
+<body>
+<form id="frm" name="frm">
+    <div id="nav">
+        <h1>테스터 에디터</h1>
+    </div>
+    <div id="content">
+        <textarea id="editText" name="editText" style="width:800px; height:100px;"><%-result%></textarea>
+    </div>
+    <div id="footer`">
+        푸터
+    </div>
+</form>
+</body>
+</html>

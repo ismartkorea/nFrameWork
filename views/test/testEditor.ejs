@@ -1,0 +1,33 @@
+<!DOCTYPE>
+<html lang="ko">
+ <head>
+     <title>에디터 테스트</title>
+     <!-- Bootstrap core CSS     -->
+     <link href="/css/bootstrap.css" rel="stylesheet" />
+     <!--   Core JS Files   -->
+     <script src="/js/jquery-1.11.3.min.js" type="text/javascript"></script>
+     <script src="/js/bootstrap.min.js" type="text/javascript"></script>
+     <script type="text/javascript" src="/ckeditor/ckeditor.js"></script>
+     <script type="text/javascript">
+         $(document).ready(function() {
+             // 초기 설정.
+             CKEDITOR.replace("editText", {
+                 "filebrowserUploadUrl": "/test/ckedit/upload",
+                 "width" : "800",
+                 "height" : "600"
+             });
+         });
+     </script>
+ </head>
+<body>
+  <div id="nav">
+      <h1>테스터 에디터</h1>
+  </div>
+  <div id="content">
+      <textarea id="editText" name="editText"></textarea>
+  </div>
+  <div id="footer`">
+    푸터
+  </div>
+</body>
+</html>

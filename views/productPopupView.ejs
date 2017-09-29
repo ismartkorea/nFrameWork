@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="ko">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>JT-LAB</title>
+
+    <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
+    <meta name="viewport" content="width=device-width" />
+
+    <!-- Facebook and Twitter integration -->
+    <meta property="og:title" content=""/>
+    <meta property="og:image" content=""/>
+    <meta property="og:url" content=""/>
+    <meta property="og:site_name" content=""/>
+    <meta property="og:description" content=""/>
+    <meta name="twitter:title" content="" />
+    <meta name="twitter:image" content="" />
+    <meta name="twitter:url" content="" />
+    <meta name="twitter:card" content="" />
+
+    <!-- <link href='https://fonts.googleapis.com/css?family=Work+Sans:400,300,600,400italic,700' rel='stylesheet' type='text/css'> -->
+
+    <!-- Animate.css -->
+    <link rel="stylesheet" href="/css/animate.css">
+    <!-- Icomoon Icon Fonts-->
+    <link rel="stylesheet" href="/css/icomoon.css">
+    <!-- Bootstrap  -->
+    <link rel="stylesheet" href="/css/bootstrap.css">
+
+    <!-- Magnific Popup -->
+    <link rel="stylesheet" href="/css/magnific-popup.css">
+
+    <!-- Theme style  -->
+    <link rel="stylesheet" href="/css/style.css">
+
+    <!-- Modernizr JS -->
+    <script src="/js/modernizr-2.6.2.min.js"></script>
+    <!-- FOR IE9 below -->
+    <!--[if lt IE 9]>
+    <script src="/js/respond.min.js"></script>
+    <![endif]-->
+</head>
+<!--팝업창크기는 css/magnific-popup.css에 mfp-iframe-scaler2 클래스에 지정되어있음-->
+<body>
+<% include include/nav.ejs %>
+
+<div id="fh5co-about-section">
+    <div id="content">
+        <div class="row animate-box">
+            <div class="col-md-8 col-md-offset-2 text-center fh5co-heading">
+                <h2><%=product.pname%></h2>
+                <p>준비중...</p>
+
+                <!-- 일반회원 기본 노출 -->
+                    <table  border="0" cellspacing="0" width="100%" class="table_style11">
+                        <tr>
+                            <td>
+                                <div id="desc"></div>
+                            </td>
+                        </tr>
+                    </table>
+                <!-- #personInfo -->
+
+            </div>
+         </div><hr/>
+        <!-- 게시판 -->
+        <div id="board" style="width: 70%; margin: 0 auto;">
+            <form name="frm" id="frm" method="post" class="form-horizontal">
+                <input type="hidden" id="no" name="no" value="<%=board.no%>"/>
+                <table class="table table-bordered">
+                    <tr>
+                        <td style="width:80px;">
+                            <label for="title">제목</label>
+                        </td>
+                        <td colspan="3">
+                            <%= board.title %>
+                        </td>
+                        <td style="width:80px;">
+                            <label for="no">글 번호</label>
+                        </td>
+                        <td>
+                            <%= board.no %>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label for="date">작성날짜</label>
+                        </td>
+                        <td>
+                            <%=board.date%>
+                        </td>
+                        <td style="width:80px;">
+                            <label for="writer">작성자</label>
+                        </td>
+                        <td>
+                            <%=board.writer%>"
+                        </td>
+                        <td>
+                            <label for="count">조회수</label>
+                        </td>
+                        <td>
+                            <%=board.count%>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="height:420px;">
+                            <label for="content">글 내용</label>
+                        </td>
+                        <td colspan="5"><%-board.content%></td>
+                    </tr>
+                </table>
+                <p class="form-group">
+                <div class="col-sm-offset-2 col-sm-10 text-right">
+                    <input type="button" id="prevBtn" name="prevBtn" class="btn btn-default" value="리스트 화면"/>&nbsp;
+<%
+    if(session.usrId!=null) {
+        if(session.usrId!=board.ins_usr) {
+%>
+                    <input type="button" id="editBtn" name="editBtn" class="btn btn-default" value="수정"/>
+                    <input type="button" id="delBtn" name="delBtn" class="btn btn-default" value="삭제"/>
+<%
+        }
+     }
+%>
+                </div>
+                </p>
+            </form>
+        </div>
+        <div style="width: 70%; margin: 0 auto">
+            <form id="cForm" name="cForm">
+                <div id="commentCount" align="left">Comments(<%=reply.cnt%>)</div><hr/>
+<%
+        if(reply.cnt > 0) {
+            for(var i=0; i < list.length; i++) {
+%>
+                <div id="replyInfo" align="left">
+                <%=list[i].name!=null ?list[i].name:''%>&nbsp;(<%=list[i].date!=null?list[i].date:''%>)&nbsp;<input type="hidden" id="usrId<%=i%>" name="usrId<%=i%>" value="<%=list[i].id%>"/><input type="hidden" id="cNo<%=i%>" name="cNo<%=i%>" value="<%=list[i].no%>"/>
+                <%
+                    if(session.usrId !=null && session.usrId == list[i].id) {
+                %>
+                    <input type="button" id="delCmntBtn<%=i%>" name="delCmntBtn" value="x"/>
+                <%
+                    }
+                %>
+                    <div id="reply<%=i%>">
+                        <%=list[i].comment!=null?list[i].comment:''%>
+                    </div>
+                </div>
+                <hr/>
+<%
+           }
+        }
+%>
+                <div id="commentDiv" align="left">
+                    <textarea id="comment" name="comment" style="width:80%; height:30%; vertical-align: middle" maxlength="100"><%=session.usrId?"":"로그인을 하세요."%></textarea>
+                    <input type="button" id="cmntBtn" name="cmntBtn" value="코멘트" <%=session.usrId?"":"disabled"%>/>
+                </div>
+            </form>
+        </div>
+        <!-- 게시판 -->
+    </div>
+</div>
+    <% include include/footer.ejs %>
+<div class="gototop js-top">
+    <a href="#" class="js-gotop"><i class="icon-arrow-up"></i></a>
+</div>
+
+<!-- jQuery -->
+<script type="text/javascript" src="/js/jquery.min.js"></script>
+<!-- jQuery Easing -->
+<script type="text/javascript" src="/js/jquery.easing.1.3.js"></script>
+<!-- Bootstrap -->
+<script type="text/javascript" src="/js/bootstrap.min.js"></script>
+<!-- Waypoints -->
+<script type="text/javascript" src="/js/jquery.waypoints.min.js"></script>
+<!-- countTo -->
+<script type="text/javascript" src="/js/jquery.countTo.js"></script>
+<!-- Magnific Popup -->
+<script type="text/javascript" src="/js/jquery.magnific-popup.min.js"></script>
+<script type="text/javascript" src="/js/magnific-popup-options.js"></script>
+<!-- Main -->
+<script type="text/javascript" src="/js/main.js"></script>
+<script type="text/javascript">
+<%
+    var desc = product.pdesc.replace(/\n/g, "\\n");
+    console.log(">>> desc : " + desc);
+%>
+var pDesc = '<%-desc%>';
+var pNo = '<%=product.pno%>';
+    $(document).ready(function() {
+        // 상품설명 취득.
+        $("#desc").html(pDesc);
+
+        var boardNo = $.trim($("#no").val());
+        $("div#replyInfo").each(function(idx) {
+            $("input#delCmntBtn"+idx).on("click", function(e){
+                e.preventDefault();
+                //console.log($("input#cNo"+idx).val());
+                //console.log($("input#usrId"+idx).val());
+                var cNo = $.trim($("input#cNo"+idx).val());
+                var userId = $.trim($("input#usrId"+idx).val());
+                var dataList = {
+                    'rno' : cNo,
+                    'bno' : boardNo,
+                    'pNo' : pNo,
+                    'uid' : userId
+                };
+                $.ajax({
+                    type : "post",
+                    url : "/products/comment/del",
+                    dataType : "json",
+                    data : dataList,
+                    success : function(data) {
+                        if(data.result == "OK") {
+                            location.href = "/products/"+pNo+"/view/"+boardNo;
+                        }
+                    },
+                    error : function(request, status, error) {
+                        console.log("Code :  " + request.status + "\n" +
+                                "message : " + request.responseText + "\n" +
+                                "error : " + error);
+                    }
+                });
+            });
+        });
+
+        // console.
+        $("#prevBtn").on('click', function() {
+            location.href = '/products/'+pNo;
+        });
+        $("#editBtn").on('click', function() {
+            location.href = "/products/"+pNo+"/edit/<%=board.no%>";
+        });
+        $("#delBtn").on('click', function() {
+            location.href = "/products/"+pNo+"/delete/<%=board.no%>";
+        });
+        $("#cmntBtn").on('click', function(e) {
+            e.preventDefault();
+            var comment = $.trim($("#comment").val());
+            if(comment=="") {
+                alert("댓글을 입력하세요.");
+                $("#comment").focus();
+                return false;
+            }
+            var dataList = {
+                'no' :  boardNo,
+                'pNo' : pNo,
+                'comment' : comment
+            };
+            $.ajax({
+                type : "post",
+                url : "/products/comment/new",
+                dataType : "json",
+                data : dataList,
+                success : function(data) {
+                    if(data.result == "OK") {
+                        location.href = "/products/"+pNo+"/view/"+boardNo;
+                    }
+                },
+                error : function(request, status, error) {
+                    console.log("Code :  " + request.status + "\n" +
+                            "message : " + request.responseText + "\n" +
+                            "error : " + error);
+                }
+            });
+        });
+
+    });
+
+</script>
+</body>
+</html>

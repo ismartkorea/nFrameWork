@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <title>파일업로드 테스트</title>
+    <!-- Bootstrap core CSS     -->
+    <link href="/css/bootstrap.css" rel="stylesheet" />
+    <!--   Core JS Files   -->
+    <script src="/js/jquery-1.11.3.min.js" type="text/javascript"></script>
+    <!-- form js -->
+    <script src="/js/jquery.form.min.js" type="text/javascript"></script>
+    <script src="/js/bootstrap.min.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $("#uploadBtn").on("click", function(e) {
+                e.preventDefault();
+                // 대표 이미지 체크.
+                if ($("#attchFile").val() == null || $("#attchFile").val() == "") {
+                    alert("파일 선택하여 주세요.");
+                    $("#attchFile").focus();
+                    return false;
+                } else {
+                    //막기위해서는 return false를 잡아주면됨
+                    var ext = $('#attchFile').val().split('.').pop().toLowerCase();
+                    //console.log("ext = " + ext);
+                    if ($.inArray(ext, ['gif', 'png', 'jpg', 'jpeg', 'txt', 'xls', 'xlsx', 'doc', 'ppt', 'pdf']) == -1) {
+                        alert('gif,png,jpg,jpeg, txt, xls, xlsx, doc, ppt 파일만 업로드 할수 있습니다.');
+                        $("#attchFile").focus();
+                        return false;
+                    }
+                }
+                // 파일업로드 처리.
+                $("#fileForm").ajaxForm();
+                $("#fileForm").ajaxSubmit({
+                    url: "/test/upload",
+                    type: "post",
+                    dataType: "json",
+                    beforeSend: function () {
+                        alert("파일업로드시작!");
+                    },
+                    success: function (data) {
+                        alert("result : " + JSON.stringify(data));
+                    },
+                    error:function(request, status, error){
+                        alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+                    }
+                });
+
+            });
+
+        });
+    </script>
+</head>
+<body>
+<form id="fileForm" name="fileForm" action="/test/upload" method="post" enctype="multipart/form-data">
+<div id="nav">
+    <h1>파일업로드 테스트.</h1>
+</div>
+<div id="content">
+    <div>
+        <div>파입업로드</div>
+        <div><input type="file" id="attchFile" name="attchFile" value=""/><input type="button" id="uploadBtn" name="uploadBtn" value="업로드"/></div>
+    </div>
+</div>
+<div id="footer`">
+    푸터
+</div>
+</form>
+</body>
+</html>

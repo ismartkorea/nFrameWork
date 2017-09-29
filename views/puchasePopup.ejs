@@ -1,0 +1,1428 @@
+<%
+// 콤마 붙이기
+function fnComma(num) {
+    var reg = /(^[+-]?\d+)(\d{3})/;
+    num += '';
+    while(reg.test(num)) {
+        num = num.replace(reg, '$1' + ',' + '$2');
+    }
+    return num;
+}
+// 콤마 제거
+function fnUnComma(num) {
+    return (num.replace(/\,/g,""));
+}
+
+/**
+ * 잔여 일수 계산
+ * @param starDt
+ * @param endDt
+ */
+function fncRemainDay(endDt) {
+    var day = 1000 * 60 * 60 * 24;
+    var month = day * 30;
+    var year = month * 12;
+    var remainDay = 0;
+
+//console.log('fncRemainDay endDt : ', endDt);
+    if(endDt !=null) {
+        // 현재날짜
+        var dt = new Date();
+        var nowYear = dt.getFullYear();
+        var nowMonth = (dt.getMonth() + 1) > 9 ? '' + (dt.getMonth() + 1) : '0' + (dt.getMonth() + 1);
+        var nowDay = dt.getDate() > 9 ? '' + dt.getDate() : '0' + dt.getDate();
+        var nowDate = nowYear.toString() + "" + nowMonth.toString() + "" + nowDay.toString();
+
+        //var startDate = new Date(startDt.substr(0,4), startDt.substr(4,2)-1, startDt.substr(6,2));
+        var endDate = new Date(endDt.substr(0, 4), endDt.substr(4, 2), endDt.substr(6, 2));
+        var nDate = new Date(nowDate.substr(0, 4), nowDate.substr(4, 2), nowDate.substr(6, 2));
+//console.log('endDate : ', endDate + '\n');
+//console.log('nDate : ', nDate + '\n');
+
+        var interval = endDate - nDate;
+
+        //var remainYear = parseInt(interval / year);
+        //var remainMonth = parseInt(interval / month);
+        remainDay = parseInt(interval / day);
+    } else {
+        remainDay = 0;
+    }
+//console.log('fncRemainDay : ', remainDay + ' !!!!!!!!! \n');
+
+    return remainDay;
+}
+
+/**
+ * 잔여 월수 계산 함수.
+ * @param endDt
+ * @returns {Number}
+ */
+function fncRemainMonth(endDt) {
+    var day = 1000 * 60 * 60 * 24;
+    var month = day * 30;
+    var year = month * 12;
+    var remainMonth = 0;
+
+    if(endDt != null) {
+        // 현재날짜
+        var dt = new Date();
+        var nowYear = dt.getFullYear();
+        var nowMonth = (dt.getMonth() + 1) > 9 ? '' + (dt.getMonth() + 1) : '0' + (dt.getMonth() + 1);
+        var nowDay = dt.getDate() > 9 ? '' + dt.getDate() : '0' + dt.getDate();
+        var nowDate = nowYear.toString() + "" + nowMonth.toString() + "" + nowDay.toString();
+
+        //var startDate = new Date(startDt.substr(0,4), startDt.substr(4,2)-1, startDt.substr(6,2));
+        var endDate = new Date(endDt.substr(0, 4), endDt.substr(4, 2) - 1, endDt.substr(6, 2));
+        var nDate = new Date(nowDate.substr(0, 4), nowDate.substr(4, 2) - 1, nowDate.substr(6, 2));
+
+        var interval = endDate - nDate;
+
+        //var remainYear = parseInt(interval / year);
+        remainMonth = parseInt(interval / month);
+        //var remainDay = parseInt(interval / day);
+    }
+
+    return remainMonth;
+}
+
+/**
+ * SET DATEFORMAT
+ * @param date
+ * @param sep
+ * @returns {*}
+ */
+function setDateFormat(date, sep) {
+    var retDate = "";
+    if(date.length == 8) {
+        var year = date.substr(0,4);
+//console.log('year : ', year);
+        var month = date.substr(4,2);
+//console.log('month : ', month);
+        var day = date.substr(6,2);
+//console.log('day : ', day);
+        if(sep == null) {
+            sep = ".";
+        }
+        retDate = year + sep + month + sep + day;
+        return retDate;
+    } else {
+        return date;
+    }
+}
+var prvUseTermDays = 0;
+%>
+<!DOCTYPE HTML>
+<html lang="ko">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>구매안내</title>
+    <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
+    <meta name="viewport" content="width=device-width" />
+
+    <!-- Facebook and Twitter integration -->
+    <meta property="og:title" content=""/>
+    <meta property="og:image" content=""/>
+    <meta property="og:url" content=""/>
+    <meta property="og:site_name" content=""/>
+    <meta property="og:description" content=""/>
+    <meta name="twitter:title" content="" />
+    <meta name="twitter:image" content="" />
+    <meta name="twitter:url" content="" />
+    <meta name="twitter:card" content="" />
+
+    <!-- <link href='https://fonts.googleapis.com/css?family=Work+Sans:400,300,600,400italic,700' rel='stylesheet' type='text/css'> -->
+
+    <!-- Animate.css -->
+    <link rel="stylesheet" href="/css/animate.css">
+    <!-- Icomoon Icon Fonts-->
+    <link rel="stylesheet" href="/css/icomoon.css">
+    <!-- Bootstrap  -->
+    <link rel="stylesheet" href="/css/bootstrap.css">
+
+    <!-- Magnific Popup -->
+    <link rel="stylesheet" href="/css/magnific-popup.css">
+
+    <!-- Theme style  -->
+    <link rel="stylesheet" href="/css/style.css">
+
+    <!-- Modernizr JS -->
+    <script src="/js/modernizr-2.6.2.min.js"></script>
+    <!-- FOR IE9 below -->
+    <!--[if lt IE 9]>
+    <script src="/js/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+
+<% include include/nav.ejs %>
+
+<!----- 구매하기 시작  ----->
+<div id="fh5co-about-section">
+    <div class="container pdrl5">
+
+        <!--구매하기  타이틀 시작 -->
+        <div class="fh5co-heading animate-box">
+            <h2 class="ubar">서비스 구매</h2>
+        </div>
+        <!-- 전 이용서비스 데이타 히든 폼 전용 -->
+        <form id="frm0" name="frm0" method="post">
+            <%
+            if(rList4.length > 0) {
+            rList4.forEach(function(item, ix) {
+            %>
+            <input type="hidden" id="prvOrderNo<%=ix%>" name="prvOrderNo" value="<%=item.orderNo%>"/>
+            <input type="hidden" id="prvUsrTermDays<%=ix%>" name="prvUsrTermDays" value="<%=item.useTermDays%>"/>
+            <input type="hidden" id="prvUsredDays<%=ix%>" name="prvUsredDays" value="<%=item.usedDays%>"/>
+            <input type="hidden" id="prvRemainDays<%=ix%>" name="prvRemainDays" value="<%=item.remainDays%>"/>
+            <input type="hidden" id="prvRemainPrice<%=ix%>" name="prvRemainPrice" value="<%=item.remainPrice%>"/>
+            <%
+            });
+            }
+            %>
+        </form>
+
+        <form id="frm1" name="frm1" method="post">
+            <input type="hidden" id="productCode" name="productCode" value=""/>
+            <input type="hidden" id="productUniqCode" name="productUniqCode" value=""/>
+            <input type="hidden" id="productDiv" name="productDiv" value=""/>
+            <input type="hidden" id="productPairCodeYn" name="productPairCodeYn" value=""/>
+            <input type="hidden" id="productPairCode" name="productPairCode" value=""/>
+            <input type="hidden" id="cmpltYn" name="cmpltYn" value=""/>
+            <input type="hidden" id="prevOrderNo" name="prevOrderNo" value=""/>
+            <input type="hidden" id="useTermDays" name="useTermDays" value=""/>
+            <input type="hidden" id="remainDays" name="remainDays" value=""/>
+            <input type="hidden" id="usedDays" name="usedDays" value=""/>
+            <input type="hidden" id="remainPrice" name="remainPrice" value=""/>
+            <input type="hidden" id="subtractPrice" name="subtractPrice" value=""/>
+            <input type="hidden" id="dcntPercent" name="dcntPercent" value=""/>
+            <!--1. 장바구니 시작 -->
+            <div class="col-md-12 animate-box mb40 pdrl0m">
+                <h3>장바구니</h3>
+
+                <table id="allTbl2" border="0" cellspacing="0" width="100%" class="table_style3 bd">
+                    <colgroup>
+                        <col width="15%">
+                        <col width="10%">
+                        <col>
+                        <col width="15%">
+                        <col width="15%">
+                        <col width="10%">
+                        <col width="8%">
+                    </colgroup>
+                    <thead>
+                    <tr>
+                        <th>서비스번호</th>
+                        <th>서비스구분</th>
+                        <th>서비스명</th>
+                        <th>서비스가격</th>
+                        <th>서비스합계가격</th>
+                        <th>신청일수(수량)</th>
+                        <th><input type="image" id="cartAllDelBtn" name="cartAllDelBtn" src="/images/remove.png" class="remove" vlaue="삭제"/></th>
+                    </tr>
+                    </thead>
+                    <tbody id="tList1">
+<%
+    if(rList1.length > 0) {
+        rList1.forEach(function(item, index1) {
+            if(item.pDiv == "M") {
+%>
+                    <tr>
+                        <td colspan="7" class="pdno">
+                            <!-- -->
+                            <table border="0" cellspacing="0" width="100%" class="table_style0 bgc2 bbno">
+                                <colgroup>
+                                    <col width="15%">
+                                    <col width="10%">
+                                    <col>
+                                    <col width="15%">
+                                    <col width="15%">
+                                    <col width="10%">
+                                    <col width="8%">
+                                </colgroup>
+<%
+            }
+%>
+                                <tr>
+                                    <td><%=item.pCode%><input type="hidden" id="1pCode<%=index1%>" name="1pCode" value="<%=item.pCode%>"/></td>
+                                    <td><%=item.pDivNm%><input type="hidden" id="1pDiv<%=index1%>" name="1pDiv" value="<%=item.pDiv%>"/></td>
+                                    <td><%=item.pNm%><input type="hidden" id="1pUniqCode<%=index1%>" name="1pUniqCode" value="<%=item.pUniqCode%>"/></td>
+                                    <td><%=fnComma(item.pPrice)%> 원
+                                        <input type="hidden" id="1orderNo<%=index1%>" name="1orderNo" value="<%=item.orderNo%>"/>
+                                        <input type="hidden" id="1pPrice<%=index1%>" name="1pPrice" value="<%=item.pPrice%>"/>
+                                        <input type="hidden" id="1pPairCodeYn<%=index1%>" name="1pPairCodeYn" value="<%=item.pPairCodeYn%>"/>
+                                        <input type="hidden" id="1pPairCode<%=index1%>" name="1pPairCode" value="<%=item.pPairCode%>"/>
+                                        <input type="hidden" id="1pPoptCnt<%=index1%>" name="1pPoptCnt" value="<%=item.optCnt%>"/>
+                                        <input type="hidden" id="1useTermDays<%=index1%>" name=1useTermDays" value="<%=item.useTermDays%>"/>
+                                        <input type="hidden" id="1pCount<%=index1%>" name=1pCount" value="<%=item.pCount !=null ? item.pCount : 0%>"/>
+                                    </td>
+                                    <td>
+<%
+                if(item.totalPrice !=null && item.totalPrice != '') {
+%>
+                                            <%=fnComma(item.totalPrice)%> 원
+<%
+                }
+%>
+                                    </td>
+                                    <td>
+<%
+                        if(item.pDiv == "M") {
+                            if(item.pType == "HDW") {
+%>
+                                        <%=item.pCount !=null ? item.pCount : 0%> 개
+<%
+                            } else  {
+%>
+                                        <%=item.useTermDays !=null ? item.useTermDays : 0%> 일
+<%
+                            }
+                        }
+%>
+                                    </td>
+                                    <td>
+<%
+                        if(item.pDiv == "M") {
+%>
+                                        <input type="image" id="delBtn<%=index1%>" name="delBtn" src="/images/remove.png" class="remove" value="삭제"/>
+<%
+                        }
+%>
+                                    </td>
+                                </tr>
+<%
+                        if(item.pDiv == "M") {
+%>
+                            </table>
+                            <!-- -->
+                        </td>
+                    </tr>
+<%
+                        }
+                    });
+                }
+%>
+                    </tbody>
+                    <!--
+                    <tr>
+                        <th colspan="5">이용기간</th>
+                    </tr>
+                    <tr>
+                        <td colspan="5" class="left bbdno">
+                            <input type="radio" id="termDays30" name="termDays" value="30" <%//if(termDays=="30") {%>checked<%//}%>/><label id="30" for="termDays30" class="payment"><span><span></span></span>30일</label>
+                            <input type="radio" id="termDays360" name="termDays" value="360" <%//if(termDays=="360") {%>checked<%//}%>/><label id="360" for="termDays360" class="payment"><span><span></span></span>360일</label>
+                        </td>
+                    </tr>
+-->
+                    <tr>
+                        <td colspan="7" class="pdt10 pdbno bbdno">
+                            <!--결제 금액 <input type="text" id="calPayPrice" name="calPayPrice" value="" class="size13hh"readonly/> -
+				잔액 금액 <input type="text" id="calRemainPrice" name="calRemainPrice" value="<%//=price!=null ? fnComma(price) : 0%>" class="size13hh"readonly/> =
+				결제예정금액 <input type="text" id="calPrice" name="calPrice" value="" class="size13hh"readonly/>-->
+                            <div class="service-detail">
+
+                                <!--
+                                    <div class="wid33">
+                                        <div class="wid33in">
+                                            <h3>서비스금액</h3>
+                                            <p>총금액:<input type="text" id="calPayPrice" name="calPayPrice" value="<%//=price!=null ? fnComma(price) : 0%>" class="size7h" readonly/><span class="small">원</span></p>
+                                        </div>
+                                    </div>
+                                    <div class="dispno orna"><img src="/images/minus.png" width="24px"></div>
+                                    <div class="wid33">
+                                        <div class="wid33in">
+                                            <h3>할인금액</h3>
+                                            <p>할인금액:<input type="text" id="discPrice" name="discPrice" value="0" class="size6h" readonly/><span class="small">원</span></p>
+                                            <p class="sub">정산 금액:<input type="text" id="calRemainPrice" name="calRemainPrice" value="0" class="size7h" readonly/><span class="small">원</span></p>
+                                            <p><input type="hidden" id="disCountPct" name="disCountPct" value="0"/></p>
+                                        </div>
+                                    </div>
+                                    <div class="dispno orna2"><img src="/images/equal.png" width="24px"></div>
+-->
+
+                                <div class="text-center">
+                                    <h3>결제예정금액: <span class="pricetext"><input type="text" id="totalCalPayPrice" name="totalCalPayPrice" value="<%=price !=null ? fnComma(price) : 0%>" class="size13hh" readonly/></span>원</h3>
+
+                                    <!--<p id="basePayPart" style="display:none;">(<span class="sub"><input type="text" id="baseCalPayPrice" name="baseCalPayPrice" value="<%//=price!=null ? fnComma(price) : 0%>" class="size6h" readonly/></span>원)</p>-->
+                                </div>
+
+
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="5" class="left backno bbdno pdb5 pdt10"><a href="#" id="saveBtn" class="btn btn-default btnwide100 pdtb15">바로구매</a></td>
+                        <td colspan="2" class="left backno bbdno pdb5 pdt10"><a href="#" id="serviceBtn" class="btn btn-green btnwide100 pdtb15">서비스안내로 돌아가기</a></td>
+                    </tr>
+                </table>
+                <!-- 배송 정보 입력 여부 -->
+                <div class="mt30 mb0">
+                    * 배송 정보가 있습니까?
+                    <div class="dispinline">
+                        <input type="radio" id="shippingUseY" name="pShippingUseYn" value="Y"/><label for="" ><span><span></span></span> 예 </label>
+                        <input type="radio" id="shippingUseN" name="pShippingUseYn" value="N" checked/><label for="" ><span><span></span></span> 아니오 </label>
+                    </div>
+                </div>
+                <!-- 배송 정보 입력 여부 -->
+            </div>
+        </form>
+        <form id="frm2" name="frm2" method="post">
+            <input type="hidden" id="pastOrderNo" name="pastOrderNo" value=""/>
+            <input type="hidden" id="serviceNm" name="serviceNm" value=""/>
+            <input type="hidden" id="orderDate" name="orderDate" value=""/>
+            <input type="hidden" id="pCode2" name="pCode2" value=""/>
+            <input type="hidden" id="pUniqCode2" name="pUniqCode2" value=""/>
+            <input type="hidden" id="pDiv2" name="pDiv2" value=""/>
+            <input type="hidden" id="pPairCodeYn2" name="pPairCodeYn2" value=""/>
+            <input type="hidden" id="pPairCode2" name="pPairCode2" value=""/>
+            <input type="hidden" id="uTermDays" name="uTermDays" value=""/>
+            <input type="hidden" id="payCmpltYn" name="payCmpltYn" value="<%=payCmpltYn%>"/>
+            <input type="hidden" id="shippingUseYn" name="shippingUseYn" value=""/>
+            <input type="hidden" id="orderPostno" name="orderPostno" value="<%=order.cPostno%>"/>
+            <input type="hidden" id="orderAddr1" name="orderAddr1" value="<%=order.cAddr1%>"/>
+            <input type="hidden" id="orderAddr2" name="orderAddr2" value="<%=order.cAddr2%>"/>
+            <input type="hidden" id="orderTelno" name="orderTelno" value="<%=order.cTelNo%>"/>
+            <input type="hidden" id="orderTelno1" name="orderTelno1" value="<%=order.cTelNo1%>"/>
+            <input type="hidden" id="orderTelno2" name="orderTelno2" value="<%=order.cTelNo2%>"/>
+            <input type="hidden" id="orderTelno3" name="orderTelno3" value="<%=order.cTelNo3%>"/>
+            <input type="hidden" id="orderCellno" name="orderCellno" value="<%=order.cCellNo%>"/>
+            <input type="hidden" id="orderCellno1" name="orderCellno1" value="<%=order.cCellNo1%>"/>
+            <input type="hidden" id="orderCellno2" name="orderCellno2" value="<%=order.cCellNo2%>"/>
+            <input type="hidden" id="orderCellno3" name="orderCellno3" value="<%=order.cCellNo3%>"/>
+
+            <!-- 배송입력 부분 -->
+            <div id="shipDiv" class="col-md-12 animate-box mb40 pdrl0m">
+                <h3>배송 정보 입력</h3>
+
+                <div class="mb10">
+                    * 주문자와 수취인 동일합니다.
+                    <div class="dispinline">
+                        <input type="radio" id="shipperSameY" name="shipperSameYn" value="Y" /><label for="" ><span><span></span></span> 예 </label>
+                        <input type="radio" id="shipperSameN" name="shipperSameYn" value="N" checked/><label for="" ><span><span></span></span> 아니오 </label>
+                    </div>
+                </div>
+
+                <table id="shipTbl" border="0" cellspacing="0" width="100%" class="table_style3 bd delivery">
+                    <thead>
+                    <tr>
+                        <th colspan="2" class="left">주문자명: <%=session.usrName%></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th colspan="2" class="left">받는 분 정보 <i class="fa fa-chevron-down" aria-hidden="true"></i></th>
+                        </tr>
+                        <tr>
+                            <th>성명</th>
+                            <td><input type="text" id="receiverNm" name="receiverNm" value=""/></td>
+                        </tr>
+                        <tr>
+                            <th>우편번호</th>
+                            <td>
+                                <input type="text" id="receiverPostno" name="receiverPostno" value="" size="5" maxlength="6" onfocus="this.blur();" readonly/>
+                                <input type="button" id="srchPostNo" name="srchPostNo" value="우편번호검색"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>주소</th>
+                            <td><input type="text" id="receiverAddr1" name="receiverAddr1" value="" size="50" maxlength="100" readonly/></td>
+                        </tr>
+                        <tr>
+                            <th>나머지 주소</th>
+                            <td><input type="text" id="receiverAddr2" name="receiverAddr2" value=""/></td>
+                        </tr>
+                        <tr>
+                            <th>연락처</th>
+                            <td><input type="text" id="receiverTelno1" name="receiverTelno1" value="" maxlength="3"/> - <input type="text" id="receiverTelno2" name="receiverTelno2" value="" maxlength="4"/> - <input type="text" id="receiverTelno3" name="receiverTelno3" value="" maxlength="4"/>
+                                <input type="hidden" id="receiverTelno" name="receiverTelno"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>휴대폰</th>
+                            <td><input type="text" id="receiverCellno1" name="receiverCellno1" value="" maxlength="3"/> - <input type="text" id="receiverCellno2" name="receiverCellno2" value="" maxlength="4"/> - <input type="text" id="receiverCellno3" name="receiverCellno3" value="" maxlength="4"/>
+                                <input type="hidden" id="receiverCellno" name="receiverCellno"/>
+                            </td>
+                        </tr>
+                    </tbody>
+                 </table>
+            </div>
+            <!-- 배송입력 부분 끝 -->
+
+
+            <!--1. 결제하기 시작 -->
+            <div class="col-md-12 animate-box mb40 pdrl0m">
+                <h3>결제하기</h3>
+
+                <table id="allTbl" border="0" cellspacing="0" width="100%" class="table_style3 bd">
+                    <thead>
+                    <tr>
+                        <th>서비스번호</th>
+                        <th>서비스명</th>
+                        <th>서비스구분</th>
+                        <th>서비스가격</th>
+                        <th>서비스합계가격</th>
+                        <th>신청일수(수량)</th>
+                        <th><input type="image" id="allDelBtn" name="allDelBtn" src="/images/remove.png" class="remove" value="삭제"/></th>
+                    </tr>
+                    </thead>
+                    <tbody id="tList2">
+                    <tr>
+                        <td colspan="7" class="pdno">
+                            <%
+                            if(rList2.length > 0) {
+                                var uniqCode = [];
+                                rList2.forEach(function(item, idx) {
+                                    uniqCode[idx] = item.pUniqCode;
+                                });
+                            rList.forEach(function(item1, index) {
+                            %>
+                            <!-- -->
+                            <table border="0" cellspacing="0" width="100%" class="table_style0 <%if(index % 2 == 0) {%>bgc2<%} else {%> bgc <%}%>bbno">
+                                <colgroup>
+                                    <col width="22%">
+                                    <col width="20%">
+                                    <col width="10%">
+                                    <col width="15%">
+                                    <col width="15%">
+                                    <col width="10%">
+                                    <col width="8%">
+                                </colgroup>
+                                <%
+                                rList2.forEach(function(item, index2) {
+                                if(uniqCode[index2] == item1.pUniqCode) {
+                                %>
+                                <tr>
+                                    <td><%=item.pCode%><input type="hidden" id="2pCode<%=index2%>" name="2pCode" value="<%=item.pCode%>"/></td>
+                                    <td><%=item.pNm%><input type="hidden" id="2pUniqCode<%=index2%>" name="2pUniqCode" value="<%=item.pUniqCode%>"/></td>
+                                    <td><%=item.pDivNm%><input type="hidden" id="2pDiv<%=index2%>" name="2pDiv" value="<%=item.pDiv%>"/></td>
+                                    <td><%=fnComma(item.pPrice)%> 원
+                                        <input type="hidden" id="2pPrice<%=index2%>" name="2pPrice" value="<%=item.pPrice%>"/>
+                                        <input type="hidden" id="2pPairCodeYn<%=index2%>" name="2pPairCodeYn" value="<%=item.pPairCodeYn%>"/>
+                                        <input type="hidden" id="2pPairCode<%=index2%>" name="2pPairCode" value="<%=item.pPairCode%>"/>
+                                    </td>
+<%
+        if(item.pType == "HDW") {
+%>
+                                    <td><%=item.pCount%><input type="hidden" id="2pCount<%=index2%>" name="2pCount" value="<%=item.pCount%>"/></td>
+<%
+        } else {
+%>
+                                    <td><%=item.useTermDays%><input type="hidden" id="2useTermDays<%=index2%>" name="2useTermDays" value="<%=item.useTermDays%>"/></td>
+<%
+        }
+%>
+                                    <td>
+                                        <input type="image" id="del2Btn<%=index2%>" name="delBtn" src="/images/remove.png" class="remove" value="삭제"/>
+                                    </td>
+                                </tr>
+                                <%
+                                } // end if
+                                });
+                                %>
+                            </table>
+                            <!-- -->
+                            <%
+                            });
+                            }
+                            %>
+                        </td>
+                    </tr>
+                    </tbody>
+                    <tr>
+                        <td colspan="7" class="totalprice">총 결제금액: <span class="pricetext"><input type="text" id="totalPayPrice" name="totalPayPrice" value="<%=fnComma(payPrice)%>" class="size13hh"readonly/></span>원</td>
+                    </tr>
+                    <tr>
+                        <td colspan="7" class="left" style="border-bottom:none;">
+                            <!--3. 결제하기 시작 -->
+
+                            <div class="col-md-8 animate-box">
+                                <div id="payDiv" class="paymentway">
+                                    <h4 class="mtm9">* 결제수단</h4>
+                                    <input type="radio" name="payMethod" id="payMethod3" value="card"><label for="payMethod3" class="payment"><span><span></span></span> 신용카드</label>
+                                    <input type="radio" name="payMethod" id="payMethod4" value="bank"><label for="payMethod4" class="payment"><span><span></span></span> 무통장입금</label>
+                                    <input type="radio" name="payMethod" id="payMethod5" value="escro"><label for="payMethod5" class="payment"><span><span></span></span> NH에스크로
+                                        <!--농협 에스크로 이체 인증마크 적용 시작-->
+
+                                        <!--<script>
+                                            function onPopCertMar(key){
+                                                window.open('','self','height=700, width=650, status=yes, toolbar=no, menubar=no, location=no');
+                                                document.CERTMARK_FORM.certMarkURLKey.value = key;
+                                                document.CERTMARK_FORM.action='https://escrow.nonghyup.com/?certMarkURLKey=' + key;
+                                                document.CERTMARK_FORM.target='self';
+                                                document.CERTMARK_FORM.submit();
+                                            }
+                                        </script>
+
+                                        <FORM name='CERTMARK_FORM' METHOD='POST'>
+                                            <input type="hidden" name="certMarkURLKey">
+                                        </FORM>-->
+                                        <a href="javascript:onPopCertMar('49334eedfb793cc4d0199e24bee153d9')"><img src='https://escrow.nonghyup.com/images/IC/es/img_nh_mark01.gif' alt='에스크로이체로 결제하기' border='0' width='200px' style="vertical-align:bottom;" class="dispno" /></a>
+
+                                        <!--농협 에스크로 이체 인증마크 적용 종료-->
+                                    </label>
+                                    <!--<input type="radio" name="payMethod" id="payMethod3" value="paypal"><label for="payMethod3" class="payment"><span><span></span></span> 페이팔</label>-->
+                                </div><!--paymentway-->
+                            </div><!--col-md-8-->
+
+                            <div class="col-md-4 animate-box">
+                                <div class="paymentway">
+                                    <h4>* 현금영수증발행 여부</h4>
+                                    <input type="radio" name="taxInvoiceYn" id="taxInvoiceYn1" value="Y"/><label for="taxInvoiceYn1" class="payment"><span><span></span></span>신청</label>
+                                    <input type="radio" name="taxInvoiceYn" id="taxInvoiceYn2" value="N" checked/><label for="taxInvoiceYn2" class="payment"><span><span></span></span>미신청</label>
+                                </div><!--paymentway-->
+                            </div><!--col-md-4-->
+                            <!--3. 결제하기 끝 -->
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="7" class="bbno">
+                            <div class="col-md-12 animate-box text-center mt30">
+                                <a href="#" id="payBtn" class="btn btn-pay2">결제하기</a>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </form>
+
+    </div>
+</div>
+
+<% include include/footer.ejs %>
+
+<div class="gototop js-top">
+    <a href="#" class="js-gotop"><i class="icon-arrow-up"></i></a>
+</div>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+<!-- jQuery Easing -->
+<script src="/js/jquery.easing.1.3.js"></script>
+<!-- Bootstrap -->
+<script src="/js/bootstrap.min.js"></script>
+<!-- Waypoints -->
+<script src="/js/jquery.waypoints.min.js"></script>
+<!-- countTo -->
+<script src="/js/jquery.countTo.js"></script>
+<!-- Magnific Popup -->
+<script src="/js/jquery.magnific-popup.min.js"></script>
+<script src="/js/magnific-popup-options.js"></script>
+<!-- Main -->
+<script src="/js/main.js"></script>
+<!-- daum popup -->
+<script type="text/javascript" src="https://spi.maps.daum.net/imap/map_js_init/postcode.v2.js"></script>
+<!-- scripts -->
+<script type="text/javascript">
+    var emailRegExp = /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i;
+    var cellNoRegExp = /^\d{3}-\d{3,4}-\d{4}$/;
+    var telNoRegExp = /^\d{2,3}-\d{3,4}-\d{4}$/;
+    $(function() {
+        //
+        var usrId = '<%=session.usrId !=null ? session.usrId : ''%>';
+
+        // 배송 정보 입력 초기 셋팅.
+        $("#shipDiv").css("display", "none");
+
+        // 배송 정보 라디오 선택 버튼 이벤트 처리.
+        $("#shippingUseY").click(function() {
+            $("#shipDiv").css("display", "block");
+        });
+        $("#shippingUseN").click(function() {
+            $("#shipDiv").css("display", "none");
+        });
+
+        // 장바구니 리스트 화면 초기화.
+        var reload = function() {
+            // 카트 관련
+            $("#tList1 > tr").each(function(idx) {
+
+                // 삭제 버튼 이벤트 처리.
+                $("#delBtn"+idx).click(function(e) {
+                    e.preventDefault();
+
+                    if(usrId == '') {
+                        alert('로그인 하세요.');
+                        return false;
+                    }
+
+                    // 조회 처리.
+                    $.ajax({
+                        url : "/purchase/paypopup/delete",
+                        type : "post",
+                        dataType : "json",
+                        data : {
+                            'orderNo' : $.trim($("#1orderNo"+idx).val()),
+                            'pUniqCode' : $.trim($("#1pUniqCode"+idx).val())
+                        },
+                        success : function(data) {
+                            // tList1에 리스트 출력.
+                            var addHTML = "";
+                            if(data.cnt > 0) {
+                                $.each(data.list, function (i, item) {
+                                    if(item.pDiv=="M") {
+                                        addHTML += "<tr><td colspan='7' class='pdno'>";
+                                        addHTML += "<table border='0' cellspacing='0' width='100%' class='table_style0 bgc2 bbno'>";
+                                        addHTML += "<colgroup><col width='22%'><col width='10%'><col width='20%'><col width='10%'><col width='10%'><col width='10%'><col width='8%'></colgroup>";
+                                    }
+                                    addHTML += "<tr>";
+                                    addHTML += "<td>" + item.pCode + "<input type='hidden' id='1pCode" + i + "' name='1pCode' value='" + item.pCode + "'/></td>";
+                                    addHTML += "<td>" + item.pDivNm + "<input type='hidden' id='1pDiv" + i + "' name='1pDiv' value='" + item.pDiv + "'/></td>";
+                                    addHTML += "<td>" + item.pNm + "<input type='hidden' id='1pUniqCode" + i + "' name='1pUniqCode' value='" + item.pUniqCode + "'/></td>";
+                                    addHTML += "<td>" + item.pPrice + "<input type='hidden' id='1pPrice" + i + "' name='1pPrice' value='" + item.pPrice + "'/>";
+                                    addHTML += "<input type='hidden' id='1pPoptCnt" + i + "' name='1pPoptCnt' value='" + item.optCnt + "'/>";
+                                    addHTML += "<input type='hidden' id='1pPairCodeYn"+i+"' name='1pPairCodeYn' value='"+item.pPairCodeYn+"'/>";
+                                    addHTML += "<input type='hidden' id='1pPairCode"+i+"' name='1pPairCode' value='"+item.pPairCode+"'/>";
+                                    addHTML += "<input type='hidden' id='1orderNo"+i+"' name='1orderNo' value='"+item.orderNo+"'/>";
+                                    addHTML += "</td>";
+                                    if(item.pDiv=="M") {
+                                        addHTML += "<td>" + comma(item.totalPrice) + "</td>";
+                                        addHTML += "<td>" + item.useTermDays + "</td>";
+                                        addHTML += "<td><input type='image' id='delBtn"+ i +"' name='delBtn' src='/images/remove.png' class='remove' value='삭제'/></td>";
+                                    } else {
+                                        addHTML += "<td>&nbsp;</td>";
+                                        addHTML += "<td>&nbsp;</td>";
+                                        addHTML += "<td>&nbsp;</td>";
+                                    }
+                                    addHTML += "</tr>";
+                                    if(item.pDiv=="M") {
+                                        addHTML += "</table></td></tr>";
+                                    }
+
+                                });
+                                $("#tList1").html(addHTML);
+                            } else {
+                                $("#tList1").html(addHTML);
+                            }
+                            $("#totalCalPayPrice").val(comma(data.totalPrice));
+                            reload();
+                        },
+                        error : function(err) {
+                            alert("errCode : " + JSON.stringify(err));
+                        }
+                    });
+                });
+            });
+
+        };
+        // 결제하기 리스트 삭제 이벤트 처리.
+        var reload2 = function() {
+            // 결제하기 관련
+            $("#tList2 > tr").each(function (idx) {
+
+                // 결제 삭제 하기  버튼 이벤트 처리.
+                $("#del2Btn" + idx).click(function (e) {
+                    e.preventDefault();
+
+                    if (usrId == '') {
+                        alert('로그인 하세요.');
+                        return false;
+                    }
+
+                    console.log('결제 삭제 del val[' + idx + '] : ', $("#2pPcode" + idx).val());
+                    console.log('결제 삭제 del val[' + idx + '] : ', $.trim($("#2pUniqCode" + idx).val()));
+
+                    var dataValues = {
+                        'pCode': $("#2pPcode" + idx).val(),
+                        'pUniqCode': $("#2pUniqCode" + idx).val(),
+                        'orderNo' : $("#2orderNo"+idx).val()
+                    };
+
+                    // 조회 처리.
+                    $.ajax({
+                        url: "/purchase/paypopup/pay/delete",
+                        type: "post",
+                        dataType: "json",
+                        data: dataValues,
+                        success: function (data) {
+                            // tList2에 리스트 출력.
+                            var addHTML = "";
+                            if (data.cnt > 0) {
+                                $("#tList2").html("");
+                                var payPrice = 0;
+                                $.each(data.list, function (i, item) {
+                                    if(item.pDiv=="M") {
+                                        addHTML += "<tr><td colspan='7' class='pdno'>";
+                                        addHTML += "<table border='0' cellspacing='0' width='100%' class='table_style0 bgc2 bbno'>";
+                                        addHTML += "<colgroup><col width='22%'><col width='20%'><col width='10%'><col width='15%'><col width='15%'><col width='10%'><col width='8%'></colgroup>";
+                                    }
+                                    addHTML += "<tr>";
+                                    addHTML += "<td>" + item.pCode + "</td>";
+                                    addHTML += "<td>" + item.pNm + "</td>";
+                                    addHTML += "<td>" + item.pDivNm + "<input type='hidden' id='2pDiv"+i+"' name='2pDiv' value='"+item.pDiv+"'/></td>";
+                                    addHTML += "<td>" + comma(item.pPrice) + "<input type='hidden' id='2pPrice"+i+"' name='2pPrice' value='"+item.pPrice+"'/>";
+                                    addHTML += "<input type='hidden' id='2pPcode"+i+"' name='2pPcode' value='"+item.pCode+"'/>";
+                                    addHTML += "<input type='hidden' id='2orderNo" + i + "' name='2orderNo' value='" + item.orderNo + "'/>";
+                                    addHTML += "<input type='hidden' id='2pPairCodeYn"+i+"' name='2pPairCodeYn' value='"+item.pPairCodeYn+"'/>";
+                                    addHTML += "<input type='hidden' id='2pPairCode"+i+"' name='2pPairCode' value='"+item.pPairCode+"'/>";
+                                    addHTML += "<input type='hidden' id='2pUniqCode"+i+"' name='2pUniqCode' value='"+item.pUniqCode+"'/>";
+                                    addHTML += "</td>";
+                                    if(item.pDiv=="M") {
+                                        addHTML += "<td>" + comma(item.totalPrice) + "</td>";
+                                        addHTML += "<td>" + item.useTermDays + "</td>";
+                                        addHTML += "<td><input type='image' id='del2Btn"+ i +"' name='delBtn' src='/images/remove.png' class='remove' value='삭제'/></td>";
+                                    } else {
+                                        addHTML += "<td>&nbsp;</td>";
+                                        addHTML += "<td>&nbsp;</td>";
+                                        addHTML += "<td>&nbsp;</td>";
+                                    }
+                                    addHTML += "</tr>";
+                                    if(item.pDiv=="M") {
+                                        addHTML += "</table></td></tr>";
+                                    }
+                                });
+                                $("#tList2").html(addHTML);
+
+                            } else {
+                                $("#tList2").html(addHTML);
+                            }
+
+                            $("#totalPayPrice").val(comma(data.totalPrice));
+                            reload2();
+                        },
+                        error: function (err) {
+                            alert("errCode : " + JSON.stringify(err));
+                        }
+                    });
+
+                });
+            });
+        };
+
+
+        // 카트(장바구니) 관련
+        $("#tList1 > tr").each(function(idx) {
+
+            // 장바구니 삭제 버튼 이벤트 처리.
+            $("#delBtn"+idx).click(function(e) {
+                e.preventDefault();
+
+                if(usrId == '') {
+                    alert('로그인 하세요.');
+                    location.href = "/";
+                    return false;
+                }
+
+                console.log('장바구니 1pCode del val['+idx+'] : ', $("#1pCode"+idx).val());
+                console.log('장바구니 1pUniqCode del val['+idx+'] : ', $.trim($("#1pUniqCode"+idx).val()));
+
+                // 조회 처리.
+                $.ajax({
+                    url : "/purchase/paypopup/delete",
+                    type : "post",
+                    dataType : "json",
+                    data : {
+                        'orderNo' : $.trim($("#1orderNo"+idx).val()),
+                        'pUniqCode' : $.trim($("#1pUniqCode"+idx).val())
+                    },
+                    success : function(data) {
+                        // tList1에 리스트 출력.
+                        var addHTML = "";
+                        if(data.cnt > 0) {
+                            $.each(data.list, function (i, item) {
+                                if(item.pDiv=="M") {
+                                    addHTML += "<tr><td colspan='7' class='pdno'>";
+                                    addHTML += "<table border='0' cellspacing='0' width='100%' class='table_style0 bgc2 bbno'>";
+                                    //addHTML += "<colgroup><col width='22%'><col width='10%'><col><col width='20%'><col width='8%'></colgroup>";
+                                    addHTML += "<colgroup><col width='22%'><col width='20%'><col width='10%'><col width='15%'><col width='15%'><col width='10%'><col width='8%'></colgroup>";
+                                }
+                                addHTML += "<tr>";
+                                addHTML += "<td>" + item.pCode + "<input type='hidden' id='1pCode" + i + "' name='1pCode' value='" + item.pCode + "'/></td>";
+                                addHTML += "<td>" + item.pDivNm + "<input type='hidden' id='1pDiv" + i + "' name='1pDiv' value='" + item.pDiv + "'/></td>";
+                                addHTML += "<td>" + item.pNm + "<input type='hidden' id='1pUniqCode" + i + "' name='1pUniqCode' value='" + item.pUniqCode + "'/></td>";
+                                addHTML += "<td>" + comma(item.pPrice) + "<input type='hidden' id='1pPrice" + i + "' name='1pPrice' value='" + item.pPrice + "'/>";
+                                addHTML += "<input type='hidden' id='1pPoptCnt" + i + "' name='1pPoptCnt' value='" + item.optCnt + "'/>";
+                                addHTML += "<input type='hidden' id='1pPairCodeYn"+i+"' name='1pPairCodeYn' value='"+item.pPairCodeYn+"'/>";
+                                addHTML += "<input type='hidden' id='1pPairCode"+i+"' name='1pPairCode' value='"+item.pPairCode+"'/>";
+                                addHTML += "<input type='hidden' id='1orderNo"+i+"' name='1orderNo' value='"+item.orderNo+"'/>";
+                                addHTML += "</td>";
+                                if(item.pDiv=="M") {
+                                    addHTML += "<td>" + item.totalPrice + "</td>";
+                                    addHTML += "<td>" + item.useTermDays + "</td>";
+                                    addHTML += "<td><input type='button' id='delBtn" + i + "' name='delBtn' src='/images/remove.png'' class='remove' value='삭제'/></td>";
+                                } else {
+                                    addHTML += "<td>&nbsp;</td>";
+                                    addHTML += "<td>&nbsp;</td>";
+                                    addHTML += "<td>&nbsp;</td>";
+                                }
+                                addHTML += "</tr>";
+                                if(item.pDiv=="M") {
+                                    addHTML += "</table></td></tr>";
+                                }
+                            });
+                            $("#tList1").html(addHTML);
+                        } else {
+                            $("#tList1").html(addHTML);
+                        }
+                        $("#totalCalPayPrice").val(comma(data.totalPrice));
+                        reload();
+                    },
+                    error : function(err) {
+                        alert("errCode : " + JSON.stringify(err));
+                    }
+                });
+            });
+        });
+
+        // '주문하기' 버튼 이벤트 처리.
+        $("#saveBtn").click(function(e) {
+            e.preventDefault();
+
+            if(usrId == '') {
+                alert('로그인 하세요.');
+                location.href = "/";
+                return false;
+            }
+
+            if ($("#tList1 > tr").length > 0) {
+
+
+                // 정산결과가 0 인 체크.
+                if($("#totalCalPayPrice").val()=="0" && $("#cmpltYn") == null || $("#totalCalPayPrice").val()=="0" && $("#cmpltYn") == "N") {
+                    alert("결제예정금액이 0원입니다.\n 다시 확인하시고 처리해주세요!");
+                    return false;
+                }
+
+                var dataValues = {};
+
+                // 조회 처리.
+                $.ajax({
+                    url: "/purchase/paypopup/list",
+                    type: "post",
+                    dataType: "json",
+                    data : dataValues,
+                    success: function (data) {
+                        // result 데이타셋팅.
+                        var result = data.result;
+//console.log('result : ', JSON.stringify(result));
+                        // tList2에 리스트 출력.
+                        var addHTML = "";
+                        if (data.cnt > 0) {
+                            // 장바구니 리스트 삭제 처리.
+                            $("#tList1").html("");
+                            $("#totalCalPayPrice").val(0); // 결제예정금액
+
+                            // 결제하기 리스트 초기화
+                            $("#tList2").html("");
+                            var payPrice = 0;
+                            $.each(data.list, function (i, item) {
+                                if(item.pDiv=="M") {
+                                    addHTML += "<tr><td colspan='7' class='pdno'>";
+                                    addHTML += "<table border='0' cellspacing='0' width='100%' class='table_style0 bgc2 bbno'>";
+                                    addHTML += "<colgroup><col width='22%'><col width='20%'><col width='10%'><col width='15%'><col width='15%'><col width='10%'><col width='8%'></colgroup>";
+                                }
+                                addHTML += "<tbody><tr>";
+                                addHTML += "<td>" + item.pCode + "</td>";
+                                addHTML += "<td>" + item.pNm + "</td>";
+                                addHTML += "<td>" + item.pDivNm + "<input type='hidden' id='2pDiv"+i+"' name='2pDiv' value='"+item.pDiv+"'/></td>";
+                                addHTML += "<td>" + comma(item.pPrice) + "<input type='hidden' id='2pPrice"+i+"' name='2pPrice' value='"+item.pPrice+"'/>";
+                                addHTML += "<input type='hidden' id='2pPcode"+i+"' name='2pPcode' value='"+item.pCode+"'/>";
+                                addHTML += "<input type='hidden' id='2orderNo" + i + "' name='2orderNo' value='" + item.orderNo + "'/>";
+                                addHTML += "<input type='hidden' id='2pPairCodeYn"+i+"' name='2pPairCodeYn' value='"+item.pPairCodeYn+"'/>";
+                                addHTML += "<input type='hidden' id='2pPairCode"+i+"' name='2pPairCode' value='"+item.pPairCode+"'/>";
+                                addHTML += "<input type='hidden' id='2pUniqCode"+i+"' name='2pUniqCode' value='"+item.pUniqCode+"'/>";
+                                addHTML += "</td>";
+                                if(item.pDiv=="M") {
+                                    addHTML += "<td>" + comma(item.totalPrice) + "</td>";
+                                    if(item.pType=="HDW") {
+                                        addHTML += "<td>" + item.pCount + "<input type='hidden' id='2pCount"+i+"' name='2pCount' value='"+item.pCount+"'/></td>";
+                                    } else {
+                                        addHTML += "<td>" + item.useTermDays + "<input type='hidden' id='2useTermDays"+i+"' name='2useTermDays' value='"+item.useTermDays+"'/></td>";
+                                    }
+                                    addHTML += "<td><input type='image' id='del2Btn"+ i +"' name='delBtn' src='/images/remove.png' class='remove' value='삭제'/></td>";
+                                } else {
+                                    addHTML += "<td>&nbsp;</td>";
+                                    addHTML += "<td>&nbsp;</td>";
+                                    addHTML += "<td>&nbsp;</td>";
+                                }
+                                addHTML += "</tr></tbody>";
+                                if(item.pDiv=="M") {
+                                    addHTML += "</table></td></tr>";
+                                }
+                            });
+                            $("#tList2").html(addHTML);
+                            $("#totalPayPrice").val(comma(data.totalPrice));
+                            // 이용 기간 버튼 셋팅.
+
+                        } else {
+                            $("#tList2").html(addHTML);
+                        }
+                        // fmr3에 orderNo 저장.
+                        $("#frm2").find("[id='pastOrderNo']").val($("#prevOrderNo").val());
+                        //$("#frm2").find("[id='orderNo']").val(result.orderNo);
+                        //$("#frm2").find("[id='serviceNm']").val(result.serviceNm);
+                        //$("#frm2").find("[id='orderDate']").val(result.orderDate);
+
+                        reload2();
+
+                    },
+                    error: function (err) {
+                        alert("errCode : " + JSON.stringify(err));
+                    }
+                });
+
+            } else {
+                alert("선택된 서비스가 없습니다.");
+            }
+        });
+
+        // 결제하기 관련
+        $("#tList2 > tr").each(function(idx) {
+
+            // 결제하기 삭제 버튼 이벤트 처리.
+            $("#del2Btn"+idx).click(function(e) {
+                e.preventDefault();
+
+                if(usrId == '') {
+                    alert('로그인 하세요.');
+                    location.href = "/";
+                    return false;
+                }
+
+                var dataValues = {
+                    'pCode' : $("#2pPcode"+idx).val(),
+                    'pUniqCode' : $("#2pUniqCode"+idx).val(),
+                    'orderNo' : $("#2orderNo"+idx).val()
+                };
+
+                // 조회 처리.
+                $.ajax({
+                    url: "/purchase/paypopup/pay/delete",
+                    type: "post",
+                    dataType: "json",
+                    data : dataValues,
+                    success: function (data) {
+                        // tList2에 리스트 출력.
+                        var addHTML = "";
+                        if (data.cnt > 0) {
+                            $("#tList3").html("");
+                            var payPrice = 0;
+                            $.each(data.list, function (i, item) {
+                                if(item.pDiv=="M") {
+                                    addHTML += "<tr><td colspan='7' class='pdno'>";
+                                    addHTML += "<table border='0' cellspacing='0' width='100%' class='table_style0 bgc2 bbno'>";
+                                    addHTML += "<colgroup><col width='22%'><col width='20%'><col width='10%'><col width='15%'><col width='15%'><col width='10%'><col width='8%'></colgroup>";
+                                }
+                                addHTML += "<tr>";
+                                addHTML += "<td>" + item.pCode + "</td>";
+                                addHTML += "<td>" + item.pNm + "</td>";
+                                addHTML += "<td>" + item.pDivNm + "<input type='hidden' id='2pDiv"+i+"' name='2pDiv' value='"+item.pDiv+"'/></td>";
+                                addHTML += "<td>" + comma(item.pPrice) + "<input type='hidden' id='2pPrice"+i+"' name='2pPrice' value='"+item.pPrice+"'/>";
+                                addHTML += "<input type='hidden' id='2pPcode"+i+"' name='2pPcode' value='"+item.pCode+"'/>";
+                                addHTML += "<input type='hidden' id='2orderNo" + i + "' name='2orderNo' value='" + item.orderNo + "'/>";
+                                addHTML += "<input type='hidden' id='2pPairCodeYn"+i+"' name='2pPairCodeYn' value='"+item.pPairCodeYn+"'/>";
+                                addHTML += "<input type='hidden' id='2pPairCode"+i+"' name='2pPairCode' value='"+item.pPairCode+"'/>";
+                                addHTML += "<input type='hidden' id='2pUniqCode"+i+"' name='2pUniqCode' value='"+item.pUniqCode+"'/>";
+                                addHTML += "</td>";
+                                if(item.pDiv=="M") {
+                                    addHTML += "<td>" + comma(item.totalPrice) + "</td>";
+                                    addHTML += "<td>" + item.useTermDays + "</td>";
+                                    addHTML += "<td><input type='image' id='del2Btn"+ i +"' name='delBtn' src='/images/remove.png' class='remove' value='삭제'/></td>";
+                                } else {
+                                    addHTML += "<td>&nbsp;</td>";
+                                    addHTML += "<td>&nbsp;</td>";
+                                    addHTML += "<td>&nbsp;</td>";
+                                }
+                                addHTML += "</tr>";
+                                if(item.pDiv=="M") {
+                                    addHTML += "</table></td></tr>";
+                                }
+                            });
+                            $("#tList2").html(addHTML);
+
+                        } else {
+                            $("#tList2").html(addHTML);
+                        }
+
+                        $("#totalPayPrice").val(data.totalPrice);
+                        reload2();
+                    },
+                    error: function (err) {
+                        alert("errCode : " + JSON.stringify(err));
+                    }
+                });
+            });
+        });
+
+        // 카트 전체 삭제 버튼 이벤트 처리.
+        $("#cartAllDelBtn").click(function(e) {
+            e.preventDefault();
+
+            if(usrId == '') {
+                alert('로그인 하세요.');
+                return false;
+            }
+
+            if($("#tList1 > tr").length <= 0) {
+                return false;
+            }
+
+            // 조회 처리.
+            $.ajax({
+                url : "/purchase/paypopup/alldel",
+                type : "post",
+                dataType : "json",
+                success : function(data) {
+                    // tList1에 리스트 출력.
+                    var addHTML = "";
+                    if(data.cnt > 0) {
+                        $.each(data.list, function (i, item) {
+                            addHTML += "<tr>";
+                            if(item.pDiv=="M") {
+                                addHTML += "<td colspan='7' class='pdno'>";
+                                addHTML += "<table border='0' cellspacing='0' width='100%' class='table_style0 bgc2 bbno'>";
+                                addHTML += "<colgroup><col width='22%'><col width='10%'><col width='20%'><col width='10%'><col width='10%'><col width='10%'><col width='8%'></colgroup>";
+                            }
+                            addHTML += "<td>" + item.pCode + "<input type='hidden' id='1pCode" + i + "' name='1pCode' value='" + item.pCode + "'/></td>";
+                            addHTML += "<td>" + item.pDivNm + "<input type='hidden' id='1pDiv" + i + "' name='1pDiv' value='" + item.pDiv + "'/></td>";
+                            addHTML += "<td>" + item.pNm + "<input type='hidden' id='1pUniqCode" + i + "' name='1pUniqCode' value='" + item.pUniqCode + "'/></td>";
+                            addHTML += "<td>" + comma(item.pPrice) + "<input type='hidden' id='1pPrice" + i + "' name='1pPrice' value='" + item.pPrice + "'/>";
+                            addHTML += "<input type='hidden' id='1pPairCodeYn"+i+"' name='1pPairCodeYn' value='"+item.pPairCodeYn+"'/>";
+                            addHTML += "<input type='hidden' id='1pPairCode"+i+"' name='1pPairCode' value='"+item.pPairCode+"'/>";
+                            addHTML += "<input type='hidden' id='1useTermDays" + i + "' name='1useTermDays' value='" + item.useTermDays + "'/>";
+                            addHTML += "<input type='hidden' id='1pPoptCnt" + i + "' name='1pPoptCnt' value='" + item.optCnt + "'/></td>";
+                            if(item.pDiv=="M") {
+                                addHTML += "<td>" + item.totalPrice + "</td>";
+                                addHTML += "<td>" + item.useTermDays + "</td>";
+                                addHTML += "<td><input type='button' id='delBtn" + i + "' name='delBtn' src='/images/remove.png'' class='remove' value='삭제'/></td>";
+                            } else {
+                                addHTML += "<td>&nbsp;</td>";
+                                addHTML += "<td>&nbsp;</td>";
+                                addHTML += "<td>&nbsp;</td>";
+                            }
+                            addHTML += "</tr>";
+                        });
+                        $("#tList1").html(addHTML);
+                    } else {
+                        $("#tList1").html(addHTML);
+                    }
+                    $("#totalCalPayPrice").val(comma(data.totalPrice));
+                    reload();
+                },
+                error : function(err) {
+                    alert("errCode : " + JSON.stringify(err));
+                }
+            });
+
+        });
+
+        // (결제하기) 전체 삭제 버튼 이벤트 처리.
+        $("#allDelBtn").click(function(e) {
+            e.preventDefault();
+
+            console.log('tList2 : ', $("#tList2 > tr").length);
+
+            if($("#tList2 > tr").length <= 0) {
+                return false;
+            }
+
+            var dataValues = {
+                'orderNo' : $("#orderNo").val()
+            };
+
+            // 조회 처리.
+            $.ajax({
+                url: "/purchase/paypopup/pay/alldel",
+                type: "post",
+                dataType: "json",
+                data : dataValues,
+                success: function (data) {
+                    // tList2에 리스트 출력.
+                    var addHTML = "";
+                    if (data.cnt > 0) {
+                        $("#tList2").html("");
+                        var payPrice = 0;
+                        $.each(data.list, function (i, item) {
+                            if(item.pDiv=="M") {
+                                addHTML += "<tr><td colspan='7' class='pdno'>";
+                                addHTML += "<table border='0' cellspacing='0' width='100%' class='table_style0 bgc2 bbno'>";
+                                addHTML += "<colgroup><col width='22%'><col width='20%'><col width='10%'><col width='15%'><col width='15%'><col width='10%'><col width='8%'></colgroup>";
+                            }
+                            addHTML += "<tr>";
+                            addHTML += "<td>" + item.pCode + "</td>";
+                            addHTML += "<td>" + item.pNm + "</td>";
+                            addHTML += "<td>" + item.pDivNm + "<input type='hidden' id='2pDiv"+i+"' name='2pDiv' value='"+item.pDiv+"'/></td>";
+                            addHTML += "<td>" + comma(item.pPrice) + "<input type='hidden' id='2pPrice"+i+"' name='2pPrice' value='"+item.pPrice+"'/>";
+                            addHTML += "<input type='hidden' id='2pPcode"+i+"' name='2pPcode' value='"+item.pCode+"'/>";
+                            addHTML += "<input type='hidden' id='2orderNo" + i + "' name='2orderNo' value='" + item.orderNo + "'/>";
+                            addHTML += "<input type='hidden' id='2pPairCodeYn"+i+"' name='2pPairCodeYn' value='"+item.pPairCodeYn+"'/>";
+                            addHTML += "<input type='hidden' id='2pPairCode"+i+"' name='2pPairCode' value='"+item.pPairCode+"'/>";
+                            addHTML += "<input type='hidden' id='2pUniqCode"+i+"' name='2pUniqCode' value='"+item.pUniqCode+"'/>";
+                            addHTML += "</td>";
+                            if(item.pDiv=="M") {
+                                addHTML += "<td>" + comma(item.totalPrice) + "</td>";
+                                addHTML += "<td>" + item.useTermDays + "</td>";
+                                addHTML += "<td><input type='image' id='del2Btn"+ i +"' name='delBtn' src='/images/remove.png' class='remove' value='삭제'/></td>";
+                            } else {
+                                addHTML += "<td>&nbsp;</td>";
+                                addHTML += "<td>&nbsp;</td>";
+                                addHTML += "<td>&nbsp;</td>";
+                            }
+                            addHTML += "</tr>";
+                            if(item.pDiv=="M") {
+                                addHTML += "</table></td></tr>";
+                            }
+                        });
+                        $("#tList2").html(addHTML);
+
+                    } else {
+                        $("#tList2").html(addHTML);
+                    }
+
+                    $("#totalPayPrice").val(data.totalPrice);
+                    reload2();
+                },
+                error: function (err) {
+                    alert("errCode : " + JSON.stringify(err));
+                }
+            });
+
+        });
+
+        // 결제 처리버튼 이벤트 처리.
+        $("#payBtn").click(function(e) {
+            e.preventDefault();
+
+            // 결제가격 0 인지 체크.
+            var totalPayPrice = $("#totalPayPrice").val() !=null ? parseInt(unComma($("#totalPayPrice").val())) : 0;
+            var payCmpltYn = $("#payCmpltYn").val() !=null ? $("#payCmpltYn").val() : '';
+            if(totalPayPrice == 0 && payCmpltYn == '' || totalPayPrice == 0 && payCmpltYn == "N") {
+                alert("결제금액이 0원입니다. 다시 확인하시고 결제 신청해주세요.");
+                return false;
+            }
+
+            // 배송지정보가 있는 지 체크.
+            var pShippingUseYn = $("input:radio[name='pShippingUseYn']:checked").val();
+            if(pShippingUseYn == "Y") {
+                var receiverNm = $.trim($("#receiverNm").val());
+                var receiverPostno = $.trim($("#receiverPostno").val());
+                var receiverAddr1 = $.trim($("#receiverAddr1").val());
+                var receiverAddr2 = $.trim($("#receiverAddr2").val());
+                var receiverTelno1 = $.trim($("#receiverTelno1").val());
+                var receiverTelno2 = $.trim($("#receiverTelno2").val());
+                var receiverTelno3 = $.trim($("#receiverTelno3").val());
+                var receiverTelno = receiverTelno1 + receiverTelno2 + receiverTelno3;
+                var receiverCellno1 = $.trim($("#receiverCellno1").val());
+                var receiverCellno2 = $.trim($("#receiverCellno2").val());
+                var receiverCellno3 = $.trim($("#receiverCellno3").val());
+                var receiverCellno = receiverCellno1 + receiverCellno2 + receiverCellno3;
+                // 배송지 정보 Validation
+               if(receiverNm == "") {
+                   alert("받는 분의 성명을 입력하세요");
+                   $("#receiverNm").focus();
+                   return;
+               }
+                if(receiverPostno == "") {
+                    alert("우편번호를 입력하세요");
+                    $("#receiverPostno").focus();
+                    return;
+                }
+                if(receiverAddr1 == "") {
+                    alert("받는 분의 주소를 입력하세요");
+                    $("#receiverAddr1").focus();
+                    return;
+                }
+                if(receiverTelno1 == "") {
+                    alert("연락처 앞번호를 입력하세요");
+                    $("#receiverTelno1").focus();
+                    return;
+                }
+                if(receiverTelno2 == "") {
+                    alert("연락처 두번째 번호를 입력하세요");
+                    $("#receiverTelno2").focus();
+                    return;
+                }
+                if(receiverTelno3 == "") {
+                    alert("연락처 세번째 번호를 입력하세요");
+                    $("#receiverTelno3").focus();
+                    return;
+                }
+                if(receiverTelno.length < 11) {
+                    alert("연락처 정확하게 입력하세요.");
+                    $("#receiverTelno1").focus();
+                    return;
+                }
+                if(receiverCellno1 == "") {
+                    alert("휴대폰번호 앞번호를 입력하세요");
+                    $("#receiverCellno1").focus();
+                    return;
+                }
+                if(receiverCellno2 == "") {
+                    alert("휴대폰번호 두번째 번호를 입력하세요");
+                    $("#receiverTelno2").focus();
+                    return;
+                }
+                if(receiverCellno3 == "") {
+                    alert("휴대폰번호 세번째 번호를 입력하세요");
+                    $("#receiverCellno3").focus();
+                    return;
+                }
+                if(receiverCellno.length < 11) {
+                    alert("휴대폰번호를 정확하게 입력하세요.");
+                    $("#receiverCellno1").focus();
+                    return;
+                }
+            }
+            $("#shippingUseYn").val(pShippingUseYn);
+
+            // 결제 수단 체크.
+            var payMethodChk = $(":radio[name='payMethod']:checked").val();
+            if(payMethodChk == null) {
+                alert("결제수단을 선택하여 주세요!");
+                $("#payMethod4").focus();
+                return false;
+            }
+
+            var ret = confirm("결제 하시겠습니까?");
+            if(ret==false) {
+                alert("결제취소 하셨습니다.");
+                return false;
+            }
+
+            //
+            var HTML = "";
+            if($("#tList2 > tr").length > 0) {
+
+                $("#tList2 > tr").each(function (idx) {
+                    if($("#2pDiv"+idx).val()=="M") {
+                        HTML += "<input type='hidden' id='orderNo' name='orderNo' value='" + $("#2orderNo"+idx).val() + "'/>";
+                    }
+                });
+                $("#frm2").append(HTML);
+            }
+
+            $("#frm2").attr("method", "post");
+            $("#frm2").attr("action", "/pay/new");
+            $("#frm2").submit();
+
+        });
+
+        // 서비스 안내로 이동 처리.
+        $("#serviceBtn").on("click", function(e) {
+            e.preventDefault();
+
+            location.href = "/products";
+        });
+
+        // 주소 검색창 호출.
+        $("#srchPostNo").on("click", function(e) {
+            e.preventDefault();
+
+            execDaumPostcode();
+        });
+
+        // 주문자 정보 배송정보
+        $("#shipperSameY").on("click", function() {
+//alert("!!!");
+            // 기존 배송지 정보 초기화.
+            $("#receiverNm").val("");
+            $("#receiverPostno").val("");
+            $("#receiverAddr1").val("");
+            $("#receiverAddr2").val("");
+            $("#receiverTelno1").val("");
+            $("#receiverTelno2").val("");
+            $("#receiverTelno3").val("");
+            $("#receiverCellno1").val("");
+            $("#receiverCellno2").val("");
+            $("#receiverCellno3").val("");
+            // 주문자 정보 셋팅.
+            $("#receiverNm").val('<%=session.usrName%>');
+            $("#receiverPostno").val($("#orderPostno").val());
+            $("#receiverAddr1").val($("#orderAddr1").val());
+            $("#receiverAddr2").val($("#orderAddr2").val());
+            $("#receiverTelno").val($("#orderTelno").val());
+            $("#receiverTelno1").val($("#orderTelno1").val());
+            $("#receiverTelno2").val($("#orderTelno2").val());
+            $("#receiverTelno3").val($("#orderTelno3").val());
+            $("#receiverCellno").val($("#orderCellno").val());
+            $("#receiverCellno1").val($("#orderCellno1").val());
+            $("#receiverCellno2").val($("#orderCellno2").val());
+            $("#receiverCellno3").val($("#orderCellno3").val());
+        });
+
+        $("#shipperSameN").on("click", function() {
+            $("#receiverNm").focus();
+        });
+
+    });
+
+    // 콤마 붙이기
+    function comma(num) {
+        var reg = /(^[+-]?\d+)(\d{3})/;
+        num += '';
+        while(reg.test(num)) {
+            num = num.replace(reg, '$1' + ',' + '$2');
+        }
+        return num;
+    }
+    // 콤마 제거
+    function unComma(num) {
+        if(num!=null && num!='') {
+            return (num.replace(/\,/g, ""));
+        } else {
+            num = 0;
+            return num;
+        }
+    }
+    /**
+     * 월을 일로 변환 처리.
+     * @param month
+     * @returns {number}
+     */
+    function monthToDay(month) {
+        var day = 30;
+        var retVal = 0;
+        if(month != null) {
+            retVal = parseInt(month) * day;
+        }
+        return retVal;
+    }
+
+    /**
+     * 다음 우편번호검색 창 호출.
+     * @param no
+     */
+    function execDaumPostcode() {
+        new daum.Postcode({
+            oncomplete: function(data) {
+                // 팝업에서 검색결과 항목을 클릭했을때 실행할 코드를 작성하는 부분.
+
+                // 각 주소의 노출 규칙에 따라 주소를 조합한다.
+                // 내려오는 변수가 값이 없는 경우엔 공백('')값을 가지므로, 이를 참고하여 분기 한다.
+                var fullAddr = ''; // 최종 주소 변수
+                var extraAddr = ''; // 조합형 주소 변수
+
+                // 사용자가 선택한 주소 타입에 따라 해당 주소 값을 가져온다.
+                if (data.userSelectedType === 'R') { // 사용자가 도로명 주소를 선택했을 경우
+                    fullAddr = data.roadAddress;
+
+                } else { // 사용자가 지번 주소를 선택했을 경우(J)
+                    fullAddr = data.jibunAddress;
+                }
+
+                // 사용자가 선택한 주소가 도로명 타입일때 조합한다.
+                if(data.userSelectedType === 'R'){
+                    //법정동명이 있을 경우 추가한다.
+                    if(data.bname !== ''){
+                        extraAddr += data.bname;
+                    }
+                    // 건물명이 있을 경우 추가한다.
+                    if(data.buildingName !== ''){
+                        extraAddr += (extraAddr !== '' ? ', ' + data.buildingName : data.buildingName);
+                    }
+                    // 조합형주소의 유무에 따라 양쪽에 괄호를 추가하여 최종 주소를 만든다.
+                    fullAddr += (extraAddr !== '' ? ' ('+ extraAddr +')' : '');
+                }
+
+                // 우편번호와 주소 정보를 해당 필드에 넣는다.
+                document.getElementById('receiverPostno').value = data.zonecode; //5자리 새우편번호 사용
+                document.getElementById('receiverAddr1').value = fullAddr;
+                // 커서를 상세주소 필드로 이동한다.
+                document.getElementById('receiverAddr2').focus();
+
+            }
+        }).open();
+    }
+</script>
+
+</body>
+</html>

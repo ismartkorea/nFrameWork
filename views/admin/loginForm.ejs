@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="utf-8">
+    <title><%= title %></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <style type="text/css">
+        .form-signin
+        {
+            max-width: 330px;
+            padding: 15px;
+            margin: 0 auto;
+        }
+        .form-signin .form-signin-heading, .form-signin .checkbox
+        {
+            margin-bottom: 10px;
+        }
+        .form-signin .checkbox
+        {
+            font-weight: normal;
+        }
+        .form-signin .form-control
+        {
+            position: relative;
+            font-size: 16px;
+            height: auto;
+            padding: 10px;
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+        }
+        .form-signin .form-control:focus
+        {
+            z-index: 2;
+        }
+        .form-signin input[type="text"]
+        {
+            margin-bottom: -1px;
+            border-bottom-left-radius: 0;
+            border-bottom-right-radius: 0;
+        }
+        .form-signin input[type="password"]
+        {
+            margin-bottom: 10px;
+            border-top-left-radius: 0;
+            border-top-right-radius: 0;
+        }
+        .account-wall
+        {
+            margin-top: 20px;
+            padding: 40px 0px 20px 0px;
+            background-color: #f7f7f7;
+            -moz-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+            -webkit-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+            box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+        }
+        .login-title
+        {
+            color: #555;
+            font-size: 18px;
+            font-weight: 400;
+            display: block;
+        }
+        .profile-img
+        {
+            width: 96px;
+            height: 96px;
+            margin: 0 auto 10px;
+            display: block;
+            -moz-border-radius: 50%;
+            -webkit-border-radius: 50%;
+            border-radius: 50%;
+        }
+        .need-help
+        {
+            margin-top: 10px;
+        }
+        .new-account
+        {
+            display: block;
+            margin-top: 10px;
+        }
+    </style>
+    <script src="//code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript">
+        //window.alert = function(){};
+        var defaultCSS = document.getElementById('bootstrap-css');
+        function changeCSS(css){
+            if(css) $('head > link').filter(':first').replaceWith('<link rel="stylesheet" href="'+ css +'" type="text/css" />');
+            else $('head > link').filter(':first').replaceWith(defaultCSS);
+        }
+        $( document ).ready(function() {
+            //var iframe_height = parseInt($('html').height());
+            //window.parent.postMessage( iframe_height, 'http://bootsnipp.com');
+
+
+            // 로그인 엔터 이벤트 처리.
+            $("#usrPwd").on("keydown", function(e) {
+                var code = (e.keyCode ? e.keyCode : e.which);
+                if (code == 13) {
+                    var dataVals = {};
+                    var seletedRadioVal = $("input:radio[name='appType']:checked").val();
+
+                    if($("#usrId").val()==null || $("#usrId").val()=="") {
+                        alert("아이디를 입력하여 주세요.");
+                        $("#usrId").focus();
+                        return;
+                    }
+                    if($("#usrPwd").val()==null || $("#usrPwd").val()=="") {
+                        alert("비밀번호를 입력하여 주세요.");
+                        $("#usrPwd").focus();
+                        return;
+                    }
+                    // 전송처리.
+                    //$("#frm").attr("method", "post");
+                    //$("#frm").attr("action", "/login/loginProcess");
+                    //$("#frm").submit();
+
+                    dataVals = {usrId : $("#usrId").val(), usrPwd : $("#usrPwd").val(), appType : seletedRadioVal};
+                    // 데이타 전송 처리.
+                    $.ajax({
+                        url : "/admin/login/loginProcess",
+                        type : "post",
+                        dataType : "json",
+                        data : dataVals,
+                        success : function(data) {
+                            //console.log(">>> data = " + data.result);
+                            if(data.result == "err0") {
+                                alert("아이디가 틀립니다. 다시 확인하세요");
+                                $("#usrId").focus();
+                            }
+                            if(data.result == "err1") {
+                                alert("비밀번호가 틀립니다. 다시 확인하세요");
+                                $("#usrPwd").focus();
+                            }
+                            if(data.result == "PREV_OK") {
+                                alert("먼저 로그인된 아이디가 있어 기존 아이디를 삭제하고 로그인 됩니다.");
+                                alert("환영합니다! " + data.session.usrId + " 님");
+                                if(data.appType == "assist") {
+                                    location.href = "/admin/assist";
+                                } else {
+                                    location.href = "/admin";
+                                }
+                            }
+                            if(data.result == "OK") {
+                                alert("환영합니다! " + data.session.usrId + " 님");
+                                if(data.appType == "assist") {
+                                    location.href = "/admin/assist";
+                                } else {
+                                    location.href = "/admin";
+                                }
+                            }
+                            if(data.result == "NO") {
+                                //console.log(">>> 데이타 없음");
+                                alert("해당되는 회원님이 없습니다.\n다시 한번 확인하시고 입력하여 보세요.");
+                                $("#usrId").focus();
+                            }
+                            if(data.result == "DUPLICATION1") {
+                                //console.log(">>> 데이타 없음");
+                                alert("다른 기기(브라우져/모바일) 등에 로그인 되어 있습니다.\n 다른 기기에서 로그아웃하고 접속하세요.");
+                                $("#usrId").focus();
+                            }
+                            if(data.result == "DUPLICATION") {
+                                var ret = confirm('이미 로그인한 아이디가 있습니다. 재로그인 하시겠습니까?');
+                                if(ret == true) {
+                                    dataVals = {usrId : $("#usrId").val(), usrPwd : $("#usrPwd").val()};
+                                    // 데이타 전송 처리.
+                                    $.ajax({
+                                        url: "/admin/login/relogin",
+                                        type: "post",
+                                        dataType: "json",
+                                        data: dataVals,
+                                        success: function (data) {
+                                            if (data.result == "OK") {
+                                                alert("환영합니다! " + data.session.usrName + " 님");
+                                                location.href = "/admin";
+                                            }
+                                        },
+                                        error: function (err) {
+                                            alert("errCode : " + err.message);
+                                        }
+                                    });
+                                } else {
+                                    alert("로그인을 취소하셨습니다.");
+                                    $("#usrId").focus();
+                                }
+                            }
+                        },
+                        error : function(err) {
+                            alert("errCode : " + JSON.stringify(err));
+                        }
+                    });
+                }
+            });
+
+            // form submit
+            $("#submitBtn").on("click",function() {
+                var dataVals = {};
+                var seletedRadioVal = $("input:radio[name='appType']:checked").val();
+
+                if($("#usrId").val()==null || $("#usrId").val()=="") {
+                    alert("아이디를 입력하여 주세요.");
+                    $("#usrId").focus();
+                    return;
+                }
+                if($("#usrPwd").val()==null || $("#usrPwd").val()=="") {
+                    alert("비밀번호를 입력하여 주세요.");
+                    $("#usrPwd").focus();
+                    return;
+                }
+                // 전송처리.
+                //$("#frm").attr("method", "post");
+                //$("#frm").attr("action", "/login/loginProcess");
+                //$("#frm").submit();
+
+                dataVals = {usrId : $("#usrId").val(), usrPwd : $("#usrPwd").val(), appType : seletedRadioVal};
+                // 데이타 전송 처리.
+                $.ajax({
+                    url : "/admin/login/loginProcess",
+                    type : "post",
+                    dataType : "json",
+                    data : dataVals,
+                    success : function(data) {
+                        //console.log(">>> data = " + data.result);
+                        if(data.result == "err0") {
+                            alert("아이디가 틀립니다. 다시 확인하세요");
+                            $("#usrId").focus();
+                        }
+                        if(data.result == "err1") {
+                            alert("비밀번호가 틀립니다. 다시 확인하세요");
+                            $("#usrPwd").focus();
+                        }
+                        if(data.result == "PREV_OK") {
+                            alert("먼저 로그인된 아이디가 있어 기존 아이디를 삭제하고 로그인 됩니다.");
+                            alert("환영합니다! " + data.session.usrId + " 님");
+                            if(data.appType == "assist") {
+                                location.href = "/admin/assist";
+                            } else {
+                                location.href = "/admin";
+                            }
+                        }
+                        if(data.result == "OK") {
+                            alert("환영합니다! " + data.session.usrId + " 님");
+                            if(data.appType == "assist") {
+                                location.href = "/admin/assist";
+                            } else {
+                                location.href = "/admin";
+                            }
+                        }
+                        if(data.result == "NO") {
+                            //console.log(">>> 데이타 없음");
+                            alert("해당되는 회원님이 없습니다.\n다시 한번 확인하시고 입력하여 보세요.");
+                            $("#usrId").focus();
+                        }
+                        if(data.result == "DUPLICATION1") {
+                            //console.log(">>> 데이타 없음");
+                            alert("다른 기기(브라우져/모바일) 등에 로그인 되어 있습니다.\n 다른 기기에서 로그아웃하고 접속하세요.");
+                            $("#usrId").focus();
+                        }
+                        if(data.result == "DUPLICATION") {
+                            var ret = confirm('이미 로그인한 아이디가 있습니다. 재로그인 하시겠습니까?');
+                            if(ret == true) {
+                                dataVals = {usrId : $("#usrId").val(), usrPwd : $("#usrPwd").val()};
+                                // 데이타 전송 처리.
+                                $.ajax({
+                                    url: "/admin/login/relogin",
+                                    type: "post",
+                                    dataType: "json",
+                                    data: dataVals,
+                                    success: function (data) {
+                                        if (data.result == "OK") {
+                                            alert("환영합니다! " + data.session.usrName + " 님");
+                                            location.href = "/admin";
+                                        }
+                                    },
+                                    error: function (err) {
+                                        alert("errCode : " + err.message);
+                                    }
+                                });
+                            } else {
+                                alert("로그인을 취소하셨습니다.");
+                                $("#usrId").focus();
+                            }
+                        }
+                    },
+                    error : function(err) {
+                        alert("errCode : " + JSON.stringify(err));
+                    }
+                });
+
+            });
+        });
+    </script>
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-sm-6 col-md-4 col-md-offset-4">
+            <h1 class="text-center login-title">JT-LAB 로그인 화면</h1>
+            <div class="account-wall">
+                <img class="profile-img" src="https://lh5.googleusercontent.com/-b0-k99FZlyE/AAAAAAAAAAI/AAAAAAAAAAA/eu7opA4byxI/photo.jpg?sz=120"
+                     alt="">
+                <form id="frm" name="frm" class="form-signin">
+                    <!--
+                    <b>JT-LAB</b> <input type="radio" id="app1" name="appType" value="jtlab" checked/>&nbsp;&nbsp;&nbsp;<b>Assist Pro</b> <input type="radio" id="app2" name="appType" value="assist"/>
+                    -->
+                    <input type="text" name="usrId" id="usrId" class="form-control" placeholder="Id" required autofocus>
+                    <input type="password" name="usrPwd" id="usrPwd" class="form-control" placeholder="Password" required>
+                    <input type="button"  id="submitBtn" name="submitBtn" value="로그인" class="btn btn-lg btn-primary btn-block"/>
+                    <a href="#" class="pull-right need-help">Need help? </a><span class="clearfix"></span>
+                </form>
+            </div>
+            <a href="/" class="text-center new-account">JT-LAB 홈페이지</a>
+        </div>
+    </div>
+</div>
+</body>
+</html>

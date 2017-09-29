@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="ko">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>JT-LAB</title>
+
+    <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
+    <meta name="viewport" content="width=device-width" />
+
+    <!-- Facebook and Twitter integration -->
+    <meta property="og:title" content=""/>
+    <meta property="og:image" content=""/>
+    <meta property="og:url" content=""/>
+    <meta property="og:site_name" content=""/>
+    <meta property="og:description" content=""/>
+    <meta name="twitter:title" content="" />
+    <meta name="twitter:image" content="" />
+    <meta name="twitter:url" content="" />
+    <meta name="twitter:card" content="" />
+
+    <!-- <link href='https://fonts.googleapis.com/css?family=Work+Sans:400,300,600,400italic,700' rel='stylesheet' type='text/css'> -->
+
+    <!-- Animate.css -->
+    <link rel="stylesheet" href="/css/animate.css">
+    <!-- Icomoon Icon Fonts-->
+    <link rel="stylesheet" href="/css/icomoon.css">
+    <!-- Bootstrap  -->
+    <link rel="stylesheet" href="/css/bootstrap.css">
+
+    <!-- Magnific Popup -->
+    <link rel="stylesheet" href="/css/magnific-popup.css">
+
+    <!-- Theme style  -->
+    <link rel="stylesheet" href="/css/style.css">
+
+    <!-- Modernizr JS -->
+    <script src="/js/modernizr-2.6.2.min.js"></script>
+    <!-- FOR IE9 below -->
+    <!--[if lt IE 9]>
+    <script src="/js/respond.min.js"></script>
+    <![endif]-->
+</head>
+<!--팝업창크기는 css/magnific-popup.css에 mfp-iframe-scaler2 클래스에 지정되어있음-->
+<body>
+<% include ../include/nav.ejs %>
+<div id="fh5co-about-section">
+    <div class="container">
+
+        <!--타이틀 시작 -->
+        <div class="fh5co-heading animate-box">
+            <h2 class="ubar">공지사항</h2>
+        </div>
+        <!--타이틀 end -->
+
+
+        <div class="col-md-12 animate-box mb40">
+                <form id="frm" name="frm">
+                    <table border="0" cellspacing="0" class="table_style3" width="100%">
+                        <tr>
+                            <th style="text-align:center; width:5%">No</th>
+                            <th style="text-align:center">제목</th>
+                            <th style="text-align:center;">날짜</th>
+                            <th style="text-align:center;">작성자</th>
+                            <th style="text-align:center;">조회수</th>
+                        </tr>
+                        <%
+                            console.log("rList size : " + rList.length);
+                            if(rList.length > 0) {
+                                rList.forEach(function(item, index) {
+                        %>
+                        <tr>
+                            <td><%=item.num%></td>
+                            <td class="left pdl20"><a href="javascript:onView('<%=item.no%>')"><b><%=item.title%></b></a></td>
+                            <td><%=item.date%></td>
+                            <td><%=item.writer%></td>
+                            <td><%=item.count%></td>
+                        </tr>
+                        <%
+                                })
+                            } else {
+                         %>
+                        <tr>
+                            <td colspan="5" align="center">
+                                No Data
+                            </td>
+                        </tr>
+                        <%
+                                }
+                        %>
+                    </table>
+                </form>
+        </div>
+    </div>
+</div>
+
+<% include ../include/footer.ejs %>
+    <div class="gototop js-top">
+        <a href="#" class="js-gotop"><i class="icon-arrow-up"></i></a>
+    </div>
+
+    <!-- jQuery -->
+    <script type="text/javascript" src="/js/jquery.min.js"></script>
+    <!-- jQuery Easing -->
+    <script type="text/javascript" src="/js/jquery.easing.1.3.js"></script>
+    <!-- Bootstrap -->
+    <script type="text/javascript" src="/js/bootstrap.min.js"></script>
+    <!-- Waypoints -->
+    <script type="text/javascript" src="/js/jquery.waypoints.min.js"></script>
+    <!-- countTo -->
+    <script type="text/javascript" src="/js/jquery.countTo.js"></script>
+    <!-- Magnific Popup -->
+    <script type="text/javascript" src="/js/jquery.magnific-popup.min.js"></script>
+    <script type="text/javascript" src="/js/magnific-popup-options.js"></script>
+    <!-- Main -->
+    <script type="text/javascript" src="/js/main.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            // console.
+            console.log("on READY");
+            $("#prevBtn").on('click', function() {
+                location.href = '/';
+            });
+            $("#loginBtn").on("click", function () {
+                location.href = './login';
+            });
+            $("#logoutBtn").on("click", function () {
+                location.href = '/login/logout';
+            });
+            $("#signupBtn").on("click", function () {
+                location.href = '/signup';
+            });
+        });
+        // btn Event
+        function onView(no) {
+            location.href = '/announce/view/'+no;
+        }
+        // callback
+        function callback() {
+            location.href = "/";
+        }
+    </script>
+</body>
+</html>

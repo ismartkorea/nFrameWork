@@ -1,0 +1,74 @@
+<% layout('../../admin/layout') -%>
+<script type="text/javascript" src="/js/jquery-1.11.3.min.js"></script>
+<script type="text/javascript" src="/ckeditor/ckeditor.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+
+        var resultNo = $.trim($("#no").val());
+
+        // console.
+        $("#prevBtn").on('click', function() {
+            location.href = '/admin/notification';
+        });
+        $("#editBtn").on('click', function() {
+            location.href = "/admin/notification/edit/<%=result.no%>";
+        });
+        $("#delBtn").on('click', function() {
+            location.href = "/admin/notification/delete/<%=result.no%>";
+        });
+    });
+</script>
+<div class="container-fluid">
+
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="page-header">어드민 공지 화면</h1>
+        </div>
+        <form name="frm" id="frm" method="post" class="form-horizontal">
+            <input type="hidden" id="no" name="no" value="<%=result.no%>"/>
+            <table class="table table-bordered">
+                <tr>
+                    <td style="width:80px;">
+                        <label for="title">제목</label>
+                    </td>
+                    <td colspan="3">
+                        <%= result.title %>
+                    </td>
+                    <td style="width:80px;">
+                        <label for="no">글 번호</label>
+                    </td>
+                    <td>
+                        <%= result.no %>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label for="date">작성날짜</label>
+                    </td>
+                    <td colspan="3">
+                        <%=result.date%>
+                    </td>
+                    <td style="width:80px;">
+                        <label for="writer">작성자</label>
+                    </td>
+                    <td>
+                        <%=result.writer%>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="height:420px;">
+                        <label for="content">글 내용</label>
+                    </td>
+                    <td colspan="5"><%-result.content%></td>
+                </tr>
+            </table>
+            <p class="form-group">
+                <div class="col-sm-offset-2 col-sm-10 text-right">
+                    <input type="button" id="prevBtn" name="prevBtn" class="btn btn-default" value="리스트 화면"/>&nbsp;
+                    <input type="button" id="editBtn" name="editBtn" class="btn btn-default" value="수정"/>
+                    <input type="button" id="delBtn" name="delBtn" class="btn btn-default" value="삭제"/>
+                </div>
+            </p>
+        </form>
+    </div>
+</div>

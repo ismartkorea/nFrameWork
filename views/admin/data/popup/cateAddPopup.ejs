@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>카테고리 추가 팝업 화면.</title>
+    <!-- Bootstrap Core CSS -->
+    <link href="/admin/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/join.css">
+    <script type="text/javascript" src="/js/jquery-1.11.3.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+
+            // 카테고리 추가 버튼 이벤트 처리.
+            $("#submitBtn").on("click", function(e) {
+               e.preventDefault();
+               var categoryCd = $.trim($("#cateCode").val());
+               var categoryNm = $.trim($("#cateCodeNm").val());
+
+               if(categoryCd == '') {
+                   alert("카테고리코드를 입력하세요\n코드 맨앞에 'L'로 시작하세요");
+                   $("#cateCode").focus();
+                   return false;
+               }
+                if(categoryNm == '') {
+                    alert("카테고리명을 입력하세요");
+                    $("#cateCodeNm").focus();
+                    return false;
+                }
+                var dataValue = {
+                    'cateCode' : categoryCd,
+                    'cateCodeNm' : categoryNm
+                };
+
+                $.ajax({
+                    url : "/admin/data/category/save",
+                    type : "post",
+                    dataType : "json",
+                    data : dataValue,
+                    success : function(data) {
+                        var result = data.result;
+                        var addHTML = "";
+                        if(result == "OK") {
+                            $.each(data.sList, function(idx, item) {
+                                addHTML += "<option value='"+item.cateCd+"'>"+ item.cateNm +"</option>";
+                            });
+                            $(opener.document).find("#category").html("");
+                            $(opener.document).find("#category").html(addHTML);
+
+                            location.reload();
+                        }
+                    },
+                    error : function(err) {
+                        alert("errCode : " + JSON.stringify(err));
+                    }
+                });
+
+            });
+
+            // 닫기 버튼 이벤트 처리.
+            $("#closeBtn").on("click",function(e) {
+                e.preventDefault();
+                self.close();
+            });
+        });
+    </script>
+</head>
+<body>
+<div id="content">
+    <div id="join">
+        <h1 class="tit-join">카테고리(분류) 추가 팝업</h1>
+        <!--////---서비스이용내역 시작///////-->
+        <table border="0" cellspacing="0" width="100%" class="table_style11">
+            <tr>
+                <th width="5%">No</th>
+                <th width="10">카테고리코드</th>
+                <th width="25">카테고리명</th>
+                <th width="15">등록일자</th>
+                <th width="15%">등록자명</th>
+            </tr>
+<%
+    if(rList.length > 0) {
+        rList.forEach(function(item, index) {
+%>
+            <tr>
+                <td><%=item.num%></td>
+                <td><%=item.cateCd%></td>
+                <td><%=item.cateNm%></td>
+                <td><%=item.insertDt%></td>
+                <td><%=item.insertUsr%></td>
+            </tr>
+<%
+        });
+    } else {
+%>
+            <tr>
+                <td colspan="7" style="text-align: center;">
+                    No Data
+                </td>
+            </tr>
+<%
+    }
+%>
+        </table>
+        <hr>
+        <form id="frm" name="frm">
+        <table border="0" cellspacing="0" width="100%">
+            <tr>
+                <td>
+                * 카테고리 코드 : <input type="text" id="cateCode" name="cateCode" size="5" maxlength="4" value=""/><br/>
+                (* 코드는 공통코드로 입력됩니다. 수정은 공통코드 관리에서 가능합니다.)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                * 카테고리 명 : <input type="text" id="cateCodeNm" name="cateCodeNm" size="14" maxlength="13" value=""/>
+                    <input type="button" id="submitBtn" name="submitBtn" value="전송"/>
+                </td>
+            </tr>
+        </table>
+        </form>
+        <div class="btn-area">
+            <a id="closeBtn" href="#" class="mfp-close">닫기</a>
+        </div>
+    </div>
+</div>
+</body>
+</html>

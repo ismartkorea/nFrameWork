@@ -1,0 +1,109 @@
+<% layout('../../admin/layout') -%>
+    <script type="text/javascript" src="/js/jquery-1.11.3.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            // console.
+            $("#submitBtn").on('click', function() {
+
+                $("#frm").attr("action","/admin/announce/insert");
+                $("#frm").submit();
+            });
+        });
+    </script>
+<div class="container-fluid">
+
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="page-header">결제 관리 화면</h1>
+        </div>
+    </div>
+    <form name="frm" id="frm" method="post">
+        <table style="margin: 0 auto">
+            <tr>
+                <td>
+                    <label for="">고객번호</label>
+                </td>
+                <td>
+                    <input type="text" name="no" id="no" value="" size="80"/>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="">상품명</label>
+                </td>
+                <td>
+                    <input type="text" name="product" id="product" value="" size="80"/>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="">상품가격</label>
+                </td>
+                <td>
+                    <input type="text" name="payprice" id="payprice" value="" size="80"/>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="">결제수단</label>
+                </td>
+                <td>
+                    <input type="radio" id="" name="" value="200"/>신용카드&nbsp;
+                    <input type="radio" id="" name="" value="210"/>계좌이체&nbsp;
+                    <input type="radio" id="" name="" value="220"/>휴대폰결제&nbsp;
+                    <input type="radio" id="" name="" value="230"/>도서상품결제
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="">결제일</label>
+                </td>
+                <td>
+                    <input type="text" name="paydate" id="paydate" value="" size="80"/>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="">결제결과</label>
+                </td>
+                <td>
+                    <input type="text" name="payresult" id="payresult" value="" size="80"/>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="">환불여부</label>
+                </td>
+                <td>
+                    <input type="text" name="refundyn" id="refundyn" value="" size="80"/>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="">환불가격</label>
+                </td>
+                <td>
+                    <input type="text" name="rprice" id="rprice" value="" size="80"/>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="">환불일</label>
+                </td>
+                <td>
+                    <input type="text" name="rdate" id="rdate" value="" size="80"/>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="4" align="center">
+                    <input type="button" id="submitBtn" name="submitBtn" value="전송"/>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="4" align="center">
+                    <a href="/admin/pay">리스트 화면으로</a>
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>

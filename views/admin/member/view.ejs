@@ -1,0 +1,195 @@
+<% layout('../../admin/layout') -%>
+<script type="text/javascript" src="/js/jquery-1.11.3.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+
+        // Submit 버튼 처리.
+        $("#submitBtn").on("click", function() {
+            var userType = $("input:radio[name='usrType']:checked").val();
+            var userInfoYn = $("input:checkbox[name='usrInfoYn']:checked").val();
+            var userAuthLevel = $("#usrAuthLvl option:selected").val();
+            var userSex = $("input:radio[name='usrSex']:checked").val();
+
+            // 아이디체크.
+            if($("#usrId").val()==null || $("#usrId").val()=="") {
+                alert("고객님의 아이디을 입력하여 주세요.");
+                $("#usrId").focus();
+                return;
+            }
+            // 비밀번호 체크.
+            if($("#usrPwd").val()==null || $("#usrPwd").val()=="") {
+                alert("고객님의 비밀번호을 입력하여 주세요.");
+                $("#usrPwd").focus();
+                return;
+            }
+            // 이름 체크.
+            if($("#usrName").val()==null || $("#usrName").val()=="") {
+                alert("고객님의 이름을 입력하여 주세요.");
+                $("#usrName").focus();
+                return;
+            }
+            // 이메일 체크.
+            if($("#usrEmail").val()==null || $("#usrEmail").val()=="") {
+                alert("고객님의 이메일을 입력하여 주세요");
+                $("#usrEmail").focus();
+                return;
+            }
+
+            var dataVals = {
+                usrType : userType,
+                usrNo : $.trim($("#usrNo").val()),
+                usrId : $.trim($("#usrId").val()),
+                usrPwd : $.trim($("#usrPwd").val()),
+                usrName : $.trim($("#usrName").val()),
+                usrAddr1 : $.trim($("#usrAddr1").val()),
+                usrAddr2 : $.trim($("#usrAddr2").val()),
+                usrPostNo : $.trim($("#usrPostNo").val()),
+                usrEmail : $.trim($("#usrEmail").val()),
+                usrSex : userSex,
+                usrSaupNo : $.trim($("#usrSaupNo").val()),
+                usrType : userType,
+                usrLevel : userAuthLevel,
+                usrBirth : $.trim($("#usrBirth").val()),
+                usrJuminNo : $.trim($("#usrJuminNo").val()),
+                authCd : $.trim($("#authCd").val()),
+                usrInfo : userInfoYn
+            };
+            // 전송 처리.
+            $.ajax({
+                url: "/admin/member/edit",
+                type: "post",
+                dataType: "json",
+                data: dataVals,
+                success: function (data) {
+                    //console.log(">>> data = " + data.result);
+                    if(data.result=="OK") {
+                        alert("저장처리 되었습니다.");
+                        location.href = "/admin/member";
+                    }
+                },
+                error: function (err) {
+                    alert("errCode : " + err.status + " , errText : " + err.statusText);
+                }
+            });
+        });
+
+        $("#cancelBtn").on("click", function() {
+            location.href = "/admin/member";
+        });
+    });
+</script>
+<div class="container-fluid">
+
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="page-header">회원관리 화면</h1>
+        </div>
+    </div>
+    <div>
+        <p>각 입력란에 맞추어서 입력해주세요.</p>
+        <form name='frm' id="frm" class="form-horizontal">
+            <div class="form-group form-group-sm">
+                <label class="col-sm-2 control-label" for="usrType">회원 타입 :</label>
+                <div class="col-sm-10">
+                    <input type="radio" id="usrType1" name="usrType" value="A" <% if(members.usertype == "A") {%> checked <%}%>/><span>개인</span>
+                    <input type="radio" id="usrType2" name="usrType" value="B" <% if(members.usertype == "B") {%> checked <%}%>/><span>정비사</span>
+                    <input type="radio" id="usrType3" name="usrType" value="C" <% if(members.usertype == "C") {%> checked <%}%>/><span>정비업체</span>
+                    <input type="radio" id="usrType4" name="usrType" value="D" <% if(members.usertype == "D") {%> checked <%}%>/><span>부품업체</span>
+                    <input type="radio" id="usrType5" name="usrType" value="E" <% if(members.usertype == "E") {%> checked <%}%>/><span>보험사</span>
+                    <input type="radio" id="usrType6" name="usrType" value="S" <% if(members.usertype == "S") {%> checked <%}%>/><span>관리자</span>
+                </div>
+            </div>
+            <div class="form-group form-group-sm">
+                <label class="col-sm-2 control-label" for="usrNo">고객 번호:</label>
+                <div class="col-sm-10">
+                    <input type="text" id="usrNo" name="usrNo" class="form-control" value="<%=members.no%>" readonly/>
+                </div>
+            </div>
+            <div class="form-group form-group-sm">
+                <label class="col-sm-2 control-label" for="usrId">고객 id:</label>
+                <div class="col-sm-10">
+                    <input type="text" id="usrId" name="usrId" class="form-control" maxlength="12" value="<%=members.id%>"/>
+                </div>
+            </div>
+            <div class="form-group form-group-sm">
+                <label class="col-sm-2 control-label" for="usrPwd">고객 비밀번호:</label>
+                <div class="col-sm-10">
+                    <input type="text" id="usrPwd" name="usrPwd" class="form-control" maxlength="12" value="<%=members.pwd%>"/>
+                </div>
+            </div>
+            <div class="form-group form-group-sm">
+                <label class="col-sm-2 control-label" for="usrName">고객 이름:</label>
+                <div class="col-sm-10">
+                    <input type="text" id="usrName" name="usrName" class="form-control" maxlength="12" value="<%=members.name%>"/>
+                </div>
+            </div>
+            <div class="form-group form-group-sm">
+                <label class="col-sm-2 control-label" for="usrAddr1">고객 주소:</label>
+                <div class="col-sm-10">
+                    <input type="text" id="usrAddr1" name="usrAddr1" class="form-control" maxlength="60" value="<%=members.address1%>"/>
+                </div>
+            </div>
+            <div class="form-group form-group-sm">
+                <label class="col-sm-2 control-label" for="usrAddr2">고객 주소:</label>
+                <div class="col-sm-10">
+                    <input type="text" id="usrAddr2" name="usrAddr2" class="form-control" maxlength="60" value="<%=members.address2%>"/>
+                </div>
+            </div>
+            <div class="form-group form-group-sm">
+                <label class="col-sm-2 control-label" for="usrPostNo">우편번호 :</label>
+                <div class="col-sm-10">
+                    <input type="text" id="usrPostNo" name="usrPostNo" class="form-control" maxlength="60" value="<%=members.postno%>"/>
+                </div>
+            </div>
+            <div class="form-group form-group-sm">
+                <label class="col-sm-2 control-label" for="usrEmail">이메일 :</label>
+                <div class="col-sm-10">
+                    <input type="text" id="usrPostNo" name="usrEmail" class="form-control" maxlength="60" value="<%=members.email%>"/>
+                </div>
+            </div>
+            <div class="form-group form-group-sm">
+                <label class="col-sm-2 control-label" for="usrSex">성별 :</label>
+                <div class="col-sm-10">
+                    <input type="radio" id="usrSexM" name="usrSex" value="M" <% if(members.sex=="M") { %> checked <% } %>/><span>남자</span>
+                    <input type="radio" id="usrSexF" name="usrSex" value="F" <% if(members.sex=="F") { %> checked <% } %>/><span>여자</span>
+                </div>
+            </div>
+            <div class="form-group form-group-sm">
+                <label class="col-sm-2 control-label" for="usrSaupNo">사업번호 :</label>
+                <div class="col-sm-10">
+                    <input type="text" id="usrSaupNo" name="usrSaupNo" class="form-control" maxlength="13" value="<%=members.saupNo%>"/>
+                </div>
+            </div>
+            <div class="form-group form-group-sm">
+                <label class="col-sm-2 control-label" for="usrAuthLvl">회원등급 :</label>
+                <div class="col-sm-10">
+                    <select id="usrAuthLvl" name="usrAuthLvl">
+                        <option>선택하여주세요.</option>
+                        <option value="000" <% if(members.level=="000") { %> selected <% }%>>관리자</option>
+                        <option value="000" <% if(members.level=="001") { %> selected <% }%>>담당자</option>
+                        <option value="000" <% if(members.level=="002") { %> selected <% }%>>서비스 관리자</option>
+                        <option value="000" <% if(members.level=="003") { %> selected <% }%>>테스터</option>
+                        <option value="100" <% if(members.level=="100") { %> selected <% }%>>정회원</option>
+                        <option value="500" <% if(members.level=="500") { %> selected <% }%>>일반회원</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group form-group-sm">
+                <label class="col-sm-2 control-label" for="usrBirth">회원생년월일 :</label>
+                <div class="col-sm-10">
+                    <input type="text" id="usrBirth" name="usrBirth" class="form-control" maxlength="12" value="<%=members.birth%>"/>
+                </div>
+            </div>
+            <div class="form-group form-group-sm">
+                <label class="col-sm-2 control-label" for="usrJuminNo">주민번호 :</label>
+                <div class="col-sm-10">
+                    <input type="text" id="usrJuminNo" name="usrJuminNo" class="form-control" maxlength="13" value="<%=members.juminno%>"/>
+                </div>
+            </div>
+            <div class="text-center">
+                <input type="button" id="submitBtn" name="submitBtn" class="btn btn-default" value="확인" />
+                <input type="button" id="cancelBtn" name="cancelBtn" class="btn btn-default" value="취소" />
+            </div>
+        </form>
+    </div>
+</div>

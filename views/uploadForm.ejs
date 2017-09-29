@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="utf-8"/>
+    <title><%=title%></title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Bootstrap Core CSS -->
+    <link href="/admin/css/bootstrap.min.css" rel="stylesheet">
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <!-- jQuery -->
+    <script type="text/javascript" src="/js/jquery.min.js"></script>
+    <script type="text/javascript" src="/js/jquery.form.min.js"></script>
+    <!-- Bootstrap Core JavaScript -->
+    <script src="/admin/js/bootstrap.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            // 버튼처리.
+            $("#uploadBtn").on("click", function(e) {
+                e.preventDefault();
+                //validation체크
+                //막기위해서는 return false를 잡아주면됨
+                var ext = $('#file1').val().split('.').pop().toLowerCase();
+                //console.log("ext = " + ext);
+                if ($.inArray(ext,['gif','png','jpg','jpeg', 'xls', 'doc', 'pdf', 'hwp', 'zip', 'txt']) == -1) {
+                    alert('gif,png,jpg,jpeg,xls,doc,pdf,hwp,txt,zip 파일만 업로드 할수 있습니다.');
+                    return false;
+                }
+                // 파일 사이즈 크기 체크.
+                var iSize = ($("#file1")[0].files[0].size / 1024);
+                //console.log(">>> iSize = " + iSize + " KB");
+                //console.log(">>> iSize2 = " + (iSize/1024) + " KB");
+
+                if (iSize / 1024 > 30) {
+                    alert("30Mb 이하로 올려주세요");
+                    return false;
+                } else {
+                    iSize = (Math.round(iSize * 100) / 100);
+                    //console.log("iSize = " + iSize + " KB");
+                }
+                $("#frm").ajaxForm();
+                $("#frm").ajaxSubmit({
+                    url: "/common/upload",
+                    type: "post",
+                    dataType: "json",
+                    beforeSend: function() {
+                        $("#content").html("<img src='/images/ajax-loader.gif'/>");
+                    },
+                    success: function(data) {
+                        if(data.status==200) {
+                            $("#content").html("");
+                            alert("파일전송완료 처리되었습니다.");
+                            $("#fileDiv").css("display", "none");
+                            $("#compDiv").css("display", "block");
+                            $("#aLink").attr("href", "/tmp/uploads/"+$("#file1")[0].files[0].name);
+                            $("#aLink").text($("#file1")[0].files[0].name);
+                            $("#fileSize").text(iSize);
+                        }
+                    },
+                    error: function(err) {
+                        alert("errCode : " + err);
+                    }
+                });
+            });
+        });
+    </script>
+</head>
+<body>
+<div class="container-fluid">
+
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="page-header">파일업로드 테스트 화면</h1>
+        </div>
+    </div>
+
+    <!-- ... Your content goes here ... -->
+    <div id="content"></div>
+    <div id="fileDiv">
+        <form id="frm" name="frm" class="form-horizontal">
+            <table width="100%" border="0" class="table">
+                <tr>
+                    <td>
+                        <input type="file" id="file1" name="file1" class="form-control" value=""/>
+                        <input type="button" id="uploadBtn" name="uploadBtn" class="form-control" value="파일업로드"/>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+    <div id="compDiv" style="display: none;">
+        <table width="100%" border="0" class="table">
+            <tr>
+                <td>
+                    <a href="#" id="aLink"></a>&nbsp;<span id="fileSize">MB</span><span>MB (최대30MB)</span>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+</body>
+</html>

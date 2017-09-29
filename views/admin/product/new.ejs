@@ -1,0 +1,590 @@
+<% layout('../../admin/layout') -%>
+<script type="text/javascript" src="/js/jquery-1.11.3.min.js"></script>
+<script type="text/javascript" src="/js/jquery.form.min.js"></script>
+<script type="text/javascript" src="/ckeditor/ckeditor.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        // 에디터창 초기화.
+        CKEDITOR.replace("productDesc", {
+            "filebrowserUploadUrl" : "/common/ckedit/upload"
+        });
+
+        // 서비스 구분 콤보박스
+        var optionHTML = "<option value=''>선택하세요.</option>";
+<%
+        console.log(">>>> cList.length : " + cList.length);
+        if(cList.length > 0) {
+            cList.forEach(function(item) {
+%>
+        optionHTML += "<option value='<%=item.commCd%>'><%=item.commNm%></option>";
+<%
+            });
+        }
+%>
+        // 카테고리 구분 콤보박스
+        var option2HTML = "<option value=''>선택하세요.</option>";
+<%
+console.log(">>>> cList2.length : " + cList2.length);
+    if(cList2.length > 0) {
+        cList2.forEach(function(item) {
+%>
+        option2HTML += "<option value='<%=item.cateNo%>'><%=item.cateName%></option>";
+<%
+        });
+    }
+%>
+        // 서비스 구분 셋팅.
+        $("#serviceGubun").html(optionHTML);
+
+        // 카테고리 구분 셋팅.
+        $("#categoryGubun").html(option2HTML);
+
+        // 상품 종속코드 라디오버튼 초기 셋팅.
+        $("#displayYn3").css("display", "none");
+
+        // 상품가격 입력시 숫자만 체크.
+        $("#productNo").on("keyup", function() {
+            $(this).val( $(this).val().replace(/[^A-Za-z0-9]/gi,""));
+        });
+
+        // 상품가격 입력시 숫자만 체크.
+        $("#productPrice").on("keyup", function() {
+            $(this).val( $(this).val().replace(/[^0-9]/gi,""));
+        });
+
+        // 상품종속코드 입력란 표시 여부(Y) 버튼 이벤트 처리.
+        $("#productPairCodeY").on("click", function() {
+            // 라디오 버튼에서는 event prevent 사용하면 안됨.
+            $("#displayYn3").css("display", "block");
+        });
+        // 상품종속코드 입력란 표시 여부(Y) 버튼 이벤트 처리.
+        $("#productPairCodeN").on("click", function() {
+            $("#displayYn3").css("display", "none");
+        });
+
+
+        // Submit 버튼 처리.
+        $("#submitBtn").on("click", function() {
+            var productType = $.trim($("#productType option:selected").val());
+            var displayYn = $.trim($("input:radio[name='displayYn']:checked").val());
+            var productDiv = $.trim($("input:radio[name='productDiv']:checked").val());
+            var productPairCodeYn = $.trim($("input:radio[name='productPairCodeYn']:checked").val());
+            var productDesc = CKEDITOR.instances.productDesc.getData();
+            var serviceGubunCd = $.trim($("#serviceGubun option:selected").val());
+            var serviceGubun = $.trim($("#serviceGubun option:selected").text());
+            var sortNo = $.trim($("#sortNo option:selected").val());
+            var optBtnDispYn = $("input:radio[name='optBtnDispYn']:checked").val();
+            var productSmmry = $.trim($("#productSmmry").val());
+
+            // 상품번호 체크.
+            if($("#productCode").val()==null || $("#productCode").val()=="") {
+                alert("상품번호를 입력하여 주세요.");
+                $("#productNo").focus();
+                return;
+            }
+            // 상품번호 체크.
+            if($("#productUniqCode").val()==null || $("#productUniqCode").val()=="") {
+                alert("상품고유번호를 입력하여 주세요.");
+                $("#productUniqCode").focus();
+                return;
+            }
+            // 상품명 체크.
+            if($("#productNm").val()==null || $("#productNm").val()=="") {
+                alert("상품명을 입력하여 주세요.");
+                $("#productNm").focus();
+                return;
+            }
+            // 상품종류 체크
+            if(productType == "") {
+                alert("상품종류를 입력하여 주세요.");
+                $("#productType").focus();
+                return;
+            }
+            // 상품 가격 체크.
+            if($("#productPrice").val()==null || $("#productPrice").val()=="") {
+                alert("상품 가격을 입력하여 주세요");
+                $("#productPrice").focus();
+                return;
+            }
+            // 상품 설명 체크.
+            if(productSmmry=="") {
+                alert("상품요약 설명을 입력하여 주세요.");
+                $("#productSmmry").focus();
+                return;
+            }
+            // 상품 설명 체크.
+            if(productDesc=="") {
+                alert("상품설명을 입력하여 주세요.");
+                $("#productDesc").focus();
+                return;
+            }
+            // 대표 이미지 파일 체크.
+            if($("#attImg").val()==null || $("#attImg").val()=="") {
+                alert("대표 상품 이미지를 업로드 해주세요.");
+                $("#attImg").focus();
+                return;
+            }
+            // 상품 진열여부 체크.
+            if(displayYn == "") {
+                alert("상품 진열 여부를 입력하여 주세요");
+                $("#displayYn").focus();
+                return;
+            }
+            // 서비스 구분 체크.
+            if(serviceGubun =="") {
+                alert("서비스 구분을 선택하여 주세요.");
+                $("#serviceGubun").focus();
+                return;
+            }
+
+            var dataVals = {
+                pCode : $.trim($("#productCode").val()),
+                pUniqCode : $.trim($("#productUniqCode").val()),
+                pPaireCodeYn : productPairCodeYn,
+                optBtnDispYn : optBtnDispYn,
+                pNm : $.trim($("#productNm").val()),
+                pType : productType,
+                pDiv : productDiv,
+                pPrice : $.trim($("#productPrice").val()),
+                pDesc : productDesc,
+                pSmmry : productSmmry,
+                attImg : $.trim($("#attImg").val()),
+                attImgUrl : $.trim($("#attImgUrl").val()),
+                pDisplayYn : displayYn,
+                pGubun : serviceGubun,
+                pGubunCd : serviceGubunCd,
+                sortNo : sortNo,
+                pCategory1 : $.trim($("#categoryGubun option:selected").val()),
+                pCategory2 : $.trim($("#category2Gubun option:selected").val()),
+                pCategory3 : $.trim($("#category3Gubun option:selected").val()),
+                pDispOrderNo : $.trim($("#displaySortNo option:selected").val()),
+                pStockCnt : $("#productStockCnt").val()
+            };
+            // 전송 처리.
+            $.ajax({
+                url: "/admin/product/insert",
+                type: "post",
+                dataType: "json",
+                data: dataVals,
+                success: function (data) {
+                    if(data.result=="OK") {
+                        alert("저장처리되었습니다.");
+                        location.href = "/admin/product";
+                    }
+                },
+                error: function (err) {
+                    alert("errCode : " + err.status);
+                }
+            });
+        });
+        // 취소 버튼 이벤트 처리.
+        $("#cancelBtn").on("click", function() {
+            location.href = "/admin/product";
+        });
+        // 파일 업로드 버튼 이벤트 처리.
+        $("#uploadBtn").on("click", function(e) {
+            e.preventDefault();
+            //validation체크
+            // 대표 이미지 체크.
+            if($("#imgFile").val()==null || $("#imgFile").val()=="") {
+                alert("대표이미지를 선택하여 주세요.");
+                $("#imgFile").focus();
+                return false;
+            } else {
+                //막기위해서는 return false를 잡아주면됨
+                var ext = $('#imgFile').val().split('.').pop().toLowerCase();
+                //console.log("ext = " + ext);
+                if ($.inArray(ext,['gif','png','jpg','jpeg']) == -1) {
+                    alert('gif,png,jpg,jpeg 파일만 업로드 할수 있습니다.');
+                    $("#imgFile").focus();
+                    return false;
+                }
+            }
+
+            $("#fileForm").ajaxForm();
+            $("#fileForm").ajaxSubmit({
+                url: "/admin/product/upload",
+                type: "post",
+                dataType: "json",
+                beforeSend: function() {
+                    //$("#layer").css("visibility", "visible");
+                    $("#loadingBar").html("<img src='/images/loader.gif'/>");
+                },
+                success: function(data) {
+                    //console.log("data = " + JSON.stringify(data));
+                    if(data.result=="OK") {
+                        var getPrevData = CKEDITOR.instances.productDesc.getData();
+                        var pImgData = "<img src='/images/product/"+data.fileList.img+"' width='25px' heigth='25px' border='0'/>";
+                        CKEDITOR.instances.productDesc.setData(getPrevData);
+                        $("#pImgDiv").html(pImgData);
+                        $("#attImg").val(data.fileList.img);
+                        $("#attImgUrl").val(data.fileList.filePath);
+                        $("#attchFile").text(data.fileList.img);
+                        $("#loadingBar").html("");
+                        alert("파일전송완료 처리되었습니다.");
+                    }
+                },
+                error: function(err) {
+                    $("#loadingBar").html("");
+                    alert("errCode : " + JSON.stringify(err));
+                }
+            });
+
+        });
+
+        // 번호 자동 생성 처리.
+        $("#getAutoNo").on("click", function(e) {
+            e.preventDefault();
+
+            // 전송 처리.
+            $.ajax({
+                url: "/admin/product/getAutoProductNo",
+                type: "post",
+                dataType: "json",
+                success: function (data) {
+                    var no = data.no;
+                    $("#productCode").val(no);
+                },
+                error: function (err) {
+                    alert("errCode : " + err.status);
+                }
+            });
+        });
+
+        // 중 카테고리 조회 처리.
+        $("#categoryGubun").on("change", function(e) {
+            e.preventDefault();
+            var getSelectedVal = $.trim($("#categoryGubun option:selected").val());
+
+            if(getSelectedVal!=null && getSelectedVal != "") {
+                var dataValues = {
+                    'setDataVal': getSelectedVal
+                };
+                // 전송 처리.
+                $.ajax({
+                    url: "/admin/product/getcate2",
+                    type: "post",
+                    dataType: "json",
+                    data: dataValues,
+                    success: function (data) {
+                        var HTML = "<option value=''>선택하세요.</option>";
+                        $.each(data.list, function (i, item) {
+                            if(item.cateNo2 !=null && item.cateNo2 != "") {
+                                HTML += "<option value='" + item.cateNo2 + "'>" + item.cateName2 + "</option>";
+                            }
+                        });
+                        $("#category3Gubun").html("");
+                        $("#category3Gubun").css("display", "none");
+                        $("#category2Gubun").css("display", "inline");
+                        $("#category2Gubun").html("");
+                        $("#category2Gubun").html(HTML);
+
+                    },
+                    error: function (err) {
+                        alert("errCode : " + err.status);
+                    }
+                });
+            } else {
+                $("#category2Gubun").html("");
+                $("#category2Gubun").css("display", "none");
+                $("#category3Gubun").html("");
+                $("#category3Gubun").css("display", "none");
+            }
+        });
+
+        // 소 카테고리 조회 처리.
+        $("#category2Gubun").on("change", function(e) {
+            e.preventDefault();
+            var getSelectedVal = $.trim($("#category2Gubun option:selected").val());
+
+            if(getSelectedVal !=null && getSelectedVal != "") {
+
+                var dataValues = {
+                    'setDataVal' : getSelectedVal
+                };
+                // 전송 처리.
+                $.ajax({
+                    url: "/admin/product/getcate3",
+                    type: "post",
+                    dataType: "json",
+                    data: dataValues,
+                    success: function (data) {
+                        var HTML = "<option value=''>선택하세요.</option>";
+                        $.each(data.list, function(i, item) {
+                            if(item.cateNo3 !=null) {
+                                HTML += "<option value='" + item.cateNo3 + "'>" + item.cateName3 + "</option>";
+                            }
+                        });
+                        $("#category3Gubun").css("display", "inline");
+                        $("#category3Gubun").html("");
+                        $("#category3Gubun").html(HTML);
+                    },
+                    error: function (err) {
+                        alert("errCode : " + err.status);
+                    }
+                });
+            } else {
+                $("#category3Gubun").html("");
+                $("#category3Gubun").css("display", "none");
+            }
+        });
+
+        // 상품전시표시 순서 사용 여부 체크.
+        $("#displaySortNo").on("change", function(e) {
+            e.preventDefault();
+
+            var getSelectedVal = $.trim($("#displaySortNo option:selected").val());
+            var dataValues = {
+                'pDispOrderNo' : getSelectedVal
+            };
+            // 전송 처리.
+            $.ajax({
+                url: "/admin/product/getDisplayNoYn",
+                type: "post",
+                dataType: "json",
+                data: dataValues,
+                success: function (data) {
+                    var cnt = data.count;
+                    if(cnt == 0) {
+                        alert("사용가능한 번호입니다.");
+                        $("#displaySortNo").focus();
+                    } else {
+                        $.each(data.list, function(i, item) {
+                            alert("해당 번호는 '"+ item.pNm + "':상품코드(" + item.pCode + ")에서 사용중입니다.");
+                            $("#displaySortNo").focus();
+                        });
+                    }
+                },
+                error: function (err) {
+                    alert("errCode : " + err.status);
+                }
+            });
+
+        });
+
+        // 고유번호 체크.
+        $("#productUniqCode").on("keyup", function(e) {
+            e.preventDefault();
+
+            if($("#productUniqCode").val().length < 4) {
+                $("#productUniqCode").focus();
+                return false;
+            }
+
+            var productUniqCode = $.trim($("#productUniqCode").val());
+            var dataValues = {
+                'pUniqCd' : productUniqCode
+            };
+            // 전송 처리.
+            $.ajax({
+                url: "/admin/product/getUniqCdUseYn",
+                type: "post",
+                dataType: "json",
+                data: dataValues,
+                success: function (data) {
+                    var cnt = data.count;
+                    if(cnt == 0) {
+                        alert("사용가능한 번호입니다.");
+                        $("#productUniqCode").focus();
+                    } else {
+                        $.each(data.list, function(i, item) {
+                            alert("해당 번호는 '"+ item.pNm + "':상품고유코드(" + item.pCode + ")에서 사용중입니다.");
+                            $("#productUniqCode").focus();
+                        });
+                    }
+                },
+                error: function (err) {
+                    alert("errCode : " + err.status);
+                }
+            });
+
+        });
+
+    });
+</script>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="page-header">상품관리 화면</h1>
+        </div>
+    </div>
+    <div>
+        <h6>* AssistPro 상품코드는 "APP170109ASS" 이며 필수 사용 코드입니다.(변경하지 마세요!)</h6>
+        <h6>* AssistPro 고유코드는 "ASS1" 이며 필수 사용 코드입니다.(변경하지 마세요!)</h6>
+        <h6>* 상품코드는 메인 상품, 옵션 상품 각각 다르게 해야 합니다.</h6>
+        <h6>* 고유코드는 메인 상품과 옵션 상품 함께 동일해야 합니다.</h6>
+        <h6>* 상품코드는 "APP" + 년월일 6 자리 + "문자" 3자리 형식으로 입력해주세요. (필수형식은 아님)</h6>
+        <h6>* 고유코드는 다른 상품의 고유코드와 겹치지 않게 "문자" 3자리 + 숫자 1~2자리 형식으로 입력해주세요. (필수형식은 아님)</h6>
+    </div><hr/>
+    <div>
+        <p>각 입력란에 맞추어서 입력해주세요.</p>
+        <form name='frm' id="frm" class="form-horizontal">
+            <input type="hidden" id="attImg" name="attImg" value=""/>
+            <input type="hidden" id="attImgUrl" name="attImgUrl" value=""/>
+            <div class="form-group form-group-sm form-inline">
+                <label class="col-sm-2 control-label" for="productCode">상품번호(코드) :</label>
+                <div class="col-sm-10">
+                    <input type="text" id="productCode" name="productCode" class="form-control" size="15" maxlength="13" />
+                    <input type="button" id="getAutoNo" name="getAutoNo" value="자동생성"/>
+                    (* 옵션인 상품은 상품번호를 다르게 12~13자리를 입력해주세요.)
+                </div>
+            </div>
+            <div class="form-group form-group-sm form-inline">
+                <label class="col-sm-2 control-label" for="productUniqCode">상품고유코드 :</label>
+                <div class="col-sm-10">
+                    <input type="text" id="productUniqCode" name="productUniqCode" class="form-control" size="15" maxlength="12" />
+                    (* 고유코드는 옵션 상품도 동일하게 같은 코드로 4자리를 입력해주세요.)
+                </div>
+            </div>
+            <div class="form-group form-group-sm form-inline">
+                <label class="col-sm-2 control-label" for="productPairCodeY">상품(종속)코드여부 :</label>
+                <div class="col-sm-10">
+                    <input type="radio" id="productPairCodeY" name="productPairCodeYn" value="Y"/>예&nbsp;
+                    <input type="radio" id="productPairCodeN" name="productPairCodeYn" value="N" checked/>아니오
+                    (* 연관성이 있는 상품코드가 있는 경우 '예'를 선택하세요. 기본은 '아니오'입니다.)
+                </div>
+            </div>
+            <div id="displayYn3" class="form-group form-group-sm form-inline">
+                <label class="col-sm-2 control-label" for="productUniqCode">상품(종속)코드 :</label>
+                <div class="col-sm-10">
+                    <input type="text" id="productPairCode" name="productPairCode" class="form-control" size="15" maxlength="12" />
+                </div>
+            </div>
+            <div class="form-group form-group-s form-inline">
+                <label class="col-sm-2 control-label" for="serviceGubun">카테고리 :</label>
+                <div class="col-sm-10">
+                    <select id="categoryGubun" name="categoryGubun"></select>
+                    <select id="category2Gubun" name="category2Gubun" style="display:none;"></select>
+                    <select id="category3Gubun" name="category3Gubun" style="display:none;"></select>
+                </div>
+            </div>
+            <div class="form-group form-group-s form-inline">
+                <label class="col-sm-2 control-label" for="serviceGubun">서비스구분 :</label>
+                <div class="col-sm-10">
+                    <select id="serviceGubun" name="serviceGubun"></select>
+                </div>
+            </div>
+            <div class="form-group form-group-sm form-inline">
+                <label class="col-sm-2 control-label" for="productNm">상품명 :</label>
+                <div class="col-sm-10">
+                    <input type="text" id="productNm" name="productNm" class="form-control" size="30" maxlength="20" />
+                </div>
+            </div>
+            <div class="form-group form-group-s form-inline">
+                <label class="col-sm-2 control-label" for="productType">상품종류 :</label>
+                <div class="col-sm-10">
+                    <select id="productType" name="productType">
+                        <option value="">선택하세요.</option>
+                        <option value="SVC">서비스(기간)</option>
+                        <option value="HDW">하드웨어</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group form-group-sm form-inline">
+                <label class="col-sm-2 control-label" for="productPrice">상품가격 :</label>
+                <div class="col-sm-10">
+                    <input type="text" id="productPrice" name="productPrice" class="form-control" size="12" maxlength="11" />
+                </div>
+            </div>
+            <div class="form-group form-group-sm form-inline">
+                <label class="col-sm-2 control-label" for="productDiv">상품구분 :</label>
+                <div class="col-sm-10">
+                    <input type="radio" id="productDivM" name="productDiv" value="M" checked/>기본서비스&nbsp;
+                    <input type="radio" id="productDivO" name="productDiv" value="O"/>옵션
+                </div>
+            </div>
+            <div class="form-group form-group-sm form-inline">
+                <label class="col-sm-2 control-label" for="optBtnDispYn">옵션의 '선택' 버튼 표시여부 :</label>
+                <div class="col-sm-10">
+                    <input type="radio" id="optBtnDispY" name="optBtnDispYn" value="Y"/>예&nbsp;
+                    <input type="radio" id="optBtnDispN" name="optBtnDispYn" value="N" checked/>아니오
+                    (* 옵션상품인 경우 선택할 수 있는 버튼을 표시하는 기능입니다.)
+                </div>
+            </div>
+            <div class="form-group form-group-sm form-inline">
+                <label class="col-sm-2 control-label" for="displayYn">상품진열여부 :</label>
+                <div class="col-sm-10">
+                    <input type="radio" id="displayY" name="displayYn" value="Y" checked/>예&nbsp;
+                    <input type="radio" id="displayN" name="displayYn" value="N"/>아니오
+                </div>
+            </div>
+            <div class ="form-group form-group-sm form-inline">
+                <label class="col-sm-2 control-label" for="productSmmry">상품 요약 :</label>
+                <div class="col-sm-10">
+                    <input type="text" id="productSmmry" name="productSmmry" class="form-control" size="110" maxlength="100" /> (100자이내)
+                </div>
+            </div>
+            <div class ="form-group form-group-sm form-inline">
+                <label class="col-sm-2 control-label" for="productDesc">상품 설명 :</label>
+                <div class="col-sm-10">
+                    <textarea id="productDesc" name="productDesc" class="form-control" style="width:800px; height:600px"></textarea>
+                </div>
+            </div>
+            <div class="form-group form-group-s form-inline">
+                <label class="col-sm-2 control-label" for="productType">정렬순서 :</label>
+                <div class="col-sm-10">
+                    <select id="sortNo" name="sortNo">
+                        <option value="0" selected>0</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select> (* 상품+옵션의 정렬순서입니다.)
+                </div>
+            </div>
+            <div class="form-group form-group-s form-inline">
+                <label class="col-sm-2 control-label" for="displaySortNo">상품 전시 표시 순서 :</label>
+                <div class="col-sm-10">
+                    <select id="displaySortNo" name="displaySortNo">
+                        <option>선택하세요.</option>
+                        <option value="0" selected>0</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="5">6</option>
+                        <option value="7">7</option>
+                        <option value="8">8</option>
+                        <option value="9">9</option>
+                        <option value="10">10</option>
+                        <option value="11">11</option>
+                        <option value="12">12</option>
+                        <option value="13">13</option>
+                        <option value="14">14</option>
+                        <option value="15">15</option>
+                        <option value="16">16</option>
+                        <option value="17">17</option>
+                        <option value="18">18</option>
+                        <option value="19">19</option>
+                        <option value="20">20</option>
+                    </select> (* 전시될 상품 표시 순서입니다.)
+                </div>
+            </div>
+            <div class="form-group form-group-sm form-inline">
+                <label class="col-sm-2 control-label" for="productStockCnt">상품재고수 :</label>
+                <div class="col-sm-10">
+                    <input type="text" id="productStockCnt" name="productStockCnt" class="form-control" size="5" maxlength="3" value=""/>
+                </div>
+            </div>
+        </form>
+        <!-- 로딩바 -->
+        <div id="loadingBar"></div>
+        <form id="fileForm" name="fileForm" method="post" enctype="multipart/form-data">
+            <div class ="form-group form-group-sm form-inline">
+                <label class="col-sm-2 control-label" for="desc">대표상품이미지 :</label>
+                <div id="" class="col-sm-10">
+                    <div id="attchFile"></div>
+                    <input type="file" id="imgFile" name="imgFile" class="form-control" value=""/>
+                </div>
+                <div id="pImgDiv"></div>
+            </div>
+        </form>
+    </div>
+    <p align="right">
+        <input type="button" id="uploadBtn" name="uploadBtn" class="btn btn-default" value="업로드" />&nbsp;
+        <input type="button" id="submitBtn" name="submitBtn" class="btn btn-default" value="확인" />&nbsp;
+        <input type="button" id="cancelBtn" name="cancelBtn" class="btn btn-default" value="취소" />
+    </p>
+</div>

@@ -1,0 +1,63 @@
+<!DOCTYPE>
+<html lang="ko">
+<head>
+    <title>SMS 전송 테스트</title>
+    <!-- Bootstrap core CSS     -->
+    <link href="../css/bootstrap.css" rel="stylesheet" />
+    <!--   Core JS Files   -->
+    <script src="../js/jquery-1.11.3.min.js" type="text/javascript"></script>
+    <script src="../js/bootstrap.min.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            // 초기 설정.
+            $("#submitBtn").on('click', function(e) {
+                e.preventDefault();
+
+                var dataValues = {fromTelNo : $.trim($("#fromTelNo").val()), toTelNo : $.trim($("#toTelNo").val())};
+                // 데이타 전송 처리.
+                $.ajax({
+                    url : "/test/sms",
+                    type : "post",
+                    dataType : "json",
+                    data : dataValues,
+                    success : function(data) {
+                        console.log(">>> data = " + JSON.stringify(data));
+                        if(data.msg.result_code == "00") {
+                            alert("전송완료!");
+                        } else {
+                            alert("전송에러! (" + data.msg.code + ")");
+                        }
+                    },
+                    error : function(err) {
+                        //console.log("errCode : " + err.status + " : " + err.statusText);
+                        alert("정상적으로 처리를 하지 못했습니다.\n관리자에 문의하세요!\n" + err.statusText + " ("+err.status+")");
+                    }
+                });
+            })
+        });
+    </script>
+</head>
+<body>
+<div style="margin: 0 auto; text-align: center;">
+    <div id="nav">
+        <h1>SMS 전송 테스트</h1>
+    </div>
+    <div id="content">
+        <div class="row">
+            <label for="fromTelNo">보내는 분 전화번호</label>
+            <input type="text" id="fromTelNo" name="fromTelNo" value="010-5545-7212" size="15" maxlength="13"/>
+        </div>
+        <div class="row">
+            <label for="toTelNo">받는 분 전화번호</label>
+            <input type="text" id="toTelNo" name="toTelNo" value="" size="15" maxlength="13"/>
+        </div>
+        <div class="row">
+            <input type="button" id="submitBtn" name="submitBtn" value="전송"/>
+        </div>
+    </div>
+    <div id="footer`">
+        푸터
+    </div>
+</div>
+</body>
+</html>

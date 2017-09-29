@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <title>파일다운로드 테스트</title>
+    <!-- Bootstrap core CSS     -->
+    <link href="/css/bootstrap.css" rel="stylesheet" />
+    <!--   Core JS Files   -->
+    <script src="/js/jquery-1.11.3.min.js" type="text/javascript"></script>
+    <!-- form js -->
+    <script src="/js/jquery.form.min.js" type="text/javascript"></script>
+    <script src="/js/bootstrap.min.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            //fileDownload(url);
+        });
+
+        // 파일다운로드
+        var fileDownload = function(url) {
+            var frm = document.fileForm;
+            frm.action = "/test/download";
+            frm.fileName.value = url;
+            frm.submit();
+        }
+    </script>
+</head>
+<body>
+<div style="margin: 0 auto;text-align: center;">
+<form id="fileForm" name="fileForm" method="post">
+    <input type="hidden" id="fileName" name="fileName" value=""/>
+    <div id="nav">
+        <h1>파일다운로드 테스트.</h1>
+    </div>
+    <div id="content">
+        <div>
+            <div>파입다운로드</div>
+            <div><a href="javascript:fileDownload('http://localhost:18080/tmp/attachFiles/테슬라.jpg');">테슽라 자동차 이미지</a></div>
+            <div><a href="javascript:fileDownload('http://localhost:18080/tmp/attachFiles/자동차정비.aspdf');">자동차정비 aspdf</a></div>
+        </div>
+    </div>
+</form>
+</div>
+</body>
+</html>

@@ -1,0 +1,250 @@
+<% layout('../../../admin/layout') -%>
+    <script type="text/javascript" src="/js/jquery.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            var optionHTML = "<option value=''>선택하세요.</option>";
+
+<%
+    console.log(">>>> rList2 = " + rList2.length);
+    if(rList2.length > 0) {
+        rList2.forEach(function(item) {
+%>
+            optionHTML += "<option value='<%=item.cateNo3%>'><%=item.cateName3%></option>";
+
+<%
+            }
+        );
+     }
+%>
+            // 동적 콤보박스 추가.
+            $("#cateSelBox").html(optionHTML);
+
+            // console.
+            $("#prevBtn").on('click', function(e) {
+                e.preventDefault();
+               location.href = '/';
+            });
+            // 삭제 버튼 이벤트 처리.
+            $("#delBtn").on("click", function(e) {
+                e.preventDefault();
+                var chkVals = [];
+                var chkLen = $("input:checkbox[name='chkBox']:checked").length;
+                if(chkLen>0) {
+                    $("input[name=chkBox]:checkbox").each(function (idx, item) {
+                        if ($(this).is(":checked")) {
+                            chkVals.push($(item).val());
+                        }
+                    });
+                } else {
+                    alert("삭제할 모델명을 선택하여 주세요!");
+                    return;
+                }
+                //$("#chkParams").val(chkVals);
+                $.ajax({
+                    type : "post",
+                    url : "/admin/model/category2/delete",
+                    dataType : "json",
+                    data : {"dataList" : chkVals},
+                    success : function(data) {
+                        if(data.result=='OK') {
+                            location.href = "/admin/model/category2";
+                        }
+                    },
+                    error : function(request, status, error) {
+                        console.log("Code :  " + request.status + "\n" +
+                                        "message : " + request.responseText + "\n" +
+                                        "error : " + error);
+                    }
+                });
+            });
+            // 전체 선택 버튼 이벤트 처리.
+            $("#allChkbox").on('click', function () {
+                if ($(this).is(":checked")) {
+                    $("input[name=chkBox]:checkbox").each(function () {
+                        $(this).prop("checked", true)
+                    });
+                } else {
+                    $("input[name=chkBox]:checkbox").each(function () {
+                        $(this).prop("checked", false)
+                    });
+                }
+            });
+            // 추가 엔터키 이벤트 처리.
+            $("#cateName").on("keydown", function(e) {
+                var code = (e.keyCode ? e.keyCode : e.which);
+                if(code == 13) {
+                    e.preventDefault();
+                    var selectVal = $.trim($("#cateSelBox option:selected").val());
+                    var cateName = $.trim($("#cateName").val());
+                    if(selectVal == "") {
+                        alert("브랜드명을 선택하세요");
+                        $("#cateSelBox").focus();
+                        return false;
+                    }
+                    if(cateName == "") {
+                        alert("모델 명을 입력하세요");
+                        $("#cateName").focus();
+                        return false;
+                    }
+
+                    $("#frm").attr("method","post");
+                    $("#frm").attr("action","/admin/model/category2/insert");
+                    $("#frm").submit();
+                }
+            });
+            // 추가 버튼 이벤트 처리.
+            $("#saveBtn").on("click", function(e) {
+                e.preventDefault();
+                var selectVal = $.trim($("#cateSelBox option:selected").val());
+                var cateName = $.trim($("#cateName").val());
+                if(selectVal == "") {
+                    alert("브랜드명을 선택하세요");
+                    $("#cateSelBox").focus();
+                    return false;
+                }
+                if(cateName == "") {
+                    alert("모델 명을 입력하세요");
+                    $("#cateName").focus();
+                    return false;
+                }
+
+                $("#frm").attr("method","post");
+                $("#frm").attr("action","/admin/model/category2/insert");
+                $("#frm").submit();
+            });
+
+            // 검색버튼 이벤트 처리.
+            $("#srchBtn").on("click", function(e) {
+                e.preventDefault();
+                var selectedVal = $("#srchType option:selected").val();
+
+                // 선택박스 체크.
+                if(selectedVal == null || selectedVal == "") {
+                    alert("검색할려는 항목을 선택하여 주세요.");
+                    $("#srchType").focus();
+                    return false;
+                }
+                // 검색할 텍스터 체크.
+                /*
+                 if($("#srchText").val() == null || $("#srchText").val() == "") {
+                 alert("검색 단어을 입력하여 주세요.");
+                 $("#srchText").focus();
+                 return false;
+                 }
+                 */
+                var srchText = $("#srchText").val();
+                // 전송 처리.
+                $("#srchType").val(selectedVal);
+                $("#srchText").val(srchText);
+                $("#searchForm").attr("method","post");
+                $("#searchForm").attr("action","/admin/model/category2/search");
+                $("#searchForm").submit();
+            });
+        });
+    </script>
+<div class="container-fluid">
+
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="page-header">모델코드 관리 화면</h1>
+        </div>
+        <div id="description">
+            <h6>* 자동차 모델 코드를 작성 및 관리하는 화면 입니다.</h6>
+            <h6>* 해당 자동차 브랜드가 없는 경우에는 브랜드코드 관리화면에서 브랜드코드를 생성하세요.</h6>
+            <h6>* 브랜드명(코드)를 선택하고 자동차 모델명을 입력하여 생성하세요.</h6>
+        </div><hr/>
+        <form id="searchForm" name="searchForm">
+            <div class="form-group text-right form-inline">
+                <div class="form-group">
+                    <select id="srchType" name="srchType" class="form-control">
+                        <option value="">선택하세요.</option>
+                        <option value="brand" <%if(srchType=="brand") {%> selected <% }%>>브랜드명</option>
+                        <option value="model" <%if(srchType=="model") {%> selected <% }%>>모델명</option>
+                    </select>
+                </div>
+                <div class="input-group custom-search-form">
+                    <input type="text" id="srchText" name="srchText" class="form-control" size="20" value="<%=srchText%>" placeholder="검색...">
+                        <span class="input-group-btn">
+                            <button class="btn btn-primary" type="button" id="srchBtn" name="srchBtn">
+                                <i class="fa fa-search"></i>
+                            </button>
+                        </span>
+                </div>
+            </div>
+        </form>
+    </div>
+    <form id="frm" name="frm">
+        <table width="100%" border="0" class="table table-hover table-striped">
+            <tr>
+                <th><input type="checkbox" id="allChkbox" name="allChkbox" value=""/></th>
+                <th>번호</th>
+                <th>브랜드 명</th>
+                <th>모델 명</th>
+            </tr>
+<%
+    if(rList.length > 0) {
+        rList.forEach(function(item, index) {
+%>
+            <tr>
+                <td><input type="checkbox" id="chkbox<%=index%>" name="chkBox" value="<%=item.cateNo%>"/></td>
+                <td><%=item.num%></td>
+                <td><b><%=item.cateName1%></b></td>
+                <td><b><%=item.cateName2%></b></td>
+            </tr>
+<%
+        });
+    } else {
+%>
+            <tr>
+                <td colspan="4" align="center">
+                    No Data
+                </td>
+            </tr>
+<%
+    }
+%>
+        </table>
+        <p id="page" align="center">
+<%
+            console.log(">>> maxPage = " + maxPage);
+    for(var x=1; x<=maxPage;x++) {
+        if(x <= offset || x > maxPage - offset || (x >= page-(offset-1) && x <= page+(offset-1))) {
+            if(x != page) {
+                console.log(">>> * ["+x+"] page = " + page);
+%>
+            [<a href="/admin/model/category2?page=<%=x%>&srchType=<%=srchType%>&srchText=<%=srchText%>"><%=x%></a>]
+<%
+            } else {
+                console.log(">>> ["+x+"] page = " + page);
+%>
+            [<b><%=x%></b>]
+<%
+            }
+        } else if(x == offset+1 || x == maxPage-offset) {
+%>
+            ...
+<%
+        }
+    }
+%>
+        </p>
+        <hr/>
+        <p align="right">
+            <input type="button" id="delBtn" name="delBtn" class="btn btn-default" value="삭제"/>
+        </p>
+        <table width="100%" border="0" class="table table-hover table-striped">
+            <tr>
+                <td><label for="cateSelBox">자동차 브랜드명</label></td>
+                <td>
+                    <select id="cateSelBox" name="cateSelBox"></select>
+                </td>
+                <td><label for="cateName">자동차 모델명</label></td>
+                <td>
+                    <input type="text" id="cateName" name="cateName" value="" size="40" maxlength="40"/>&nbsp;
+                    <input type="button" id="saveBtn" name="saveBtn" class="btn btn-default" value="추가"/>
+                </td>
+            </tr>
+        </table>
+
+    </form>
+</div>

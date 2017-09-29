@@ -1,0 +1,290 @@
+<% layout('../../admin/layout') -%>
+<script type="text/javascript" src="/js/jquery-1.11.3.min.js"></script>
+<script type="text/javascript" src="/js/jquery.form.min.js"></script>
+<script type="text/javascript" src="/js/common.js"></script>
+<script type="text/javascript" src="/ckeditor/ckeditor.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        CKEDITOR.replace("editBox", {
+            "filebrowserUploadUrl" : "/common/ckedit/upload"
+        });
+
+        // 서비스 구분 콤보박스
+        var optionHTML = "<option value=''>선택하세요.</option>";
+        <%
+        console.log(">>>> sList.length : " + sList.length);
+        if(sList.length > 0) {
+        sList.forEach(function(item) {
+        %>
+        optionHTML += "<option value='<%=item.cateCd%>' <%if(item.cateCd == result.categoryCode) {%> selected <%}%>><%=item.cateNm%></option>";
+        <%
+        });
+        }
+        %>
+        $("#category").html(optionHTML);
+
+        // progressbar 초기화.
+        $("#progressDiv1").css("display","none");
+        //$("#progressDiv2").css("display","none");
+        //$("#progressDiv3").css("display","none");
+        //$("#progressDiv4").css("display","none");
+        //$("#progressDiv5").css("display","none");
+        //$("#progressDiv6").css("display","none");
+        //$("#progressDiv7").css("display","none");
+        //$("#progressDiv8").css("display","none");
+        //$("#progressDiv9").css("display","none");
+        //$("#progressDiv10").css("display","none");
+
+        $("#prevBtn").on('click', function() {
+            location.href = '/admin/data';
+        });
+
+        // 파일업로드11
+        // 파일 업로드 버튼 이벤트 처리.
+        $("#upload11Btn").on("click", function(e) {
+            e.preventDefault();
+            //validation체크
+            // 대표 이미지 체크.
+            if ($("#attchFile1").val() == null || $("#attchFile1").val() == "") {
+                alert("파일 선택하여 주세요.");
+                $("#attchFile1").focus();
+                return false;
+            } else {
+                //막기위해서는 return false를 잡아주면됨
+                var ext = $('#attchFile1').val().split('.').pop().toLowerCase();
+                //console.log("ext = " + ext);
+                if ($.inArray(ext, ['gif', 'png', 'jpg', 'jpeg', 'txt', 'xls', 'xlsx', 'doc', 'ppt', 'pdf', 'asdata']) == -1) {
+                    alert('gif,png,jpg,jpeg, txt, xls, xlsx, doc, ppt, pdf, asdata 파일만 업로드 할수 있습니다.');
+                    $("#attchFile1").focus();
+                    return false;
+                }
+            }
+
+            $("#fileForm1").ajaxForm();
+            $("#fileForm1").ajaxSubmit({
+                url: "/admin/data/upload",
+                type: "post",
+                dataType: "json",
+                beforeSend: function () {
+                    $("#upload11Btn").attr("disabled",true);
+                    $("#progressDiv1").css("display","inline-block");
+                },
+                success: function (data) {
+                    //console.log("data = " + JSON.stringify(data));
+                    if (data.result == "OK") {
+                        if (data.fileName != null && data.fileName != "") {
+                            $("#attchFileUrl1").val(data.fileFullPath);
+                            $("#attchFileNm1").val(data.fileName);
+                            var fileURL1 = "<span class='glyphicon glyphicon-paperclip' aria-hidden='true'></span>&nbsp;<a href=javascript:attachFileDownload('"+data.fileFullPath+"/"+data.fileName+"');>"+data.fileName+"</a>";
+                            $("#attchFileName1").html(fileURL1);
+                            alert("파일전송완료 처리되었습니다.");
+                        } else {
+                            alert("첨부된 파일이 없습니다.\n관리자에게 문의하세요.");
+                        }
+                        $("#upload11Btn").attr("disabled",false);
+                        $("#progressDiv1").css("display","none");
+                    }
+                },
+                error: function (err) {
+                    $("#upload11Btn").attr("disabled",false);
+                    $("#progressDiv1").css("display","none");
+                    alert("errCode : " + JSON.stringify(err));
+                }
+            });
+        });
+
+        // console.
+        $("#submitBtn").on('click', function() {
+            var dataDesc = CKEDITOR.instances.editBox.getData();
+            var dataNm = $.trim($("#dataNm").val());
+            var dataSmmr = $.trim($("#dataSmmr").val());
+            var categoryCd = $("#category option:selected").val();
+            var categoryNm = $("#category option:selected").text();
+            var dataOpenYn = $("input:radio[name='dataOpenYn']:checked").val();
+
+            // 자료명 체크.
+            if(dataNm == "") {
+                alert("자료명을 입력하세요");
+                $("#dataNm").focus();
+                return false;
+            }
+
+            // 자료 설명 체크.
+            if(dataDesc == "") {
+                alert("자료 설명을 입력 하세요.");
+                CKEDITOR.instances.editBox.focus();
+                return false;
+            }
+
+            // 파라미터 저장.
+            $("#categoryCode").val(categoryCd);
+            $("#categoryNm").val(categoryNm);
+            $("#dataDesc").val(dataDesc);
+            $("#openYn").val(dataOpenYn);
+
+            alert("수정처리되었습니다.");
+
+            // 전송처리.
+            $("#frm").attr("action","/admin/data/edit/do");
+            $("#frm").submit();
+        });
+    });
+
+    // 파일다운로드
+    function attachFileDownload(url) {
+        var frm = document.fileForm;
+        frm.action = "/admin/data/download";
+        frm.fileName.value = url;
+        frm.submit();
+    }
+
+    // 상세 조회 처리.
+    function onAddPopup() {
+        var url = "/admin/data/category";
+        var name = "카테고리 추가 팝업";
+        var left = 0;
+        var top = 0;
+        var width = 400;
+        var height = 600;
+        var toolbar = 0;
+        var menubar = 0;
+        var statusbar = 1;
+        var scrollbar = 0;
+        var resizable = 0;
+        var location = 0;
+        popup_window_common(url, name, left, top, width, height, toolbar, menubar, statusbar, scrollbar, resizable, location);
+    }
+</script>
+<div class="container-fluid">
+
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="page-header">자료실 관리 화면</h1>
+        </div>
+    </div>
+    <div>
+        <form name="fileForm" id="fileForm" method="post">
+            <input type="hidden" id="fileName" name="fileName" value=""/>
+        </form>
+        <form name="frm" id="frm" method="post">
+            <input type="hidden" id="dataNo" name="dataNo" value="<%=result.dNo%>"/>
+            <input type="hidden" id="categoryCode" name="categoryCode" value=""/>
+            <input type="hidden" id="categoryNm" name="categoryNm" value=""/>
+            <input type="hidden" id="dataDesc" name="dataDesc" value=""/>
+            <input type="hidden" id="openYn" name="openYn" value=""/>
+            <input type="hidden" id="attchFileUrl1" name="attchFileUrl1" value="<%=result.attchFileUrl1%>"/>
+            <input type="hidden" id="attchFileNm1" name="attchFileNm1" value="<%=result.attchFileNm1%>"/>
+            <table style="margin: 0 auto">
+                <tr>
+                    <td>
+                        <label for="">분류</label>
+                    </td>
+                    <td>
+                        <select id="category" name="category"></select>
+                        <a href="javascript:onAddPopup();">카테고리 추가</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label for="">자료명</label>
+                    </td>
+                    <td>
+                        <input type="text" name="dataNm" id="dataNm" value="<%=result.dataNm%>" class="form-control" size="80"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label for="dataSmmr">자료요약 설명</label>
+                    </td>
+                    <td>
+                        <input type="text" name="dataSmmr" id="dataSmmr" value="<%=result.dataSmmr%>" class="form-control" size="80"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label for="editBox">자료 설명</label>
+                    </td>
+                    <td>
+                        <textarea id="editBox" name="editBox" class="form-control" style="width:800px; height:600px"><%-result.dataDesc%></textarea>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label for="dataSmmr">자료 공개여부</label>
+                    </td>
+                    <td>
+                        예 <input type="radio" name="dataOpenYn" id="dataOpenY" value="Y" <%if(result.openYn=='Y') {%>checked<%}%>/>
+                        아니오 <input type="radio" name="dataOpenYn" id="dataOpenN" value="N" <%if(result.openYn=='N') {%>checked<%}%>/>
+                    </td>
+                </tr>
+            </table>
+        </form>
+        <table>
+            <tr>
+                <td>첨부파일</td>
+                <td colspan="5">
+                    <div id="fileFrm">
+                        <form id="fileForm1" name="fileForm1" method="post" enctype="multipart/form-data">
+                            <input type="file" id="attchFile1" name="attchFile" value="" style="display:inline-block;" accept=".pdf"/>&nbsp;<input type="button" id="upload11Btn" name="upload11Btn" class="btn btn-default" value="업로드" />
+                            <div id="progressDiv1" style="display:inline-block;"><img src="/admin/images/loader.gif" width="30px" height="30px"/></div>
+                            <div id="attchFileName1" style="display:inline-block;"><%if(result.attchFileNm1!=null&&result.attchFileNm1!=''){%><span class="glyphicon glyphicon-paperclip" aria-hidden="true"></span>&nbsp;<%}%><a href="javascript:attachFileDownload('<%=result.attchFileUrl1%>/<%=result.attchFileNm1%>');"><%=result.attchFileNm1!=null?result.attchFileNm1:''%></a></div><br/>
+                        </form>
+                        <!--
+                                                <form id="fileForm12" name="fileForm12" method="post" enctype="multipart/form-data">
+                                                    <input type="file" id="attchFile12" name="attchFile" value="" style="display:inline-block;" accept=".pdf"/>&nbsp;<input type="button" id="upload12Btn" name="upload12Btn" class="btn btn-default" value="업로드" />
+                                                    <div id="progressDiv2" style="display:inline-block;"><img src="/admin/images/loader.gif" width="30px" height="30px"/></div>
+                                                    <div id="attchFileName12" style="display:inline-block;"></div><br/>
+                                                </form>
+                                                <form id="fileForm13" name="fileForm13" method="post" enctype="multipart/form-data">
+                                                    <input type="file" id="attchFile13" name="attchFile" value="" style="display:inline-block;" accept=".pdf"/>&nbsp;<input type="button" id="upload13Btn" name="upload13Btn" class="btn btn-default" value="업로드" />
+                                                    <div id="progressDiv3" style="display:inline-block;"><img src="/admin/images/loader.gif" width="30px" height="30px"/></div>
+                                                    <div id="attchFileName13" style="display:inline-block;"></div><br/>
+                                                </form>
+                                                <form id="fileForm14" name="fileForm14" method="post" enctype="multipart/form-data">
+                                                    <input type="file" id="attchFile14" name="attchFile" value="" style="display:inline-block;" accept=".pdf"/>&nbsp;<input type="button" id="upload14Btn" name="upload14Btn" class="btn btn-default" value="업로드" />
+                                                    <div id="progressDiv4" style="display:inline-block;"><img src="/admin/images/loader.gif" width="30px" height="30px"/></div>
+                                                    <div id="attchFileName14" style="display:inline-block;"></div><br/>
+                                                </form>
+                                                <form id="fileForm15" name="fileForm15" method="post" enctype="multipart/form-data">
+                                                    <input type="file" id="attchFile15" name="attchFile" value="" style="display:inline-block;" accept=".pdf"/>&nbsp;<input type="button" id="upload15Btn" name="upload15Btn" class="btn btn-default" value="업로드" />
+                                                    <div id="progressDiv5" style="display:inline-block;"><img src="/admin/images/loader.gif" width="30px" height="30px"/></div>
+                                                    <div id="attchFileName15" style="display:inline-block;"></div><br/>
+                                                </form>
+                                                <form id="fileForm16" name="fileForm16" method="post" enctype="multipart/form-data">
+                                                    <input type="file" id="attchFile16" name="attchFile" value="" style="display:inline-block;" accept=".pdf"/>&nbsp;<input type="button" id="upload16Btn" name="upload16Btn" class="btn btn-default" value="업로드" />
+                                                    <div id="progressDiv6" style="display:inline-block;"><img src="/admin/images/loader.gif" width="30px" height="30px"/></div>
+                                                    <div id="attchFileName16" style="display:inline-block;"></div><br/>
+                                                </form>
+                                                <form id="fileForm17" name="fileForm17" method="post" enctype="multipart/form-data">
+                                                    <input type="file" id="attchFile17" name="attchFile" value="" style="display:inline-block;" accept=".pdf"/>&nbsp;<input type="button" id="upload17Btn" name="upload17Btn" class="btn btn-default" value="업로드" />
+                                                    <div id="progressDiv7" style="display:inline-block;"><img src="/admin/images/loader.gif" width="30px" height="30px"/></div>
+                                                    <div id="attchFileName17" style="display:inline-block;"></div><br/>
+                                                </form>
+                                                <form id="fileForm18" name="fileForm18" method="post" enctype="multipart/form-data">
+                                                    <input type="file" id="attchFile18" name="attchFile" value="" style="display:inline-block;" accept=".pdf"/>&nbsp;<input type="button" id="upload18Btn" name="upload18Btn" class="btn btn-default" value="업로드" />
+                                                    <div id="progressDiv8" style="display:inline-block;"><img src="/admin/images/loader.gif" width="30px" height="30px"/></div>
+                                                    <div id="attchFileName18" style="display:inline-block;"></div><br/>
+                                                </form>
+                                                <form id="fileForm19" name="fileForm19" method="post" enctype="multipart/form-data">
+                                                    <input type="file" id="attchFile19" name="attchFile" value="" style="display:inline-block;" accept=".pdf"/>&nbsp;<input type="button" id="upload19Btn" name="upload19Btn" class="btn btn-default" value="업로드" />
+                                                    <div id="progressDiv9" style="display:inline-block;"><img src="/admin/images/loader.gif" width="30px" height="30px"/></div>
+                                                    <div id="attchFileName19" style="display:inline-block;"></div><br/>
+                                                </form>
+                                                <form id="fileForm20" name="fileForm20" method="post" enctype="multipart/form-data">
+                                                    <input type="file" id="attchFile20" name="attchFile" value="" style="display:inline-block;" accept=".pdf"/>&nbsp;<input type="button" id="upload20Btn" name="upload20Btn" class="btn btn-default" value="업로드" />
+                                                    <div id="progressDiv10" style="display:inline-block;"><img src="/admin/images/loader.gif" width="30px" height="30px"/></div>
+                                                    <div id="attchFileName20" style="display:inline-block;"></div><br/>
+                                                </form>
+                        //-->
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <p class="form-group">
+    <div class="col-sm-offset-2 col-sm-10 text-right">
+        <input type="button" id="submitBtn" name="submitBtn" class="btn btn-default" value="전송"/>&nbsp;
+        <input type="button" id="prevBtn" name="prevBtn" class="btn btn-default" value="이전화면"/>
+    </div>
+    </p>
+</div>

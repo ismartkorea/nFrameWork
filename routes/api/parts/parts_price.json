@@ -1,0 +1,30 @@
+{
+  "cnt": 5,
+  "parts": [
+    {
+      "brand": "benz",
+      "no": "0001",
+      "price": 12600
+    },
+    {
+      "brand": "benz",
+      "no": "0002",
+      "price": 22600
+    },
+    {
+      "brand": "benz",
+      "no": "0003",
+      "price": 32600
+    },
+    {
+      "brand": "benz",
+      "no": "0004",
+      "price": 42600
+    },
+    {
+      "brand": "benz",
+      "no": "0005",
+      "price": 52600
+    }
+  ]
+}

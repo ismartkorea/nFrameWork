@@ -1,0 +1,81 @@
+<% layout('../../../admin/layout') -%>
+<script type="text/javascript" src="/js/jquery-1.11.3.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        // 전송 버튼 이벤트 처리.
+        $("#submitBtn").on('click', function(e) {
+            e.preventDefault();
+
+            var optValue = $.trim($("#acceptYn option:selected").val());
+            if(optValue=="") {
+                alert("사용허가처리을 선택하여주세요");
+                $("#acceptYn").focus();
+                return;
+            }
+
+            $("#frm").attr("method","post");
+            $("#frm").attr("action","/admin/coupon/use/edit/do");
+            $("#frm").submit();
+        });
+        // 이전 이동 버튼 이벤트 처리.
+        $("#prevBtn").on('click', function(e) {
+            e.preventDefault();
+            location.href = "/admin/coupon/use";
+        });
+    });
+</script>
+<div class="container-fluid">
+
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="page-header">쿠폰 접수 관리 화면</h1>
+        </div>
+        <form name="frm" id="frm" method="post" class="form-horizontal">
+            <input type="hidden" id="couponNo" name="couponNo" value="<%=result.couponNo%>"/>
+            <table class="table table-bordered">
+                <tr>
+                    <td>
+                        <label for="title">쿠폰번호</label>
+                    </td>
+                    <td>
+                        <%=result.couponNo%>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label for="writer">접수자명</label>
+                    </td>
+                    <td>
+                        <%=result.insUsrNm%>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label for="writer">접수날짜</label>
+                    </td>
+                    <td>
+                        <%=result.insDate%>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label for="writer">사용허가처리</label>
+                    </td>
+                    <td>
+                        <select id="acceptYn" name="acceptYn">
+                            <option>선택해주세요.</option>
+                            <option value="Y" <%if(result.acceptYn=="Y"){%>selected<%}%>>허가처리</option>
+                            <option value="N" <%if(result.acceptYn=="N"){%>selected<%}%>>불가처리</option>
+                        </select>
+                    </td>
+                </tr>
+            </table>
+            <p class="form-group">
+            <div class="col-sm-offset-2 col-sm-10 text-right">
+                <input type="button" id="submitBtn" name="submitBtn" class="btn btn-default" value="전송"/>&nbsp;
+                <input type="button" id="prevBtn" name="prevBtn" class="btn btn-default" value="이전화면"/>
+            </div>
+            </p>
+        </form>
+    </div>
+</div>

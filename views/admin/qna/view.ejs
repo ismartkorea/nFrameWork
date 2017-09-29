@@ -1,0 +1,117 @@
+<% layout('../../admin/layout') -%>
+<script type="text/javascript" src="/js/jquery-1.11.3.min.js"></script>
+<script type="text/javascript" src="/ckeditor/ckeditor.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        // CKEditor 설정.
+        CKEDITOR.replace("replyBox");
+
+        // console.
+        $("#prevBtn").on('click', function(e) {
+            e.preventDefault();
+            location.href = '/admin/qna';
+        });
+        $("#replyBtn").on('click', function(e) {
+            e.preventDefault();
+            var reply = CKEDITOR.instances.replyBox.getData();
+
+            if(reply ==null || reply == "") {
+                alert("답변 내용을 입력하세요");
+                $("#replyBox").focus();
+                return false;
+            }
+            $("#replyComment").val(reply);
+
+            var dataVals = {
+                'no' :  $.trim($("#no").val()),
+                'replyComment' : $.trim($("#replyComment").val())
+            };
+
+            $.ajax({
+                type : "post",
+                url : "/admin/qna/reply",
+                dataType : "json",
+                data : dataVals,
+                success : function(data) {
+                    if(data.result == "OK") {
+                        alert("입력 처리 되었습니다.");
+                        location.href = "/admin/qna/view/"+data.no;
+                    }
+                },
+                error : function(request, status, error) {
+                    console.log("Code :  " + request.status + "\n" +
+                            "message : " + request.responseText + "\n" +
+                            "error : " + error);
+                }
+            });
+
+        });
+    });
+</script>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="page-header">1:1 문의 관리 화면</h1>
+        </div>
+    </div>
+    <div id="qDiv">
+        <table class="table table-bordered">
+            <tr>
+                <td>
+                    <label for="date">문의 날짜</label>
+                </td>
+                <td>
+                    <%=result.date%>
+                </td>
+                <td>
+                    <label for="writer">성명</label>
+                </td>
+                <td colspan="2">
+                    <%=result.name%>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="email">이메일</label>
+                </td>
+                <td><%= result.email%></td>
+                <td>
+                    <label for="date">연락처</label>
+                </td>
+                <td><%= result.telno%></td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="title">제목</label>
+                </td>
+                <td colspan="3">
+                    <%= result.title %>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="content">내용</label>
+                </td>
+                <td colspan="5"><%-result.content%></td>
+            </tr>
+        </table>
+    </div>
+    <div class="row">
+    <form name="frm" id="frm" class="form-horizontal">
+        <input type="hidden" id="no" name="no" value="<%=result.qno%>"/>
+        <input type="hidden" id="replyComment" name="" value=""/>
+        <div id="replyTitleDiv" align="left">Comments</div><hr/>
+        <div>
+            <div id="replyDiv" align="left">
+                <textarea id="replyBox" name="replyBox" style="width:80%; height:30%; vertical-align: middle" maxlength="100"><%-result.reply%></textarea>
+            </div>
+        </div>
+        <p class="form-group">
+            <div class="col-sm-offset-2 col-sm-10 text-right">
+                <input type="button" id="replyBtn" name="replyBtn" class="btn btn-default" value="답변" <%=session.usrId?"":"disabled"%>/>
+                <input type="button" id="prevBtn" name="prevBtn" class="btn btn-default" value="취소"/>
+            </div>
+        </p>
+    </form>
+    </div>
+</div>

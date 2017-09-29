@@ -1,0 +1,207 @@
+<% layout('../../admin/layout') -%>
+    <script type="text/javascript" src="/js/jquery-1.11.3.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            // console.
+            console.log("on READY");
+            $("#prevBtn").on('click', function() {
+               location.href = '/admin';
+            });
+            $("#newBtn").on('click', function () {
+                location.href = '/admin/qna/new';
+            });
+            $("#loginBtn").on("click", function () {
+                location.href = './login';
+            });
+            $("#logoutBtn").on("click", function () {
+                location.href = '/login/logout';
+            });
+            $("#signupBtn").on("click", function () {
+                location.href = '/signup';
+            });
+            $("#delBtn").on("click", function(e) {
+                e.preventDefault();
+                var chkVals = [];
+                var chkLen = $("input:checkbox[name='chkBox']:checked").length;
+                if(chkLen>0) {
+                    $("input[name=chkBox]:checkbox").each(function (idx, item) {
+                        if ($(this).is(":checked")) {
+                            chkVals.push($(item).val());
+                        }
+                    });
+                } else {
+                    alert("삭제할 게시물을 선택하여 주세요!");
+                    return;
+                }
+                //$("#chkParams").val(chkVals);
+                $.ajax({
+                    type : "post",
+                    url : "/admin/qna/delete",
+                    dataType : "json",
+                    data : {"dataList" : chkVals},
+                    success : function(data) {
+                        if(data.result == "OK") {
+                            callback();
+                        }
+                    },
+                    error : function(request, status, error) {
+                        console.log("Code :  " + request.status + "\n" +
+                                        "message : " + request.responseText + "\n" +
+                                        "error : " + error);
+                    }
+                });
+            });
+            $("#allChkbox").on('click', function () {
+                if ($(this).is(":checked")) {
+                    $("input[name=chkBox]:checkbox").each(function () {
+                        $(this).prop("checked", true)
+                    });
+                } else {
+                    $("input[name=chkBox]:checkbox").each(function () {
+                        $(this).prop("checked", false)
+                    });
+                }
+            });
+            // 검색 엔터키 이벤트 처리.
+            $("#srchText").on("keypress", function(e) {
+                if(e.which == 13) {
+                    $("#srchBtn").click();
+                    return false;
+                }
+            });
+            // 검색버튼 이벤트 처리.
+            $("#srchBtn").on("click", function(e) {
+                e.preventDefault();
+                var selectedVal = $("#srchType option:selected").val();
+
+                // 선택박스 체크.
+                if(selectedVal == null || selectedVal == "") {
+                    alert("검색할려는 항목을 선택하여 주세요.");
+                    $("#srchType").focus();
+                    return false;
+                }
+                // 검색할 텍스터 체크.
+/*
+                if($("#srchText").val() == null || $("#srchText").val() == "") {
+                    alert("검색 단어을 입력하여 주세요.");
+                    $("#srchText").focus();
+                    return false;
+                }
+*/
+                var srchText = $.trim($("#srchText").val());
+                // 전송 처리.
+                $("#srchType").val(selectedVal);
+                $("#srchText").val(srchText);
+                $("#searchForm").attr("method","post");
+                $("#searchForm").attr("action","/admin/qna/search");
+                $("#searchForm").submit();
+            });
+        });
+        // btn Event
+        function onView(no) {
+            location.href = '/admin/qna/view/'+no;
+        }
+        // callback
+        function callback() {
+            location.href = "/admin";
+        }
+    </script>
+<div class="container-fluid">
+
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="page-header">1:1 문의 관리 화면</h1>
+        </div>
+        <form id="searchForm" name="searchForm" method="post">
+            <div class="form-group text-right form-inline">
+                <div class="form-group">
+                    <select id="srchType" name="srchType" class="form-control">
+                        <option value="">선택하세요.</option>
+                        <option value="qno" <%if(srchType=="qno") {%> selected <% }%>>Q&A번호</option>
+                        <option value="name" <%if(srchType=="name") {%> selected <% }%>>이름</option>
+                        <option value="title" <%if(srchType=="title") {%> selected <% }%>>제목</option>
+                    </select>
+                </div>
+                <div class="input-group custom-search-form">
+                    <input type="text" id="srchText" name="srchText" class="form-control" value="<%=srchText%>" size="20" placeholder="Search...">
+                        <span class="input-group-btn">
+                            <button class="btn btn-primary" type="button" id="srchBtn" name="srchBtn">
+                                <i class="fa fa-search"></i>
+                            </button>
+                        </span>
+                </div>
+            </div>
+        </form>
+    </div>
+<form id="frm" name="frm">
+<table width="100%" border="0" class="table table-hover">
+    <tr>
+        <th><input type="checkbox" id="allChkbox" name="allChkbox" value=""/></th>
+        <th>번호</th>
+        <th>Q&A 번호</th>
+        <th>이름</th>
+        <th>제목</th>
+        <th>날짜</th>
+        <th>답변여부</th>
+    </tr>
+    <%
+        console.log("board size : " + rList.length);
+        if(rList.length > 0) {
+            rList.forEach(function(item, index) {
+    %>
+    <tr>
+        <td><input type="checkbox" id="chkbox<%=index%>" name="chkBox" value="<%=item.qno%>"/></td>
+        <td><%=item.num%></td>
+        <td><%=item.qno%></td>
+        <td><%=item.name%></td>
+        <td><a href="javascript:onView('<%=item.qno%>')"><b><%=item.title%></b></a></td>
+        <td><%=item.date%></td>
+        <td><%=item.replyyn%></td>
+    </tr>
+    <%
+            })
+        } else {
+     %>
+    <tr>
+        <td colspan="7" align="center">
+            No Data
+        </td>
+    </tr>
+    <%
+            }
+    %>
+</table>
+    <!-- 페이징 처리 부분 -->
+    <p id="page" align="center">
+<%
+console.log(">>> maxPage = " + maxPage);
+    for(var x=1; x<=maxPage;x++) {
+        if(x <= offset || x > maxPage - offset || (x >= page-(offset-1) && x <= page+(offset-1))) {
+            if(x != page) {
+            console.log(">>> * ["+x+"] page = " + page);
+%>
+        [<a href="/admin/qna?page=<%=x%>&srchType=<%=srchType%>&srchText=<%=srchText%>"><%=x%></a>]
+<%
+            } else {
+            console.log(">>> ["+x+"] page = " + page);
+%>
+        [<b><%=x%></b>]
+<%
+            }
+        } else if(x == offset+1 || x == maxPage-offset) {
+%>
+        ...
+<%
+        }
+    }
+%>
+    </p>
+    <!-- 페이징 처리 부분 -->
+<p align="right">
+<!--
+    <input type="button" id="delBtn" name="delBtn" class="btn btn-default" value="삭제"/>
+-->
+    <input type="button" id="prevBtn" name="prevBtn" class="btn btn-default" value="메인 화면"/>
+</p>
+</form>
+</div>

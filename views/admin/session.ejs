@@ -1,0 +1,188 @@
+<% layout('layout') -%>
+    <script type="text/javascript" src="/js/jquery.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            // console.
+            $("#prevBtn").on('click', function(e) {
+                e.preventDefault();
+               location.href = '/';
+            });
+            $("#delBtn").on("click", function(e) {
+                e.preventDefault();
+                var chkVals = [];
+                var chkLen = $("input:checkbox[name='chkBox']:checked").length;
+                if(chkLen>0) {
+                    $("input[name=chkBox]:checkbox").each(function (idx, item) {
+                        if ($(this).is(":checked")) {
+                            chkVals.push($(item).val());
+                        }
+                    });
+                } else {
+                    alert("삭제할 게시물을 선택하여 주세요!");
+                    return;
+                }
+                //$("#chkParams").val(chkVals);
+                $.ajax({
+                    type : "post",
+                    url : "/admin/session/delete",
+                    dataType : "json",
+                    data : {"dataList" : chkVals},
+                    success : function(data) {
+                        if(data.result == "OK") {
+                            callback();
+                        }
+                    },
+                    error : function(request, status, error) {
+                        console.log("Code :  " + request.status + "\n" +
+                                        "message : " + request.responseText + "\n" +
+                                        "error : " + error);
+                    }
+                });
+            });
+            $("#allChkbox").on('click', function () {
+                if ($(this).is(":checked")) {
+                    $("input[name=chkBox]:checkbox").each(function () {
+                        $(this).prop("checked", true)
+                    });
+                } else {
+                    $("input[name=chkBox]:checkbox").each(function () {
+                        $(this).prop("checked", false)
+                    });
+                }
+            });
+
+            // 검색버튼 이벤트 처리.
+            $("#srchBtn").on("click", function(e) {
+                e.preventDefault();
+                var selectedVal = $("#srchType option:selected").val();
+
+                // 선택박스 체크.
+                if(selectedVal == null || selectedVal == "") {
+                    alert("검색할려는 항목을 선택하여 주세요.");
+                    $("#srchType").focus();
+                    return false;
+                }
+                // 검색할 텍스터 체크.
+/*
+                if($("#srchText").val() == null || $("#srchText").val() == "") {
+                    alert("검색 단어을 입력하여 주세요.");
+                    $("#srchText").focus();
+                    return false;
+                }
+*/
+                var srchText = $("#srchText").val();
+                // 전송 처리.
+                $("#srchType").val(selectedVal);
+                $("#srchText").val(srchText);
+                $("#searchForm").attr("method","post");
+                $("#searchForm").attr("action","/session/search");
+                $("#searchForm").submit();
+            });
+        });
+        // callback
+        function callback() {
+            location.href = "/admin/session";
+        }
+    </script>
+<div class="container-fluid">
+
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="page-header">로그인 세션 관리 화면</h1>
+        </div>
+        <div id="">
+            <h6>* 다른 기기에 중복 로그인 방지를 위해 기록된 세션 작성일이 현재 일(DATE)보다 삭제되지 않고 남아 있는 경우, 삭제처리하세요.</h6>
+            <h6>* 브라우져 비정상 종료 시, (정상로그아웃하지 않고) 기록된 세션이 삭제되지 않고 남아 있어 로그인 중복처리로 접근이 안되는 경우 삭제하세요.</h6>
+            <h6>* 고객이 다른 기기에 접속되어 있지 않는 데도 중복 로그인되어 있다고 하는 경우, 고객아이디를 확인하고 삭제하세요.</h6>
+        </div><hr/>
+        <form id="searchForm" name="searchForm">
+            <div class="form-group text-right form-inline">
+                <div class="form-group">
+                    <select id="srchType" name="srchType" class="form-control">
+                        <option value="">선택하세요.</option>
+                        <option value="usrId" <%if(srchType=="usrId") {%> selected <% }%>>유저ID</option>
+                        <option value="ip" <%if(srchType=="ip") {%> selected <% }%>>IP</option>
+                    </select>
+                </div>
+                <div class="input-group custom-search-form">
+                    <input type="text" id="srchText" name="srchText" class="form-control" size="20" value="<%=srchText%>" placeholder="검색...">
+                        <span class="input-group-btn">
+                            <button class="btn btn-primary" type="button" id="srchBtn" name="srchBtn">
+                                <i class="fa fa-search"></i>
+                            </button>
+                        </span>
+                </div>
+            </div>
+        </form>
+    </div>
+    <form id="frm" name="frm">
+        <table width="100%" border="0" class="table table-hover table-striped">
+            <tr>
+                <th><input type="checkbox" id="allChkbox" name="allChkbox" value=""/></th>
+                <th>번호</th>
+                <th>IP</th>
+                <th>유저 ID</th>
+                <th>세션ID</th>
+                <th>작성일</th>
+            </tr>
+<%
+console.log("session size : " + session.length);
+    if(rList.length > 0) {
+        rList.forEach(function(item, index) {
+%>
+            <tr>
+                <td><input type="checkbox" id="chkbox<%=index%>" name="chkBox" value="<%=item.sessionId%>"/></td>
+                <td><%=item.num%></td>
+                <td><b><%=item.ip%></b></td>
+                <td><%=item.usrId%></td>
+                <td><%=item.sessionId%></td>
+                <td><%=item.date%></td>
+            </tr>
+<%
+        })
+    } else {
+%>
+            <tr>
+                <td colspan="6" align="center">
+                    No Data
+                </td>
+            </tr>
+<%
+    }
+%>
+        </table>
+        <p id="page" align="center">
+<%
+console.log(">>> maxPage = " + maxPage);
+        for(var x=1; x<=maxPage;x++) {
+            if(x <= offset || x > maxPage - offset || (x >= page-(offset-1) && x <= page+(offset-1))) {
+                if(x != page) {
+    console.log(">>> * ["+x+"] page = " + page);
+%>
+            [<a href="/session?page=<%=x%>&srchType=<%=srchType%>&srchText=<%=srchText%>"><%=x%></a>]
+<%
+                } else {
+    console.log(">>> ["+x+"] page = " + page);
+%>
+            [<b><%=x%></b>]
+<%
+                }
+            } else if(x == offset+1 || x == maxPage-offset) {
+%>
+            ...
+<%
+            }
+       }
+%>
+        </p>
+<%
+    if(session.usrLevel=="000" || session.usrLevel=="001" || session.usrLevel=="002") {
+%>
+        <p align="right">
+            <input type="button" id="delBtn" name="delBtn" class="btn btn-default" value="삭제"/>
+        </p>
+<%
+    }
+%>
+    </form>
+</div>

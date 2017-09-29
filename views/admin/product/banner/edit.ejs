@@ -1,0 +1,167 @@
+<% layout('../../../admin/layout') -%>
+<script type="text/javascript" src="/js/jquery-1.11.3.min.js"></script>
+<script type="text/javascript" src="/js/jquery.form.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        // editBtn 버튼 처리.
+        $("#editBtn").on("click", function() {
+
+            // 배너 가로 이미지 크기 체크.
+            if($("#imgWidth").val()==null || $("#imgWidth").val()=="") {
+                alert("배너 가로 이미지 크기를 입력해주세요");
+                $("#imgWidth").focus();
+                return;
+            }
+            // 배너 세로 이미지 크기 체크.
+            if($("#imgHeight").val()==null || $("#imgHeight").val()=="") {
+                alert("배너 세로 이미지 크기를 입력해주세요");
+                $("#imgHeight").focus();
+                return;
+            }
+
+            var dataValues = {
+                imgUrl: $.trim($("#imgUrl").val()),
+                imgWidth: $.trim($("#imgWidth").val()),
+                imgHeight: $.trim($("#imgHeight").val()),
+                btn1LinkUrl: $.trim($("#btn1LinkUrl").val()),
+                btn1LinkNm: $.trim($("#btn1LinkNm").val()),
+                btn2LinkUrl: $.trim($("#btn2LinkUrl").val()),
+                btn2LinkNm: $.trim($("#btn2LinkNm").val()),
+                btn3LinkUrl: $.trim($("#btn3LinkUrl").val()),
+                btn3LinkNm: $.trim($("#btn3LinkNm").val()),
+                btn4LinkUrl: $.trim($("#btn4LinkUrl").val()),
+                btn4LinkNm: $.trim($("#btn4LinkNm").val()),
+                btn5LinkUrl: $.trim($("#btn5LinkUrl").val()),
+                btn5LinkNm: $.trim($("#btn5LinkNm").val())
+            };
+            // 전송 처리.
+            $.ajax({
+                url: "/admin/product/banner/edit/save",
+                type: "post",
+                dataType: "json",
+                data: dataValues,
+                success: function (data) {
+                    //console.log(">>> data = " + data.result);
+                    if(data.result=="OK") {
+                        alert("저장처리되었습니다.");
+                        location.href = "/admin/product/banner";
+                    }
+                },
+                error: function (err) {
+                    alert("errCode : " + err);
+                }
+            });
+        });
+        // 이전 화면 버튼 이벤트 처리.
+        $("#prevBtn").on("click", function() {
+            location.href = "/admin/product";
+        });
+    });
+</script>
+<div class="container-fluid">
+
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="page-header">상품 배너 관리 화면</h1>
+        </div>
+        <div>
+            <h6>* 서비스/솔루션 메뉴의 상품 메인 배너 관리를 하는 화면입니다. </h6>
+            <h6>* 수정할 수 있는 항목은 "배너 이미지 사이즈", "버튼 링크"만 가능합니다.</h6>
+            <h6>* 배너이미지는 퍼블리셔(디자이너)만 수정 추가할 수 있습니다.</h6>
+        </div><hr/>
+    </div>
+    <div>
+        <img src="/admin/images/banner_02.png" width="1024px" height="200px" border="0"/>
+    </div>
+    <div>
+        <p>각 입력란에 맞추어서 입력해주세요.</p>
+        <form name='frm' id="frm" class="form-horizontal">
+            <input type="hidden" id="attImg" name="attImg" value=""/>
+            <div class="form-group form-group-sm form-inline">
+                <label class="col-sm-2 control-label" for="imgUrl">배너 이미지 URL :</label>
+                <div class="col-sm-10">
+                    <input type="text" id="imgUrl" name="imgUrl" class="form-control" size="80" value="<%=result.imgUrl !=null ? result.imgUrl : ''%>" readonly/>
+                </div>
+            </div>
+            <div class="form-group form-group-sm form-inline">
+                <label class="col-sm-2 control-label" for="imgWidth">배너 이미지 가로 크기:</label>
+                <div class="col-sm-10">
+                    <input type="text" id="imgWidth" name="imgWidth" class="form-control" size="10" maxlength="4" value="<%=result.imgWidth !=null ? result.imgWidth : '1057'%>"/> px
+                </div>
+            </div>
+            <div class="form-group form-group-sm form-inline">
+                <label class="col-sm-2 control-label" for="imgHeight">배너 이미지 세로 크기:</label>
+                <div class="col-sm-10">
+                    <input type="text" id="imgHeight" name="imgHeight" class="form-control" size="10" maxlength="4" value="<%=result.imgHeight !=null ? result.imgHeight : '264'%>"/> px
+                </div>
+            </div>
+            <div class="form-group form-group-sm form-inline">
+                <label class="col-sm-2 control-label" for="btn1LinkUrl">배너버튼1 링크URL:</label>
+                <div class="col-sm-10">
+                    <input type="text" id="btn1LinkUrl" name="btn1LinkUrl" class="form-control" size="80" value="<%=result.btn1LinkUrl !=null ? result.btn1LinkUrl : ''%>"/>
+                </div>
+            </div>
+            <div class="form-group form-group-sm form-inline">
+                <label class="col-sm-2 control-label" for="btn1LinkNm">배너버튼1 링크명:</label>
+                <div class="col-sm-10">
+                    <input type="text" id="btn1LinkNm" name="btn1LinkNm" class="form-control" size="40" value="<%=result.btn1LinkNm !=null ? result.btn1LinkNm : ''%>"/>
+                </div>
+            </div>
+            <div class="form-group form-group-sm form-inline">
+                <label class="col-sm-2 control-label" for="btn2LinkUrl">배너버튼2 링크URL:</label>
+                <div class="col-sm-10">
+                    <input type="text" id="btn2LinkUrl" name="btn2LinkUrl" class="form-control" size="80" value="<%=result.btn2LinkUrl !=null ? result.btn2LinkUrl : ''%>"/>
+                </div>
+            </div>
+            <div class="form-group form-group-sm form-inline">
+                <label class="col-sm-2 control-label" for="btn2LinkNm">배너버튼2 링크명:</label>
+                <div class="col-sm-10">
+                    <input type="text" id="btn2LinkNm" name="btn2LinkNm" class="form-control" size="40" value="<%=result.btn2LinkNm !=null ? result.btn2LinkNm : ''%>"/>
+                </div>
+            </div>
+            <div class="form-group form-group-sm form-inline">
+                <label class="col-sm-2 control-label" for="btn3LinkUrl">배너버튼3 링크URL:</label>
+                <div class="col-sm-10">
+                    <input type="text" id="btn3LinkUrl" name="btn3LinkUrl" class="form-control" size="80" value="<%=result.btn3LinkUrl !=null ? result.btn3LinkUrl : ''%>"/>
+                </div>
+            </div>
+            <div class="form-group form-group-sm form-inline">
+                <label class="col-sm-2 control-label" for="btn3LinkNm">배너버튼3 링크명:</label>
+                <div class="col-sm-10">
+                    <input type="text" id="btn3LinkNm" name="btn3LinkNm" class="form-control" size="40" value="<%=result.btn3LinkNm !=null ? result.btn3LinkNm : ''%>"/>
+                </div>
+            </div>
+            <div class="form-group form-group-sm form-inline">
+                <label class="col-sm-2 control-label" for="btn4LinkUrl">배너버튼4 링크URL:</label>
+                <div class="col-sm-10">
+                    <input type="text" id="btn4LinkUrl" name="btn4LinkUrl" class="form-control" size="80" value="<%=result.btn4LinkUrl !=null ? result.btn4LinkUrl : ''%>"/>
+                </div>
+            </div>
+            <div class="form-group form-group-sm form-inline">
+                <label class="col-sm-2 control-label" for="btn4LinkNm">배너버튼4 링크명:</label>
+                <div class="col-sm-10">
+                    <input type="text" id="btn4LinkNm" name="btn4LinkNm" class="form-control" size="40" value="<%=result.btn4LinkNm !=null ? result.btn4LinkNm : ''%>"/>
+                </div>
+            </div>
+            <div class="form-group form-group-sm form-inline">
+                <label class="col-sm-2 control-label" for="btn5LinkUrl">배너버튼5 링크URL:</label>
+                <div class="col-sm-10">
+                    <input type="text" id="btn5LinkUrl" name="btn5LinkUrl" class="form-control" size="80" value="<%=result.btn5LinkUrl !=null ? result.btn5LinkUrl : ''%>"/>
+                </div>
+            </div>
+            <div class="form-group form-group-sm form-inline">
+                <label class="col-sm-2 control-label" for="btn5LinkNm">배너버튼5 링크명:</label>
+                <div class="col-sm-10">
+                    <input type="text" id="btn5LinkNm" name="btn5LinkNm" class="form-control" size="40" value="<%=result.btn5LinkNm !=null ? result.btn5LinkNm : ''%>"/>
+                </div>
+            </div>
+            <p align="right">
+<!--
+                <input type="button" id="uploadBtn" name="uploadBtn" class="btn btn-default" value="업로드" />&nbsp;
+-->
+                <input type="button" id="editBtn" name="editBtn" class="btn btn-default" value="수정" />
+                <input type="button" id="prevBtn" name="prevBtn" class="btn btn-default" value="이전 화면" />
+            </p>
+        </form>
+    </div>
+</div>

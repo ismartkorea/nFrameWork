@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8"/>
+    <title>동적 테스트</title>
+    <!-- Bootstrap core CSS     -->
+    <link href="../css/bootstrap.css" rel="stylesheet" />
+</head>
+<body>
+<div style="width: 100%; text-align: center; margin: 0 auto;">
+    <div id="nav">
+        <h1>동적 테스트</h1>
+    </div>
+    <div id="content">
+        <div id="divRow">
+            <ul style="list-style: none;">
+                <li id="liList">
+                    <input type="checkbox" id="chkBox1" name="checkBoxBtn" checked/>테스트1
+                </li>
+                <li id="liList">
+                    <input type="checkbox" id="chkBox2" name="checkBoxBtn" checked/>테스트2
+                </li>
+                <li id="liList">
+                    <input type="checkbox" id="chkBox3" name="checkBoxBtn" checked/>테스트3
+                </li>
+            </ul>
+        </div>
+        <div>
+            <input type="button" id="submitBtn" name="submitBtn" value="선택 삭제"/>
+        </div>
+    </div>
+    <div id="footer`">
+        푸터
+    </div>
+</div>
+<!--   Core JS Files   -->
+<script src="/js/jquery-1.11.3.min.js" type="text/javascript"></script>
+<script src="/js/bootstrap.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+    $(function() {
+        // 선택 버튼 이벤트 처리.
+        $("#submitBtn").on("click", function(e) {
+            e.preventDefault();
+            // 초기 설정.
+            console.log("length : ", $("div#divRow > ul > li").length);
+            // 체크된 값 삭제 처리.
+            var $this = $("div#divRow > ul > li").length;
+            $(":checkbox:checked").parent().remove();
+            /*
+            var $this = $("div#divRow > ul > li");
+            $.each($this, function(idx, item) {
+                if ($(":checkbox[name='checkBoxBtn"+idx+"']").is(':checked')) {
+                    console.log(idx + "체크박스.");
+                    item.remove();
+                }
+            });
+            */
+            /*
+                if ($(":checkbox[name='checkBoxBtn']").eq(idx).is(':checked')) {
+                    console.log(idx + "체크박스.");
+                    $this.closest('li').remove();
+                }
+             }
+            */
+        });
+    });
+</script>
+</body>
+</html>

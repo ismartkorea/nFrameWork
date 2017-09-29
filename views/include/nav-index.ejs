@@ -1,0 +1,41 @@
+
+
+<div class="fh5co-loader"></div>
+
+<div id="page">
+    <nav class="fh5co-nav" role="navigation">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-2 col-xs-4">
+                    <div id="fh5co-logo"><a href="/">JT-LAB<span>.</span></a></div>
+                </div>
+                <div class="col-sm-10 col-xs-8 text-right menu-1">
+                    <ul>
+                        <li><a href="/aboutus">회사소개</a></li>
+                        <li><a href="/products">서비스안내/구매</a></li>
+<!--
+                        <li><a href="/purchase">서비스구매</a></li>
+-->
+                        <li><a href="/ascenter">고객센터</a></li>
+                        <li><a href="/announce">공지사항</a></li>
+
+<%
+    if(session.usrId == null) {
+%>
+                        <li class="backno disppc"><a href="/signup" class="open-popup-link">회원가입</a></li>
+                        <li><a href="/login">로그인</a></li>
+<%    } else {    %>
+                        <li><a href="/purchase/paypopup">장바구니</a></li>
+                        <li><a href="/mypage">마이페이지</a></li>
+                        <li><a href="/login/logout">로그아웃</a></li>
+<%    } %>
+
+                        <!--
+                        <li class="backno dispmo"><a href="http://www.assistpro.co.kr/" class="btn backgreen btnwide100" target="_blank"><img src="/images/logo-assistpro.png" width="22px" height="14px" style="margin:0 6px 3px 0; vertical-align:middle;">어시스트프로 바로가기</a><a href="javascript:checkMobile();" target="_blank" class="btn backpink btnwide100"><img src="/images/ic_phone_iphone_white_36dp.png" width="18px" height="16px" style="margin:0 10px 3px 0; vertical-align:middle;">모바일업로드</a></li>
+                        -->
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </nav>

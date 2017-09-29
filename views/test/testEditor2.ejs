@@ -1,0 +1,38 @@
+<!DOCTYPE>
+<html lang="ko">
+<head>
+    <title>에디터 테스트</title>
+    <!-- Bootstrap core CSS     -->
+    <link href="/css/bootstrap.css" rel="stylesheet" />
+    <!--   Core JS Files   -->
+    <script src="/js/jquery-1.11.3.min.js" type="text/javascript"></script>
+    <script src="/js/bootstrap.min.js" type="text/javascript"></script>
+    <script type="text/javascript" src="/ckeditor/ckeditor.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            // 초기 설정.
+            CKEDITOR.replace("editText", {
+                "filebrowserUploadUrl": "/test/ckedit/upload"
+            });
+            CKEDITOR.instances.editText.setData("");
+        });
+    </script>
+</head>
+<body>
+<div id="nav">
+    <h1>테스터 에디터</h1>
+</div>
+<div id="content">
+    <textarea id="editText" name="editText"></textarea>
+</div>
+<div id="attachFile">
+    <!-- 웹브라우져에 PDF 플러그인이 설치되어있는 지 확인 필요.-->
+    <object type="application/pdf" data="/attachFiles/cbs.pdf" width="100%" height="800">
+        <param name="src" value="/attachFiles/cbs.pdf"/>
+    </object>
+</div>
+<div id="footer`">
+    푸터
+</div>
+</body>
+</html>

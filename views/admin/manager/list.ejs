@@ -1,0 +1,252 @@
+<% layout('../../admin/layout') -%>
+<script type="text/javascript" src="/js/jquery-1.11.3.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        // console.
+        console.log("on READY");
+        $("#prevBtn").on('click', function() {
+           location.href = '/admin/';
+        });
+        $("#newBtn").on('click', function () {
+            location.href = '/admin/manager/new';
+        });
+        $("#loginBtn").on("click", function () {
+            location.href = './login';
+        });
+        $("#logoutBtn").on("click", function () {
+            location.href = '/login/logout';
+        });
+        $("#signupBtn").on("click", function () {
+            location.href = '/signup';
+        });
+        $("#delBtn").on("click", function(e) {
+            e.preventDefault();
+            var chkVals = [];
+            var chkLen = $("input:checkbox[name='chkBox']:checked").length;
+            if(chkLen>0) {
+                $("input[name=chkBox]:checkbox").each(function (idx, item) {
+                    if ($(this).is(":checked")) {
+                        chkVals.push($(item).val());
+                    }
+                });
+            } else {
+                alert("삭제할 담당자를 선택하여 주세요!");
+                return;
+            }
+            //$("#chkParams").val(chkVals);
+            $.ajax({
+                type : "post",
+                url : "/admin/manager/delete",
+                dataType : "json",
+                data : {"dataList" : chkVals},
+                success : function(data) {
+                    if(data.result == "OK") {
+                        callback();
+                    }
+                },
+                error : function(request, status, error) {
+                    console.log("Code :  " + request.status + "\n" +
+                                    "message : " + request.responseText + "\n" +
+                                    "error : " + error);
+                }
+            });
+        });
+        $("#allChkbox").on('click', function () {
+            if ($(this).is(":checked")) {
+                $("input[name=chkBox]:checkbox").each(function () {
+                    $(this).prop("checked", true)
+                });
+            } else {
+                $("input[name=chkBox]:checkbox").each(function () {
+                    $(this).prop("checked", false)
+                });
+            }
+        });
+        // 검색 엔터키 이벤트 처리.
+        $("#srchText").on("keypress", function(e) {
+            if(e.which == 13) {
+                $("#srchBtn").click();
+                return false;
+            }
+        });
+        // 검색버튼 이벤트 처리.
+        $("#srchBtn").on("click", function(e) {
+            e.preventDefault();
+            var selectedVal = $("#srchType option:selected").val();
+            // 선택박스 체크.
+            if(selectedVal == null || selectedVal == "") {
+                alert("검색할려는 항목을 선택하여 주세요.");
+                $("#srchType").focus();
+                return false;
+            }
+
+            var srchText = $.trim($("#srchText").val());
+            // 전송 처리.
+            $("#srchType").val(selectedVal);
+            $("#srchText").val(srchText);
+            $("#searchForm").attr("method","post");
+            $("#searchForm").attr("action","/admin/manager/search");
+            $("#searchForm").submit();
+        });
+
+        // 빠른 추가 기능 버튼 이벤트 처리.
+        $("#addNewBtn").on("click", function(e) {
+            e.preventDefault();
+
+            var usrName = $.trim($("#fUsrName").val());
+            var usrId = $.trim($("#fUsrId").val());
+            var usrPwd = $.trim($("#fUsrPwd").val());
+            var usrEmail = $.trim($("#fUsrEmail").val());
+
+            if(usrName=="") {
+                alert("담당자명을 입력하세요");
+                $("#fUsrName").focus();
+                return;
+            }
+            if(usrId=="") {
+                alert("아이디를 입력하세요");
+                $("#fUsrId").focus();
+                return;
+            }
+            if(usrPwd=="") {
+                alert("패스워드를 입력하세요");
+                $("#fUsrName").focus();
+                return;
+            }
+            if(usrEmail=="") {
+                alert("Email를 입력하세요");
+                $("#fUsrEmail").focus();
+                return;
+            }
+
+            $("#frm2").attr("method", "post");
+            $("#frm2").attr("action", "/admin/manager/fast/insert");
+            $("#frm2").submit();
+        });
+    });
+    // btn Event
+    function onEdit(no) {
+        location.href = '/admin/manager/edit/'+no;
+    }
+    // callback
+    function callback() {
+        location.href = "/admin/manager";
+    }
+</script>
+<div class="container-fluid">
+
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="page-header">담당자 관리 화면</h1>
+        </div>
+        <div>
+            <h6>* 관리자 아이디를 빠르게 추가할 수 있는 화면입니다.</h6>
+            <h6>* 담당자명/담당자ID/담당자PWD/담당자EMAIL 은 필수입력사항입니다.</h6>
+            <h6>* "신규추가" 버튼은 회원 가입과 같은 화면으로 이동합니다.</h6>
+        </div><hr/>
+        <form id="searchForm" name="searchForm" method="post">
+            <div class="form-group text-right form-inline">
+                <div class="form-group">
+                    <select id="srchType" name="srchType" class="form-control">
+                        <option value="">선택하세요.</option>
+                        <option value="no" <%if(srchType=="no") {%> selected <% }%>>담당자 번호</option>
+                        <option value="id" <%if(srchType=="id") {%> selected <% }%>>아이디</option>
+                        <option value="nm" <%if(srchType=="nm") {%> selected <% }%>>담당자명</option>
+                    </select>
+                </div>
+                <div class="input-group custom-search-form">
+                    <input type="text" id="srchText" name="srchText" class="form-control" size="20" value="<%=srchText%>" placeholder="Search...">
+                        <span class="input-group-btn">
+                            <button class="btn btn-primary" type="button" id="srchBtn" name="srchBtn">
+                                <i class="fa fa-search"></i>
+                            </button>
+                        </span>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="row">
+<form id="frm" name="frm">
+<table width="100%" border="0" class="table table-hover">
+    <tr>
+        <th><input type="checkbox" id="allChkbox" name="allChkbox" value=""/></th>
+        <th>번호</th>
+        <th>담당자 번호</th>
+        <th>아이디</th>
+        <th>담당자 명</th>
+        <th>회원등급</th>
+    </tr>
+    <%
+        console.log("managers size : " + members.length);
+        if(members.length > 0) {
+            members.forEach(function(item, index) {
+    %>
+    <tr>
+        <td><input type="checkbox" id="chkbox<%=index%>" name="chkBox" value="<%=item.no%>"/></td>
+        <td><%=item.num%></td>
+        <td><%=item.no%></td>
+        <td><a href="javascript:onEdit('<%=item.no%>')"><b><%=item.id%></b></a></td>
+        <td><%=item.name%></td>
+        <td><%=item.level%></td>
+    </tr>
+    <%
+            })
+        } else {
+     %>
+    <tr>
+        <td colspan="22" align="center">
+            No Data
+        </td>
+    </tr>
+    <%
+            }
+    %>
+</table>
+    <!-- 페이징 처리 부분 -->
+    <p id="page" align="center">
+<%
+        console.log(">>> maxPage = " + maxPage);
+    for(var x=1; x<=maxPage;x++) {
+        if(x <= offset || x > maxPage - offset || (x >= page-(offset-1) && x <= page+(offset-1))) {
+            if(x != page) {
+            console.log(">>> * ["+x+"] page = " + page);
+%>
+        [<a href="/admin/manager?page=<%=x%>&srchType=<%=srchType%>&srchText=<%=srchText%>"><%=x%></a>]
+<%
+            } else {
+            console.log(">>> ["+x+"] page = " + page);
+%>
+        [<b><%=x%></b>]
+<%
+            }
+        } else if(x == offset+1 || x == maxPage-offset) {
+%>
+        ...
+<%
+            }
+        }
+%>
+    </p>
+    <!-- 페이징 처리 부분 -->
+    <p align="right">
+        <input type="button" id="newBtn" name="newBtn" class="btn btn-default" value="신규추가"/>
+        <input type="button" id="delBtn" name="delBtn" class="btn btn-default" value="삭제"/>
+        <input type="button" id="prevBtn" name="prevBtn" class="btn btn-default" value="메인 화면"/>
+    </p>
+</form>
+    </div><hr/>
+    <div class="row">
+        <div>
+            <h3>빠른 추가</h3>
+        </div>
+        <form id="frm2" name="frm2">
+            <div class="form-group text-left form-inline">
+                * 담당자명 : <input type="text" id="fUsrName" name="fUsrName" value="" size="10"/>&nbsp;
+                * 담당자ID : <input type="text" id="fUsrId" name="fUsrId" value="" size="10"/>&nbsp;
+                * 담당자PWD : <input type="password" id="fUsrPwd" name="fUsrPwd" value="" size="15"/>&nbsp;
+                * 담당자EMAIL : <input type="text" id="fUsrEmail" name="fUsrEmail" value="" size="20"/>&nbsp;
+                <input type="button" id="addNewBtn" name="addNewBtn" class="btn btn-default" value="추가"/>
+            </div>
+        </form>
+    </div>
+</div>

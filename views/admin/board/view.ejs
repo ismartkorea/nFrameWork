@@ -1,0 +1,179 @@
+<% layout('../../admin/layout') -%>
+<script type="text/javascript" src="/js/jquery-1.11.3.min.js"></script>
+<script type="text/javascript" src="/ckeditor/ckeditor.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        // 에디터 초기화.
+        CKEDITOR.replace("comment",{
+            toolbar:[],
+            "width" : "80%",
+            "height" : "50"
+        });
+        var boardNo = $.trim($("#no").val());
+        $("div#replyInfo").each(function(idx) {
+            $("input#delCmntBtn"+idx).on("click", function(e){
+                e.preventDefault();
+                //console.log($("input#cNo"+idx).val());
+                //console.log($("input#usrId"+idx).val());
+                var cNo = $.trim($("input#cNo"+idx).val());
+                var userId = $.trim($("input#usrId"+idx).val());
+                var dataList = {
+                    'rno' : cNo,
+                    'bno' : boardNo,
+                    'uid' : userId
+                };
+                $.ajax({
+                    type : "post",
+                    url : "/admin/board/comment/del",
+                    dataType : "json",
+                    data : dataList,
+                    success : function(data) {
+                        if(data.result == "OK") {
+                            location.href = "/admin/board/view/"+boardNo;
+                        }
+                    },
+                    error : function(request, status, error) {
+                        console.log("Code :  " + request.status + "\n" +
+                                "message : " + request.responseText + "\n" +
+                                "error : " + error);
+                    }
+                });
+            });
+        });
+
+        // console.
+        $("#prevBtn").on('click', function() {
+            location.href = '/admin/board';
+        });
+        $("#editBtn").on('click', function() {
+            location.href = "/admin/board/edit/<%=board.no%>";
+        });
+        $("#delBtn").on('click', function() {
+            location.href = "/admin/board/delete/<%=board.no%>";
+        });
+        $("#cmntBtn").on('click', function(e) {
+            e.preventDefault();
+
+            //var comment = $.trim($("#comment").val());
+            var comment = CKEDITOR.instances.comment.getData();
+            if(comment=="") {
+                alert("댓글을 입력하세요.");
+                $("#comment").focus();
+                return false;
+            }
+            var dataList = {
+              'no' :  boardNo,
+              'comment' : comment
+            };
+            $.ajax({
+                type : "post",
+                url : "/admin/board/comment/new",
+                dataType : "json",
+                data : dataList,
+                success : function(data) {
+                    if(data.result == "OK") {
+                        location.href = "/admin/board/view/"+boardNo;
+                    }
+                },
+                error : function(request, status, error) {
+                    console.log("Code :  " + request.status + "\n" +
+                            "message : " + request.responseText + "\n" +
+                            "error : " + error);
+                }
+            });
+        });
+    });
+</script>
+<div class="container-fluid">
+
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="page-header">버그 리포트 화면</h1>
+        </div>
+        <form name="frm" id="frm" method="post" class="form-horizontal">
+            <input type="hidden" id="no" name="no" value="<%=board.no%>"/>
+            <table class="table table-bordered">
+                <tr>
+                    <td style="width:80px;">
+                        <label for="title">제목</label>
+                    </td>
+                    <td colspan="3">
+                        <%= board.title %>
+                    </td>
+                    <td style="width:80px;">
+                        <label for="no">글 번호</label>
+                    </td>
+                    <td>
+                        <%= board.no %>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label for="date">작성날짜</label>
+                    </td>
+                    <td>
+                        <%=board.date%>
+                    </td>
+                    <td style="width:80px;">
+                        <label for="writer">작성자</label>
+                    </td>
+                    <td>
+                        <%=board.writer%>
+                    </td>
+                    <td>
+                        <label for="count">조회수</label>
+                    </td>
+                    <td>
+                        <%=board.count%>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="height:420px;">
+                        <label for="content">글 내용</label>
+                    </td>
+                    <td colspan="5"><%-board.content%></td>
+                </tr>
+            </table>
+            <p class="form-group">
+                <div class="col-sm-offset-2 col-sm-10 text-right">
+                    <input type="button" id="prevBtn" name="prevBtn" class="btn btn-default" value="리스트 화면"/>&nbsp;
+                    <input type="button" id="editBtn" name="editBtn" class="btn btn-default" value="수정"/>
+                    <input type="button" id="delBtn" name="delBtn" class="btn btn-default" value="삭제"/>
+                </div>
+            </p>
+        </form>
+    </div>
+    <div class="row">
+        <form id="cForm" name="cForm">
+        <div id="commentCount" align="left">Comments(<%=reply.cnt%>)</div><hr/>
+<%
+    if(list.length > 0) {
+        for(var i=0; i < list.length; i++) {
+%>
+        <div id="replyInfo" align="left">
+            <%=list[i].name%>&nbsp;(<%=list[i].date%>)&nbsp;<input type="hidden" id="usrId<%=i%>" name="usrId<%=i%>" value="<%=list[i].id%>"/><input type="hidden" id="cNo<%=i%>" name="cNo<%=i%>" value="<%=list[i].no%>"/>
+<%
+    if(session.usrId !=null && session.usrId == list[i].id) {
+%>
+            <input type="button" id="delCmntBtn<%=i%>" name="delCmntBtn" value="x"/>
+<%
+    }
+%>
+            <div id="reply<%=i%>">
+                <%-list[i].comment%>
+            </div>
+        </div>
+        <hr/>
+<%
+        }
+    }
+%>
+        <div id="commentDiv" align="left">
+            <div style="display:inline-block; width:100%">
+                <textarea id="comment" name="comment" style="float:left; position:relative;" maxlength="100"><%=session.usrId?"":"로그인을 하세요."%></textarea>
+                <input type="button" id="cmntBtn" name="cmntBtn" value="코멘트" style="position:relative; top:-65px; right:12%; float:right" class="btn btn-default" <%=session.usrId?"":"disabled"%>/>
+            </div>
+        </div>
+        </form>
+    </div>
+</div>

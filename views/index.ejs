@@ -1,0 +1,721 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="google-site-verification" content="x-SGnt2D5gdLX7ifGKTsMH7DMzfZRpaAyS3LgSEJllY" />
+	<title>JT-LAB</title>
+
+	<meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
+	<meta name="viewport" content="width=device-width" />
+
+  	<!-- Facebook and Twitter integration -->
+	<meta property="og:title" content=""/>
+	<meta property="og:image" content=""/>
+	<meta property="og:url" content=""/>
+	<meta property="og:site_name" content=""/>
+	<meta property="og:description" content=""/>
+	<meta name="twitter:title" content="" />
+	<meta name="twitter:image" content="" />
+	<meta name="twitter:url" content="" />
+	<meta name="twitter:card" content="" />
+
+	<!-- <link href='https://fonts.googleapis.com/css?family=Work+Sans:400,300,600,400italic,700' rel='stylesheet' type='text/css'> -->
+	<link rel = "shortcut icon" href = "/images/favicon.ico">
+
+	<!-- Animate.css -->
+	<link rel="stylesheet" href="/css/animate.css">
+	<!-- Icomoon Icon Fonts-->
+	<link rel="stylesheet" href="/css/icomoon.css">
+	<!-- Bootstrap  -->
+	<link rel="stylesheet" href="/css/bootstrap.css">
+
+	<!-- Magnific Popup -->
+	<link rel="stylesheet" href="/css/magnific-popup.css">
+
+	<!-- Theme style  -->
+	<link rel="stylesheet" href="/css/style.css">
+
+	<!-- Modernizr JS -->
+	<script src="/js/modernizr-2.6.2.min.js"></script>
+	<!-- FOR IE9 below -->
+	<!--[if lt IE 9]>
+	<script src="/js/respond.min.js"></script>
+	<![endif]-->
+
+	</head>
+	<body>
+		
+<% include include/nav-index.ejs %>
+
+    	<header id="fh5co-header" class="fh5co-cover" role="banner">
+		<div class="overlay"></div>
+		<div class="container">
+			<div class="row">
+				<div class="col-md-12 col-md-offset-0 text-left">
+					<div class="display-t">
+<%
+	if(session.usrId == null) {
+%>
+						<div class="col-md-8 mt-text animate-box" data-animate-effect="fadeIn">
+<%
+	} else {
+%>
+						<div class="col-md-8 mt-text top46 animate-box" data-animate-effect="fadeIn">
+<%
+	}
+%>
+							<h1>WE CREAT<br>WHATEVER YOU NEED</h1>
+							<h2>JT-LAB 제이티랩은 수입자동차정비 전문가들이 필요한 솔루션을 연구합니다.<br>
+                            지능적이고 효율적인 우리의 솔루션을 경험 하세요.</h2>
+							<p>
+								<a href="http://www.assistpro.co.kr/" class="btn with-arrow btn-primary btn-outline brr20" target="_blank"><img src="/images/logo-assistpro.png"> 어시스트프로 바로가기<i class="icon-arrow-right"></i></a>
+<!--
+								<a href="javascript:checkMobile();" class="btn with-arrow btn-primary btn-outline brr20"><img src="/images/logo-assistpro.png"> 모바일업로드 바로가기<i class="icon-arrow-right"></i></a>
+-->
+							</p>
+						</div>
+
+<!--------------------- 로그인 회원가입 탭 시작 ------------------------->
+					<div class="row row-mt-8em">
+                     <div class="col-md-4 col-md-push-1 animate-box" data-animate-effect="fadeInRight">
+
+	 <%
+	 	if(session.usrId == null) {
+	 %>
+						 <!-------로그인전-------->
+						 <legend>회원로그인</legend>
+						 <div class="form-wrap">
+							 <div class="tab">
+								 <ul class="tab-menu">
+									 <li class="gtco-first">회원로그인</li>
+								 </ul>
+
+								 <div class="tab-content">
+									 <div class="tab-content-inner">
+
+											 <div class="row">
+												 <!--
+												 <div class="col-md-12 pd-mg mb15">
+													 <input type="radio" name="usrType" id="usrType1" title="일반사용자" value="A" checked><label><span><span></span></span>일반사용자</label><br>
+													 <input type="radio" name="usrType" id="usrType2" title="정비사" value="B"><label><span><span></span></span>개인정비사</label>
+													 <input type="radio" name="usrType" id="usrType3" title="정비소" value="C"> <label><span><span></span></span>정비소</label>
+													 <input type="radio" name="usrType" id="usrType4" title="부품업체" value="D"> <label><span><span></span></span>부품업체</label>
+													 <input type="radio" name="usrType" id="usrType5" title="보험사정인" value="E"><label><span><span></span></span>보험사정인</label>
+												 </div>
+												-->
+
+
+											 <div class="col-md-8 text-left mb15">
+												 <label for="usrId"><input type="text" class="form-control mb5" id="usrId" name="usrId" placeholder="아이디"></label>
+												 <label for="usrPwd"><input type="password" class="form-control" id="usrPwd" name="usrPwd" placeholder="비밀번호"></label>
+											 </div>
+
+
+
+											 <div class="col-md-4 text-left font14">
+												 <input type="button" id="loginBtn" class="btn btn-warning btn-login" value="로그인">
+												 <!--<label for="saveId" class="mt0"><input type="checkbox" id="saveId" name="saveId" title="아이디저장하기" checked><label for="saveId" class="mt10">&nbsp;아이디저장</label>-->
+												 <span class="saveid"><input id="saveId" type="checkbox" name="saveId" checked="checked"><label for="saveId"><span></span>아이디저장</label></span>
+											 </div>
+
+											 <div class="col-md-12 login-footer">
+												 <span class="mr20"><a href="/login/findId" class="open-popup"><i class="fa fa-search" aria-hidden="true"></i> 아이디/비밀번호찾기</a></span>
+												 <span class="mr15"><a href="/signup" class="open-popup-link"><i class="fa fa-user" aria-hidden="true"></i> 회원가입</a></span>
+											 </div>
+
+
+
+											 </div>
+									 </div>
+								 </div>
+							 </div>
+						 </div>
+						 <!-------로그인 전 끝 ------>
+	 <%    } else {    %>
+						 <!------로그인 후 ------->
+						 <legend>회원로그아웃</legend>
+						 <div class="form-wrap wid400">
+							 <div class="tab">
+								 <ul class="tab-menu">
+									 <li class="gtco-first"><%=session.usrName%>님 환영합니다</li>
+								 </ul>
+
+								 <div class="col-md-12 col-md-offset-0 tab-content">
+									 <div class="tab-content-inner">
+
+										 <form action="#">
+											 <div class="col-md-6 form-group">
+												 <div class="logout text-left">
+													 <h5><a href="/mypage" class="pink"><i class="fa fa-address-book-o" aria-hidden="true"></i> 마이페이지</a></h5>
+													 <p><a href="/signup/edit/<%=session.usrNo%>" class="open-popup-link"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> 회원정보수정</a></p>
+												 </div>
+											 </div>
+
+											 <div class="col-md-6 col-md-push-1 form-group">
+												 <div class="logout text-center">
+													 <input type="button" id="logoutBtn" class="btn btn-warning btn-logout" value="로그아웃">
+												 </div>
+											 </div>
+										 </form>
+									 </div>
+								 </div>
+							 </div>
+						 </div>
+										<!-------로그인 후 끝 ------>
+	 <%    } %>
+							</div>
+						</div><!-- row row-mt-8em -->
+<!--------------------- 로그인 회원가입 탭 끝 ------------------------->
+					</div><!-- display-t -->
+				</div><!-- col-md-12 col-md-offset-0 text-left -->
+			</div><!-- row -->
+		</div><!-- container -->
+	</header>
+
+<div class="container">
+	<div class="row">
+		<div id="fh5co-section" class="animate-box">
+			<div class="col-nineth">
+				<div class="row">
+					<div class="col-second">
+						<div class="col-md-12">
+
+							<ul class="product-list-main">
+								<h4>JT-LAB 서비스현황<a href="/products"><span class="more">+ 전체보기</span></a></h4>
+<%
+		if(rList.length > 0) {
+			rList.forEach(function(item, index) {
+%>
+								<li><%=item.pNm%>
+									<span class="btn btn-xs-grey"><a href="/purchase/<%=item.pCode%>/<%=item.pUniqCode%>"><i class="fa fa-external-link"></i></a></span>
+								</li>
+<%
+			});
+		} else {
+%>
+								<li>No Data</li>
+<%
+		}
+%>
+							</ul>
+						</div>
+					</div>
+
+
+					<div class="col-second">
+						<div class="col-md-12">
+							<ul class="product-list-main">
+								<h4>공지사항<a href="/announce"><span class="more">+ 전체보기</span></a></h4>
+<%
+		if(rList1.length > 0) {
+			rList1.forEach(function(item1, index) {
+%>
+								<li><a href="/announce/view/<%=item1.no%>"><%=item1.title%></a></li>
+<%
+			});
+		} else {
+%>
+								<li>No Data</li>
+<%
+		}
+%>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-forth fh5co-video fh5co-bg" style="background-image: url(images/image_bg.jpg)">
+				<a href="https://vimeo.com/221145815" class="popup-vimeo"><i class="icon-video2"></i></a>
+				<div class="overlay"></div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="fh5co-bg-section">
+	<div class="container">
+		<div class="row">
+			<div id="fh5co-features-2">
+				<div class="col-feature-9">
+					<div class="row">
+						<div class="col-md-12 fh5co-heading2">
+							<h2>JT-LAB PROJECT</h2>
+							<p class="white">수입차 정비 시 꼭 필요한, 세상에 없던 서비스- 제이티랩이 하고 있습니다.</p>
+						</div>
+					</div><!--row-->
+					<div class="row">
+						<div class="col-md-7 col-sm-7 col-md-pull-2 col-sm-pull-2 animate-box" data-animate-effect="fadeInRight">
+							<div class="feature-image">
+								<img src="images/work_1.png" alt="work">
+							</div>
+						</div><!--col-md-7-->
+
+						<div class="col-md-5 col-sm-5">
+
+							<div class="feature-left animate-box" data-animate-effect="fadeInLeft">
+									<span class="icon">
+										<i class="icon-check"></i>
+									</span>
+								<div class="feature-copy">
+									<h3>JT-LAB 앱센터</h3>
+									<p>JT-LAB에서 개발한 수입자동차 정비시 필요한 여러가지 서비스들에 접속 및 관리할 수 있는 설치형 소프트웨어(무료) 입니다.</p>
+								</div>
+							</div>
+
+							<div class="feature-left animate-box" data-animate-effect="fadeInLeft">
+									<span class="icon">
+										<i class="icon-check"></i>
+									</span>
+								<div class="feature-copy">
+									<h3>ASSIST PRO(어시스트프로)</h3>
+									<p>수입차 정비 시 진단기 데이터 및 케이스별 증상에 따른 분석지원을 하는 서비스로 기술자료, 소견, 로그분석, 원격지원 등을 제공하는 서비스 입니다.</p>
+								</div>
+							</div>
+
+							<div class="feature-left animate-box" data-animate-effect="fadeInLeft">
+									<span class="icon">
+										<i class="icon-check"></i>
+									</span>
+								<div class="feature-copy">
+									<h3>자동차 데이터 판독기</h3>
+									<p>자동차 데이터 판독기 (아우디/폭스바겐 및 볼보)</p>
+								</div>
+							</div>
+						</div><!--col-md-5-->
+					</div><!--row-->
+
+				</div><!--col-feature 9-->
+
+
+				<div class="col-feature-3">
+					<div id="fh5co-counter" class="fh5co-bg fh5co-counter">
+						<div class="row">
+							<div class="display-t">
+								<div class="display-tc">
+									<div class="col-md-12 animate-box">
+										<div class="feature-center">
+											<span class="counter js-counter" data-from="0" data-to="28400" data-speed="6000" data-refresh-interval="50">1</span>
+											<span class="counter-label">CLIENTS-클라이언츠</span>
+
+										</div>
+									</div>
+									<div class="col-md-12 animate-box">
+										<div class="feature-center">
+											<span class="counter js-counter" data-from="0" data-to="12800" data-speed="3000" data-refresh-interval="50">1</span>
+											<span class="counter-label">DATAS-축적된전문데이터</span>
+										</div>
+									</div>
+									<div class="col-md-12 animate-box">
+										<div class="feature-center">
+											<span class="counter js-counter" data-from="0" data-to="28389" data-speed="5000" data-refresh-interval="50">1</span>
+											<span class="counter-label">PROJECTS-완료프로젝트</span>
+										</div>
+									</div>
+
+								</div><!--display-tc-->
+							</div><!--display-t-->
+						</div><!--row-->
+					</div><!--fh5co-bg-->
+				</div><!--col-feature-3-->
+
+			</div><!--fh5co-features-2-->
+		</div><!--row-->
+	</div><!--container-->
+</div><!--fh5co-bg-section-->
+
+<div id="fh5co-portfolio">
+	<div class="container">
+		<div class="row animate-box">
+			<div class="col-md-8 col-md-offset-2 text-center fh5co-heading2">
+				<h2 class="black">서비스 이용안내</h2>
+			</div>
+		</div>
+		<div class="row">
+			<div class="project">
+				<div class="col-md-7 col-md-push-6 animate-box" data-animate-effect="fadeInLeft">
+					<img class="img-responsive" src="images/work_2-1.png" alt="work">
+				</div>
+				<div class="col-md-5 col-md-pull-7 animate-box" data-animate-effect="fadeInRight">
+					<div class="mt">
+						<h3>회원가입 & 서비스안내</h3>
+
+						<div class="mt40">
+							<h4 class="mb10"><i class="fa fa-user"></i>회원가입</h4>
+							<p><a href="/purchase" target="_blank" class="pink">회원가입</a>화면에서 회원유형을 선택 하시고 회원정보를 입력 하시면 됩니다. 회원가입은 무료 입니다.</p>
+						</div>
+						<div>
+							<h4 class="mb10"><i class="fa fa-info-circle"></i>서비스안내/구매</h4>
+							<p><a href="/product" target="_blank" class="pink">'서비스안내/구매'</a> 페이지에서 이용하실 서비스의 자세한 내용을 확인 하실 수 있습니다. '구매하기'버튼을 클릭하시면 서비스구매 화면으로 이동합니다.</p>
+						</div>
+						<div>
+							<h4 class="mb10"><i class="fa fa-shopping-cart"></i>서비스구매</h4>
+							<p><a href="/purchase" target="_blank" class="pink">'서비스구매'</a>페이지에서 JT-LAB의 모든 서비스 구매가 가능합니다.</p>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="project">
+				<div class="col-md-6 col-md-pull-1 animate-box" data-animate-effect="fadeInLeft">
+					<img class="img-responsive" src="images/work_3.jpg" alt="work">
+				</div>
+				<div class="col-md-6 animate-box" data-animate-effect="fadeInRight">
+					<div class="mt mt40">
+						<div class="mt40">
+							<h4 class="mb10"><i class="fa fa-check"></i>서비스선택</h4>
+							<p><a href="/purchase" target="_blank" class="pink">'서비스구매'</a> 화면에서 서비스 리스트 중 구매하실 서비스 우측에 '선택' 버튼을 클릭 하세요.<br>바로 아래에 옵션(부가)서비스 목록이 표시됩니다. </p>
+						</div>
+						<div class="mt40">
+							<h4 class="mb10"><i class="fa fa-plus"></i>옵션(부가)서비스 선택</h4>
+							<p>옵션(부가)서비스 리스트 중 이용하실 서비스의 우측 '선택' 버튼을 클릭 하시면 아래 장바구니에 바로 담아진 것이 확인 됩니다.</p>
+						</div>
+						<div class="mt40">
+							<h4 class="mb10"><i class="fa fa-cart-plus"></i>장바구니</h4>
+							<p>이용하실 '서비스기간'을 선택 합니다. 서비스금액/할인금액/결제예정금액을 확인하시고<br><span class="greenback">주문하기</span> 버튼을 클릭하시면 결제하기 화면으로 이동합니다.</p>
+						</div>
+						<div class="mt40">
+							<h4 class="mb10"><i class="fa fa-credit-card"></i>결제하기</h4>
+							<p>주문항목 리스트 및 결제예정금액을 확인 하시고 <span class="greenback">주문하기</span> 버튼을 클릭하세요.<br>결제수단 선택 후 <span class="pinkback">결제하기</span> 버튼을 클릭하시면 결제창이 뜹니다.</p>
+						</div>
+
+					</div>
+				</div>
+
+				<div class="project">
+				<div class="col-md-8 col-md-push-5 animate-box mb40" data-animate-effect="fadeInRight">
+					<img class="img-responsive" src="images/work-4-new.png" alt="work">
+				</div>
+				<div class="col-md-4 col-md-pull-8 animate-box" data-animate-effect="fadeInLeft">
+					<div class="mt mt40">
+						<h3>마이페이지 & 고객센터</h3>
+						<div class="mt40">
+							<h4 class="mb10"><i class="fa fa-user-circle"></i>마이페이지</h4>
+							<p><a href="/mypage" target="_blank" class="pink">'마이페이지'</a>에서 구매하신 서비스정보를 확인 하실 수 있습니다. <br>또한 1:1문의에 대한 답변을 확인 하실 수 있습니다.</p>
+						</div>
+						<div>
+							<h4 class="mb10"><i class="fa fa-question-circle"></i>고객센터</h4>
+							<p><a href="/ascenter" target="_blank" class="pink">'고객센터'</a>에서 1:1문의 및 답변확인을 하실 수 있습니다.</p>
+							<p>전화: <a href="tel:1644-0495">1644-0495</a> (월-금요일: 9시~19시, 토요일: 9시~15시)<br>이메일주소: <a href="mailto:center@jt-lab.co.kr">center@jt-lab.co.kr</a><br>팩스번호: 033-763-9719</p>
+						</div>
+					</div>
+				</div>
+			</div><!--project-->
+
+
+		</div>
+	</div>
+</div>
+
+
+<% include include/footer.ejs %>
+
+	</div><!--include > nav > div id="page"-->
+
+	<div class="gototop js-top">
+		<a href="#" class="js-gotop"><i class="icon-arrow-up"></i></a>
+	</div>
+
+    
+	<!-- jQuery -->
+	<script type="text/javascript" src="/js/jquery.min.js"></script>
+	<!-- jQuery Easing -->
+	<script type="text/javascript" src="/js/jquery.easing.1.3.js"></script>
+	<!-- Bootstrap -->
+	<script type="text/javascript" src="/js/bootstrap.min.js"></script>
+	<!-- Waypoints -->
+	<script type="text/javascript" src="/js/jquery.waypoints.min.js"></script>
+	<!-- countTo -->
+	<script type="text/javascript" src="/js/jquery.countTo.js"></script>
+	<!-- Magnific Popup -->
+	<script type="text/javascript" src="/js/jquery.magnific-popup.min.js"></script>
+	<script type="text/javascript" src="/js/magnific-popup-options.js"></script>
+	<!-- Main -->
+	<script type="text/javascript" src="/js/main.js"></script>
+    <!-- Common js -->
+	<script type="text/javascript" src="/js/common.js"></script>
+
+	<script type="text/javascript">
+var checkLoginYn = "<%=loginYn%>";
+		$(document).ready(function() {
+			// 모바일 경우 상품목록 페이지로 이동 처리.
+			var mobileKeyWords = ["iPhone", "iPad", "iPod", "BlackBerry", "Android", "Windows CE", "LG", "MOT", "SAMSUNG", "SonyEricsson"];
+			for(var word in mobileKeyWords) {
+				//console.log('userAgent : ' , navigator.userAgent);
+				if(navigator.userAgent.match(mobileKeyWords[word]) != null) {
+					if(checkLoginYn!="Y") {
+						location.href = '/products';
+					}
+				}
+			}
+
+			// IE 버전 체크.
+			ieCheck();
+			// 아이디 쿠키값 체크.
+<%
+		if(session.usrId==null) {
+%>
+			// 아이디 정보 저장처리.
+			var userId = getCookie("uId");
+			console.log(">>>> userId = " + userId);
+			if(userId) {
+				$("#saveId").attr("checked", true);
+				$("#usrId").val(userId);
+			}
+<%
+		}
+%>
+
+			// 로그인 엔터키 이벤트 처리.
+			$("#usrPwd").on("keydown", function(e) {
+				var code = (e.keyCode ? e.keyCode : e.which);
+				if(code == 13) {
+					e.preventDefault();
+					//var emailRegExp = /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i;
+					var dataVals = {};
+					// 회원유형 값 취득.
+					//var userType = $("input:radio[name='usrType']:checked").val();
+
+					if($("#usrId").val()==null || $("#usrId").val()=="") {
+						alert("고객님의 아이디를 입력하여 주세요.");
+						$("#usrId").focus();
+						return;
+					}
+					if($("#usrPwd").val()==null || $("#usrPwd").val()=="") {
+						alert("고객님의 비밀번호를 입력하여 주세요.");
+						$("#usrPwd").focus();
+						return;
+					}
+
+					//이메일 쿠키 저장
+					if($("#saveId").is(":checked")){
+						setCookie("uId", $("#usrId").val(), 7);
+					} else {
+						deleteCookie("uId");
+					}
+
+					dataVals = {usrId : $("#usrId").val(), usrPwd : $("#usrPwd").val()};
+					// 데이타 전송 처리.
+					$.ajax({
+						url : "/login/loginProcess",
+						type : "post",
+						dataType : "json",
+						data : dataVals,
+						success : function(data) {
+							//console.log(">>> data = " + data.result);
+							if(data.result == "err0") {
+								alert("아이디가 틀립니다. 다시 확인하세요");
+								$("#usrId").focus();
+							}
+							if(data.result == "err1") {
+								alert("비밀번호가 틀립니다. 다시 확인하세요");
+								$("#usrPwd").focus();
+							}
+							if(data.result == "PREV_OK") {
+								alert("먼저 로그인된 아이디가 있어 기존 아이디를 삭제하고 로그인 됩니다.");
+								alert("환영합니다! " + data.session.usrName + " 님");
+								location.href = "/";
+							}
+							if(data.result == "OK") {
+								alert("환영합니다! " + data.session.usrName + " 님");
+								location.href = "/";
+							}
+							if(data.result == "NO") {
+								//console.log(">>> 데이타 없음");
+								alert("해당되는 회원님이 없습니다.\n다시 한번 확인하시고 입력하여 보세요.");
+								$("#usrId").focus();
+							}
+							if(data.result == "DUPLICATION") {
+								var ret = confirm('이미 로그인한 아이디가 있습니다. 재로그인 하시겠습니까?');
+								if(ret == true) {
+									dataVals = {usrId : $("#usrId").val(), usrPwd : $("#usrPwd").val()};
+									// 데이타 전송 처리.
+									$.ajax({
+										url: "/login/relogin",
+										type: "post",
+										dataType: "json",
+										data: dataVals,
+										success: function (data) {
+											if (data.result == "OK") {
+												alert("환영합니다! " + data.session.usrName + " 님");
+												location.href = "/";
+											}
+										},
+										error: function (err) {
+											alert("errCode : " + err.message);
+										}
+									});
+								} else {
+									alert("로그인을 취소하셨습니다.");
+									$("#usrId").focus();
+								}
+							}
+						},
+						error : function(err) {
+							alert("errCode : " + err.message);
+						}
+					});
+				}
+			});
+
+
+
+			// 로그인 버튼 이벤트 처리.
+			$("#loginBtn").on("click", function(e) {
+				e.preventDefault();
+				//var emailRegExp = /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i;
+				var dataVals = {};
+				// 회원유형 값 취득.
+				//var userType = $("input:radio[name='usrType']:checked").val();
+
+				if($("#usrId").val()==null || $("#usrId").val()=="") {
+					alert("고객님의 아이디를 입력하여 주세요.");
+					$("#usrId").focus();
+					return;
+				}
+				if($("#usrPwd").val()==null || $("#usrPwd").val()=="") {
+					alert("고객님의 비밀번호를 입력하여 주세요.");
+					$("#usrPwd").focus();
+					return;
+				}
+
+				//이메일 쿠키 저장
+				if($("#saveId").is(":checked")){
+					setCookie("uId", $("#usrId").val(), 7);
+				} else {
+					deleteCookie("uId");
+				}
+
+				dataVals = {usrId : $("#usrId").val(), usrPwd : $("#usrPwd").val()};
+				// 데이타 전송 처리.
+				$.ajax({
+					url : "/login/loginProcess",
+					type : "post",
+					dataType : "json",
+					data : dataVals,
+					success : function(data) {
+						//console.log(">>> data = " + data.result);
+						if(data.result == "err0") {
+							alert("아이디가 틀립니다. 다시 확인하세요");
+							$("#usrId").focus();
+						}
+						if(data.result == "err1") {
+							alert("비밀번호가 틀립니다. 다시 확인하세요");
+							$("#usrPwd").focus();
+						}
+						if(data.result == "PREV_OK") {
+							alert("먼저 로그인된 아이디가 있어 기존 아이디를 삭제하고 로그인 됩니다.");
+							alert("환영합니다! " + data.session.usrName + " 님");
+							location.href = "/";
+						}
+						if(data.result == "OK") {
+							alert("환영합니다! " + data.session.usrName + " 님");
+							location.href = "/";
+						}
+						if(data.result == "NO") {
+							//console.log(">>> 데이타 없음");
+							alert("해당되는 회원님이 없습니다.\n다시 한번 확인하시고 입력하여 보세요.");
+							$("#usrId").focus();
+						}
+						if(data.result == "DUPLICATION") {
+							var ret = confirm('이미 로그인한 아이디가 있습니다. 재로그인 하시겠습니까?');
+							if(ret == true) {
+								dataVals = {usrId : $("#usrId").val(), usrPwd : $("#usrPwd").val()};
+								// 데이타 전송 처리.
+								$.ajax({
+									url: "/login/relogin",
+									type: "post",
+									dataType: "json",
+									data: dataVals,
+									success: function (data) {
+										if (data.result == "OK") {
+											alert("환영합니다! " + data.session.usrName + " 님");
+											location.href = "/";
+										}
+									},
+									error: function (err) {
+										alert("errCode : " + err.message);
+									}
+								});
+							} else {
+								alert("로그인을 취소하셨습니다.");
+								$("#usrId").focus();
+							}
+						}
+					},
+					error : function(err) {
+						alert("errCode : " + err.message);
+					}
+				});
+
+			});
+			// 로그 아웃 처리.
+			$("#logoutBtn").on("click", function(e) {
+				e.preventDefault();
+				location.href = "/login/logout";
+			});
+
+			// 회원정보 수정 버튼 이벤트 처리.
+			$("#editBtn").on("click", function(e) {
+				e.preventDefault();
+				var usrNo = "<%=session.usrNo%>";
+				location.href = "/signup/edit/"+usrNo;
+			});
+
+		});
+		// 쿠기 관련 함수
+		function setCookie(cookieName, value, exdays){
+			var exdate = new Date();
+			exdate.setDate(exdate.getDate() + exdays);
+			var cookieValue = escape(value) + ((exdays==null) ? "" : "; expires=" + exdate.toGMTString());
+			document.cookie = cookieName + "=" + cookieValue;
+		}
+
+		function deleteCookie(cookieName){
+			var expireDate = new Date();
+			expireDate.setDate(expireDate.getDate() - 1);
+			document.cookie = cookieName + "= " + "; expires=" + expireDate.toGMTString();
+		}
+
+		function getCookie(cookieName) {
+			cookieName = cookieName + '=';
+			var cookieData = document.cookie;
+			var start = cookieData.indexOf(cookieName);
+			var cookieValue = '';
+			if(start != -1){
+				start += cookieName.length;
+				var end = cookieData.indexOf(';', start);
+				if(end == -1)end = cookieData.length;
+				cookieValue = cookieData.substring(start, end);
+			}
+			return unescape(cookieValue);
+		}
+		// 모바일 기기 체크
+		function checkMobile() {
+			var browerType = "pc";
+			var mobileKeyWords = ["iPhone", "iPod", "BlackBerry", "Android", "Windows CE", "LG", "MOT", "SAMSUNG", "SonyEricsson"];
+			for(var word in mobileKeyWords) {
+				if(navigator.userAgent.match(mobileKeyWords[word]) != null) {
+					browerType = "mobile";
+				}
+			}
+			// PC 경우,
+			if(browerType == "pc") {
+				//popup_window_common('/assist/howto.html', '모바일업로드안내페이지', '50', '0', '1024', '800', 'no', 'no', 'no', 'no', 'no', 'no');
+				//window.open('/assist/howto.html','_black','width=400,height=800');
+				$.magnificPopup.open({
+					items: {
+						src: '/assist/howto.html',
+						type: 'ajax',
+					},
+					closeOnContentClick : false,
+					closeOnBgClick :true,
+					showCloseBtn : true
+				});
+			} else {
+				location.href = 'http://www.assistpro.co.kr/mobile';
+			}
+		}
+	</script>
+	</body>
+</html>
+

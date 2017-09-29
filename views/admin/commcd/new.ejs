@@ -1,0 +1,91 @@
+<% layout('../../admin/layout') -%>
+<script type="text/javascript" src="/js/jquery-1.11.3.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        // Submit 버튼 처리.
+        $("#submitBtn").on("click", function() {
+
+            // 공통코드 체크.
+            if($("#commCd").val()==null || $("#commCd").val()=="") {
+                alert("공통코드를 입력하여 주세요.");
+                $("#commCd").focus();
+                return;
+            }
+            // 공통코드명을 체크.
+            if($("#commNm").val()==null || $("#commNm").val()=="") {
+                alert("공통코드명을 입력하여 주세요.");
+                $("#commNm").focus();
+                return;
+            }
+
+            var dataVals = {
+                commCd : $.trim($("#commCd").val()),
+                pCommCd : $.trim($("#pCommCd").val()),
+                commNm : $.trim($("#commNm").val()),
+                desc : $.trim($("#desc").val())
+            };
+            // 전송 처리.
+            $.ajax({
+                url: "/admin/commoncd/insert",
+                type: "post",
+                dataType: "json",
+                data: dataVals,
+                success: function (data) {
+                    console.log(">>> data = " + data.result);
+                    if(data.result=="OK") {
+                        alert("저장처리되었습니다.");
+                        location.href = "/admin/commoncd";
+                    }
+                },
+                error: function (err) {
+                    alert("errCode : " + err);
+                }
+            });
+        });
+
+        $("#cancelBtn").on("click", function() {
+            location.href = "/admin/commoncd";
+        });
+    });
+</script>
+<div class="container-fluid">
+
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="page-header">공통코드 관리 화면</h1>
+        </div>
+    </div>
+    <div>
+    <p>각 입력란에 맞추어서 입력해주세요.</p>
+    <form name='frm' id="frm" class="form-horizontal">
+        <div class="form-group form-group-sm">
+            <label class="col-sm-2 control-label" for="commCd">공통코드 :</label>
+            <div class="col-sm-10">
+                <input type="text" id="commCd" name="commCd" class="form-control" maxlength="12" />
+            </div>
+        </div>
+        <div class="form-group form-group-sm">
+            <label class="col-sm-2 control-label" for="pCommCd">상위 공통코드명 :</label>
+            <div class="col-sm-10">
+                <input type="text" id="pCommCd" name="pCommCd" class="form-control" maxlength="12" />
+            </div>
+        </div>
+        <div class="form-group form-group-sm">
+            <label class="col-sm-2 control-label" for="commNm">공통코드명 :</label>
+            <div class="col-sm-10">
+                <input type="text" id="commNm" name="commNm" class="form-control" maxlength="20" />
+            </div>
+        </div>
+        <div class="form-group form-group-sm">
+            <label class="col-sm-2 control-label" for="desc">설명 :</label>
+            <div class="col-sm-10">
+                <input type="text" id="desc" name="desc" class="form-control" maxlength="50" />
+            </div>
+        </div>
+        <p align="center">
+            <input type="button" id="submitBtn" name="submitBtn" class="btn btn-default" value="확인" />&nbsp;
+            <input type="button" id="cancelBtn" name="cancelBtn" class="btn btn-default" value="취소" />
+        </p>
+    </form>
+    </div>
+</div>

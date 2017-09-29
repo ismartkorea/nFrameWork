@@ -1,0 +1,122 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>서비스/솔루션안내</title>
+	<meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
+	<meta name="viewport" content="width=device-width" />
+
+	<!-- Animate.css -->
+	<link rel="stylesheet" href="/css/animate.css">
+	<!-- Icomoon Icon Fonts-->
+	<link rel="stylesheet" href="/css/icomoon.css">
+	<!-- Bootstrap  -->
+	<link rel="stylesheet" href="/css/bootstrap.css">
+
+	<!-- Magnific Popup -->
+	<link rel="stylesheet" href="/css/magnific-popup.css">
+
+	<!-- Theme style  -->
+	<link rel="stylesheet" href="/css/style.css">
+
+	<!-- Modernizr JS -->
+	<script src="/js/modernizr-2.6.2.min.js"></script>
+	<!-- FOR IE9 below -->
+	<!--[if lt IE 9]>
+	<script src="/js/respond.min.js"></script>
+	<![endif]-->
+
+
+</head>
+
+<body>
+
+<% include include/nav.ejs %>
+
+
+
+<div id="fh5co-services-section">
+	<div class="container">
+		<!-- 타이틀 시작 -->
+		<div class="fh5co-heading animate-box">
+			<h2 class="ubar">서비스/솔루션</h2>
+		</div>
+
+		<!-- 타이틀 end -->
+		<div class="service-list">
+
+			<div class="col-md-12 col-sm-12 col-xs-12 animate-box" data-animate-effect="fadeIn">
+				<div class="feature-center">
+					<div class="banner">
+						<img src="../images/banner.jpg">
+						<span class="banner-btn-1"><a href="<%=result.btn1LinkUrl%>" class="btn btn-banner open-popup-link"><%=result.btn1LinkNm%></a><a href="<%=result.btn3LinkUrl%>" class="btn btn-banner" target="_blank"><%=result.btn3LinkNm%></a></span>
+						<span class="banner-btn-2"><a href="<%=result.btn4LinkUrl%>" class="btn btn-banner2 open-popup-link"><%=result.btn4LinkNm%></a></span>
+					</div>
+				</div>
+			</div>
+<%
+	if(rList.length > 0) {
+		rList.forEach(function(item, index) {
+
+%>
+			<div class="col-md-4 col-sm-4 col-xs-12 animate-box" data-animate-effect="fadeIn">
+				<div class="feature-center">
+					<span class="icon">
+						<img src="/images/product/<%=item.pImage%>">
+					</span>
+					<h3><%=item.pNm%></h3>
+					<p><%=item.pSmmry !=null ? item.pSmmry : '상품준비중입니다.'%></p>
+					<p><a href="/products/detail/<%=item.pCode%>" class="btn btn-grey open-popup-link"><i class="fa fa-search mr5"></i>상세보기</a><a href="/purchase/<%=item.pCode%>/<%=item.pUniqCode%>" class="btn"><i class="fa fa-shopping-cart mr5"></i>구매하기</a></p>
+				</div>
+			</div>
+<%
+		});
+	} else {
+%>
+			<div class="col-md-4 col-sm-4 col-xs-12 animate-box" data-animate-effect="fadeIn">
+				<div class="feature-center">
+					<span class="icon">
+						No Images
+					</span>
+					<h3>No Products</h3>
+					<p>상품준비중입니다.</p>
+				</div>
+			</div>
+<%
+	}
+%>
+		</div>
+	</div><!--container-->
+
+
+</div><!--fh5co-services-section-->
+
+
+
+
+<% include include/footer.ejs %>
+
+
+<div class="gototop js-top">
+	<a href="#" class="js-gotop"><i class="icon-arrow-up"></i></a>
+</div>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+<!-- jQuery Easing -->
+<script src="/js/jquery.easing.1.3.js"></script>
+<!-- Bootstrap -->
+<script src="/js/bootstrap.min.js"></script>
+<!-- Waypoints -->
+<script src="/js/jquery.waypoints.min.js"></script>
+<!-- countTo -->
+<script src="/js/jquery.countTo.js"></script>
+<!-- Magnific Popup -->
+<script src="/js/jquery.magnific-popup.min.js"></script>
+<script src="/js/magnific-popup-options.js"></script>
+<!-- Main -->
+<script src="/js/main.js"></script>
+
+</body>
+</html>

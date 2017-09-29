@@ -1,0 +1,181 @@
+<% layout('../../../admin/layout') -%>
+    <script type="text/javascript" src="/js/jquery.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            var optionHTML = "<option value=''>선택하세요.</option>";
+
+<%
+    console.log(">>>> rList2 = " + rList2.length);
+    if(rList2.length > 0) {
+        rList2.forEach(function(item) {
+%>
+            optionHTML += "<option value='<%=item.cateNo3%>'><%=item.cateName3%></option>";
+
+<%
+            }
+        );
+     }
+%>
+            // 동적 콤보박스 추가.
+            $("#cateSelBox").html(optionHTML);
+
+            // console.
+            $("#prevBtn").on('click', function(e) {
+                e.preventDefault();
+               location.href = '/';
+            });
+            // 삭제 버튼 이벤트 처리.
+            $("#delBtn").on("click", function(e) {
+                e.preventDefault();
+                var chkVals = [];
+                var chkLen = $("input:checkbox[name='chkBox']:checked").length;
+                if(chkLen>0) {
+                    $("input[name=chkBox]:checkbox").each(function (idx, item) {
+                        if ($(this).is(":checked")) {
+                            var dataVal = eval($(item).val());
+                            if(dataVal == null) {
+                                alert("삭제할 중분류가 없습니다.");
+                                return false;
+                            } else {
+                                chkVals.push($(item).val());
+                            }
+                        }
+                    });
+                } else {
+                    alert("삭제할 게시물을 선택하여 주세요!");
+                    return;
+                }
+                //$("#chkParams").val(chkVals);
+                $.ajax({
+                    type : "post",
+                    url : "/admin/code/category2/delete",
+                    dataType : "json",
+                    data : {"dataList" : chkVals},
+                    success : function(data) {
+                        if(data.result=='OK') {
+                            location.href = "/admin/code/category2";
+                        }
+                    },
+                    error : function(request, status, error) {
+                        console.log("Code :  " + request.status + "\n" +
+                                        "message : " + request.responseText + "\n" +
+                                        "error : " + error);
+                    }
+                });
+            });
+            // 전체 선택 버튼 이벤트 처리.
+            $("#allChkbox").on('click', function () {
+                if ($(this).is(":checked")) {
+                    $("input[name=chkBox]:checkbox").each(function () {
+                        $(this).prop("checked", true)
+                    });
+                } else {
+                    $("input[name=chkBox]:checkbox").each(function () {
+                        $(this).prop("checked", false)
+                    });
+                }
+            });
+            // 중분류 추가 엔터 버튼 이벤트 처리.
+            $("#cateName").on("keydown", function(e) {
+                var code = (e.keyCode ? e.keyCode : e.which);
+                if(code == 13) {
+                    e.preventDefault();
+                    var selectVal = $.trim($("#cateSelBox option:selected").val());
+                    var cateName = $.trim($("#cateName").val());
+                    if (selectVal == "") {
+                        alert("대분류을 선택하세요");
+                        $("#cateSelBox").focus();
+                        return false;
+                    }
+                    if (cateName == "") {
+                        alert("중분류 명을 입력하세요");
+                        $("#cateName").focus();
+                        return false;
+                    }
+
+                    $("#frm").attr("method", "post");
+                    $("#frm").attr("action", "/admin/code/category2/insert");
+                    $("#frm").submit();
+                }
+            });
+
+            // 추가 버튼 이벤트 처리.
+            $("#saveBtn").on("click", function(e) {
+                e.preventDefault();
+                var selectVal = $.trim($("#cateSelBox option:selected").val());
+                var cateName = $.trim($("#cateName").val());
+                if(selectVal == "") {
+                    alert("대분류을 선택하세요");
+                    $("#cateSelBox").focus();
+                    return false;
+                }
+                if(cateName == "") {
+                    alert("중분류 명을 입력하세요");
+                    $("#cateName").focus();
+                    return false;
+                }
+
+                $("#frm").attr("method","post");
+                $("#frm").attr("action","/admin/code/category2/insert");
+                $("#frm").submit();
+            })
+        });
+    </script>
+<div class="container-fluid">
+
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="page-header">중분류 관리 화면</h1>
+        </div>
+    </div>
+    <form id="frm" name="frm">
+        <table width="100%" border="0" class="table table-hover table-striped">
+            <tr>
+                <th><input type="checkbox" id="allChkbox" name="allChkbox" value=""/></th>
+                <th>번호</th>
+                <th>대분류명</th>
+                <th>중분류명</th>
+            </tr>
+<%
+    if(rList.length > 0) {
+        rList.forEach(function(item, index) {
+%>
+            <tr>
+                <td><input type="checkbox" id="chkbox<%=index%>" name="chkBox" value="<%=item.cateNo%>"/></td>
+                <td><%=item.num%></td>
+                <td><b><%=item.cateName1==null?'':item.cateName1%></b></td>
+                <td><b><%=item.cateName2==null?'':item.cateName2%></b></td>
+            </tr>
+<%
+        });
+    } else {
+%>
+            <tr>
+                <td colspan="4" align="center">
+                    No Data
+                </td>
+            </tr>
+<%
+    }
+%>
+        </table>
+        <hr/>
+        <p align="right">
+            <input type="button" id="delBtn" name="delBtn" class="btn btn-default" value="삭제"/>
+        </p>
+        <table width="100%" border="0" class="table table-hover table-striped">
+            <tr>
+                <td>대분류명 : </td>
+                <td>
+                    <select id="cateSelBox" name="cateSelBox"></select>
+                </td>
+                <td>중분류 : </td>
+                <td>
+                    <input type="text" id="cateName" name="cateName" value="" size="40" maxlength="40"/>&nbsp;
+                    <input type="button" id="saveBtn" name="saveBtn" class="btn btn-default" value="추가"/>
+                </td>
+            </tr>
+        </table>
+
+    </form>
+</div>

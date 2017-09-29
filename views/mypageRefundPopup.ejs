@@ -1,0 +1,154 @@
+<%
+// 콤마 붙이기
+function fnComma(num) {
+    var reg = /(^[+-]?\d+)(\d{3})/;
+    num += '';
+    while(reg.test(num)) {
+        num = num.replace(reg, '$1' + ',' + '$2');
+    }
+    return num;
+}
+// 콤마 제거
+function fnUnComma(num) {
+    return (num.replace(/\,/g,""));
+}
+%>
+<!doctype html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
+    <meta name="viewport" content="width=device-width" />
+    <title>마이 서비스 환불 화면.</title>
+    <link rel="stylesheet" href="/css/join.css">
+    // jquery
+    <script type="text/javascript" src="/js/jquery.min.js"></script>
+    <!-- Magnific Popup -->
+    <script type="text/javascript" src="/js/jquery.magnific-popup.min.js"></script>
+    <script type="text/javascript" src="/js/magnific-popup-options.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            // 닫기 버튼 이벤트 처리.
+           $("#closeBtn").on("click",function(e) {
+               e.preventDefault();
+               if(window.parent == window.top) {
+                   window.parent.$.magnificPopup.close();
+               }
+           });
+           // 신청 처리.
+           $("#refundYes").on("click", function(e) {
+                e.preventDefault();
+                // 환불신청 이유 체크.
+               if($.trim($("#memo").val()) == "") {
+                   alert("환불신청 이유를 입력하여 주세요.");
+                   $("#memo").focus();
+                   return false;
+               }
+
+               // 견적처리
+               var dataVals = {
+                   'orderNo' : $.trim($("#orderNo").val()),
+                   'memo' : $.trim($("#memo").val())
+               };
+               // 데이타 전송 처리.
+               $.ajax({
+                   url : "/mypage/service/refund/request",
+                   type : "post",
+                   dataType : "json",
+                   data : dataVals,
+                   success : function(data) {
+                       //console.log(">>> data = " + data.count);
+                       var result = data.result;
+                       if(result=="OK") {
+                           alert("환불 신청되었습니다.");
+                           if(window.parent == window.top) {
+                               window.parent.$.magnificPopup.close();
+                           }
+                       } else if(result=="refunded") {
+                           alert("환불 신청접수가 되어 있습니다.\n자세한 문의사항은 고객센터에 연락주세요.");
+                       } else if(result=="wait") {
+                           alert("승인대기건이 있습니다..\n승인대기건이 있는 경우, 환불신청을 하실 수 없습니다.\n자세한 문의사항은 고객센터에 연락주세요.");
+                       } else if(result=="w&r") {
+                           alert("이미 처리되는 건수 가 있습니다.\n자세한 문의사항은 고객센터에 연락주세요.");
+                       } else {
+                           alert("환불 신청 오류가 생겼습니다.\n자세한 문의사항은 고객센터에 연락주세요.");
+                       }
+                   },
+                   error : function(err) {
+                       alert("errCode : " + err.message);
+                   }
+               });
+           });
+        });
+    </script>
+</head>
+<!--팝업창크기는 css/magnific-popup.css에 mfp-iframe-scaler2 클래스에 지정되어있음-->
+<body>
+
+<div id="content">
+    <form id="frm" name="frm">
+        <input type="hidden" id="orderNo" name="orderNo" value="<%=result.orderNo%>"/>
+        <div id="join">
+            <h1 class="tit-join">서비스 환불 요청</h1>
+
+            <div style="margin-bottom: 10px;">
+                * 서비스 환불 요청 화면입니다.<br/>
+                * 환불요청 하신 후, 24시간내에 처리해드립니다.<br/>
+                * 자세한 환불에 대한 문의 사항은 고객센터로 연락주세요.
+            </div>
+            <!-- 일반회원 기본 노출 -->
+
+            <!--////---서비스이용내역 시작///////-->
+            <table border="0" cellspacing="0" width="100%" class="table_style11">
+                <tr>
+                    <th>주문번호</th>
+                    <th>결제 총가격</th>
+                    <th>결제된 날짜</th>
+                </tr>
+                <tr>
+                    <td><%=result.orderNo%></td>
+                    <td><%=fnComma(result.totalPayPrice)%></td>
+                    <td><%=result.payDate%></td>
+                </tr>
+            </table>
+            <!--////---서비스이용내역 시작///////-->
+            <table border="0" cellspacing="0" width="100%" class="table_style11">
+                <tr>
+                    <th>서비스 명</th>
+                    <th>서비스 구분</th>
+                    <th>서비스 가격</th>
+                </tr>
+<%
+        if(rList.length > 0) {
+            rList.forEach(function(item, idx) {
+%>
+                <tr>
+                    <td><%=item.pName%></td>
+                    <td><%-item.pDivNm%></td>
+                    <td><%=fnComma(item.pPrice)%> 원</td>
+                </tr>
+<%
+            });
+        }
+%>
+                <tr>
+                    <th colspan="3">환불 신쳥 이유</th>
+                </tr>
+                <tr>
+                    <td colspan="3"><textarea id="memo" name="memo" rows="10" style="width: 100%"></textarea></td>
+                </tr>
+            </table>
+            <!--////---서비스이용내역 끝///////-->
+            <div class="btn-area">
+                <h3><a href="#" id="refundYes" class="btn">서비스 환불 요청</a></h3>
+            </div>
+
+            <div class="btn-area">
+                <a id="closeBtn" href="#" class="mfp-close">닫기</a>
+            </div>
+        </div>
+    </form>
+    </div><!-- #join -->
+</body>
+</html>

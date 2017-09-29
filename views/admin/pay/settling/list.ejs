@@ -1,0 +1,274 @@
+<% layout('../../../admin/layout') -%>
+<%
+// 콤마 붙이기
+function fnComma(num) {
+    var reg = /(^[+-]?\d+)(\d{3})/;
+    num += '';
+    while(reg.test(num)) {
+        num = num.replace(reg, '$1' + ',' + '$2');
+    }
+    return num;
+}
+// 콤마 제거
+function fnUnComma(num) {
+    return (num.replace(/\,/g,""));
+}
+%>
+<script type="text/javascript" src="/js/jquery-1.11.3.min.js"></script>
+<script type="text/javascript" src="/js/common.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        // 초기 설정.
+        // datepicker 한글셋팅.
+        $.datepicker.regional['ko'] = {
+            closeText: '닫기',
+            prevText: '이전',
+            nextText: '다음',
+            currentText: '오늘',
+            monthNames: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'],
+            monthNamesShort: ['1','2','3','4','5','6','7','8','9','10','11','12'],
+            dayNames: ['일','월','화','수','목','금','토'],
+            dayNamesShort: ['일','월','화','수','목','금','토'],
+            dayNamesMin: ['일','월','화','수','목','금','토'],
+            weekHeader: 'Wk',
+            dateFormat: 'yy/mm/dd',
+            firstDay: 0,
+            isRTL: false,
+            showMonthAfterYear: true,
+            yearSuffix: ''};
+        $.datepicker.setDefaults($.datepicker.regional['ko']);
+        // 날짜 셋팅.
+        var now = new Date();
+        var date7 = new Date(Date.parse(now) - 1000 * 3600 * 24 * 365);
+        var year= now.getFullYear();
+        var mon = (now.getMonth()+1)>9 ? ''+(now.getMonth()+1) : '0'+(now.getMonth()+1);
+        var day = now.getDate()>9 ? ''+now.getDate() : '0'+now.getDate();
+        var year7 = date7.getFullYear();
+        var mon7 = (date7.getMonth()+1)>9 ? ''+(date7.getMonth()+1) : '0'+(date7.getMonth()+1);
+        var day7 = date7.getDate()>9 ? ''+ date7.getDate() : '0'+ date7.getDate();
+        var setPrevDate = year7 + '/' + mon7 + '/' + day7;
+        var setCurDate = year + '/' + mon + '/' + day;
+        //
+        var setPrevFromDate = "<%=srchDateFrom%>";
+        var setPrevtoDate = "<%=srchDateTo%>";
+        if(setPrevFromDate=="" && setPrevtoDate=="") {
+            $("#fromDateField").val(setPrevDate);
+            $("#toDateField").val(setCurDate);
+        } else {
+            $("#fromDateField").val(setPrevFromDate);
+            $("#toDateField").val(setPrevtoDate);
+        }
+
+        // Datepicker 셋팅.
+        $("#fromDateField").datepicker({ maxDate: 0});
+        $("#toDateField").datepicker({ maxDate: 0});
+
+
+        // 이전 버튼 이벤트 처리.
+        $("#prevBtn").on('click', function () {
+            location.href = '/admin';
+        });
+        // 검색 엔터키 이벤트 처리.
+        $("button#srchDateBtn").on("keypress", function(e) {
+            if(e.which == 13) {
+                $("#srchDateBtn").click();
+                return false;
+            }
+        });
+
+        // 날짜 검색 이벤트 처리.
+        $("button#srchDateBtn").on("click", function(e) {
+            e.preventDefault();
+
+            var fromDate = $("#fromDateField").val().replace("/","").replace("/","");
+            var toDate = $("#toDateField").val().replace("/","").replace("/","");
+            if(fromDate > toDate) {
+                alert("검색 시작일이 검색 끝나는 일보다 큽니다.");
+                $("#fromDateField").focus();
+                return false;
+            }
+
+            $("#fromDate").val(fromDate);
+            $("#toDate").val(toDate);
+            $("#searchForm").attr("method","post");
+            $("#searchForm").attr("action","/admin/pay/settling/list/search");
+            $("#searchForm").submit();
+        });
+
+    });
+
+</script>
+<div class="container-fluid">
+
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="page-header">결산 조회 화면</h1>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <h1 class="page-header">일일 결산 조회</h1>
+            </div>
+        </div>
+        <form id="searchForm" name="searchForm" method="post">
+            <input type="hidden" id="fromDate" name="fromDate" value=""/>
+            <input type="hidden" id="toDate" name="toDate" value=""/>
+            <div class="form-group text-right form-inline">
+                <div class="form-group">
+                    <i class="fa fa-calendar" aria-hidden="true"></i>
+                    <input type="text" id="fromDateField" name="fromDateField" value="" class="form-control" size="6"/> -
+                    <i class="fa fa-calendar" aria-hidden="true"></i>
+                    <input type="text" id="toDateField" name="toDateField" value="" class="form-control" size="6"/>
+                    <button class="btn btn-primary" type="button" id="srchDateBtn" name="srchDateBtn">
+                        <i class="fa fa-search"></i>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <table width="100%" border="0" class="table table-hover">
+        <tr>
+            <th>년도</th>
+            <th>월</th>
+            <th>1일</th>
+            <th>2일</th>
+            <th>3일</th>
+            <th>4일</th>
+            <th>5일</th>
+            <th>6일</th>
+            <th>7일</th>
+            <th>8일</th>
+            <th>9일</th>
+            <th>10일</th>
+            <th>11일</th>
+            <th>12일</th>
+            <th>13일</th>
+            <th>14일</th>
+            <th>15일</th>
+            <th>16일</th>
+            <th>17일</th>
+            <th>18일</th>
+            <th>19일</th>
+            <th>20일</th>
+            <th>21일</th>
+            <th>22일</th>
+            <th>23일</th>
+            <th>24일</th>
+            <th>25일</th>
+            <th>26일</th>
+            <th>27일</th>
+            <th>28일</th>
+            <th>29일</th>
+            <th>30일</th>
+            <th>31일</th>
+        </tr>
+<%
+    if(rList.length > 0) {
+        rList.forEach(function(item, index) {
+%>
+        <tr id="listTr">
+            <td><%=item.year%> 년</td>
+            <td><%=item.month%> 월</td>
+            <td><%=fnComma(item.dd1)%></td>
+            <td><%=fnComma(item.dd2)%></td>
+            <td><%=fnComma(item.dd3)%></td>
+            <td><%=fnComma(item.dd4)%></td>
+            <td><%=fnComma(item.dd5)%></td>
+            <td><%=fnComma(item.dd6)%></td>
+            <td><%=fnComma(item.dd7)%></td>
+            <td><%=fnComma(item.dd8)%></td>
+            <td><%=fnComma(item.dd9)%></td>
+            <td><%=fnComma(item.dd10)%></td>
+            <td><%=fnComma(item.dd11)%></td>
+            <td><%=fnComma(item.dd12)%></td>
+            <td><%=fnComma(item.dd13)%></td>
+            <td><%=fnComma(item.dd14)%></td>
+            <td><%=fnComma(item.dd15)%></td>
+            <td><%=fnComma(item.dd16)%></td>
+            <td><%=fnComma(item.dd17)%></td>
+            <td><%=fnComma(item.dd18)%></td>
+            <td><%=fnComma(item.dd19)%></td>
+            <td><%=fnComma(item.dd20)%></td>
+            <td><%=fnComma(item.dd21)%></td>
+            <td><%=fnComma(item.dd22)%></td>
+            <td><%=fnComma(item.dd23)%></td>
+            <td><%=fnComma(item.dd24)%></td>
+            <td><%=fnComma(item.dd25)%></td>
+            <td><%=fnComma(item.dd26)%></td>
+            <td><%=fnComma(item.dd27)%></td>
+            <td><%=fnComma(item.dd28)%></td>
+            <td><%=fnComma(item.dd29)%></td>
+            <td><%=fnComma(item.dd30)%></td>
+            <td><%=fnComma(item.dd31)%></td>
+        </tr>
+<%
+        });
+    } else {
+%>
+        <tr>
+            <td colspan="33" align="center">
+                No Data
+            </td>
+        </tr>
+<%
+    }
+%>
+    </table>
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="page-header">년월 결산 조회</h1>
+        </div>
+    </div>
+    <table width="100%" border="0" class="table table-hover">
+        <tr>
+            <th>년도</th>
+            <th>1월</th>
+            <th>2월</th>
+            <th>3월</th>
+            <th>4월</th>
+            <th>5월</th>
+            <th>6월</th>
+            <th>7월</th>
+            <th>8월</th>
+            <th>9월</th>
+            <th>10월</th>
+            <th>11월</th>
+            <th>12월</th>
+            <th>합산 금액</th>
+        </tr>
+<%
+    if(rList1.length > 0) {
+        rList1.forEach(function(item1, index) {
+%>
+        <tr id="listTr1">
+            <td><%=item1.year%> 년</td>
+            <td><%=fnComma(item1.mm1)%></td>
+            <td><%=fnComma(item1.mm2)%></td>
+            <td><%=fnComma(item1.mm3)%></td>
+            <td><%=fnComma(item1.mm4)%></td>
+            <td><%=fnComma(item1.mm5)%></td>
+            <td><%=fnComma(item1.mm6)%></td>
+            <td><%=fnComma(item1.mm7)%></td>
+            <td><%=fnComma(item1.mm8)%></td>
+            <td><%=fnComma(item1.mm9)%></td>
+            <td><%=fnComma(item1.mm10)%></td>
+            <td><%=fnComma(item1.mm11)%></td>
+            <td><%=fnComma(item1.mm12)%></td>
+            <td><%=fnComma(item1.totalSum)%></td>
+        </tr>
+<%
+        });
+    } else {
+%>
+        <tr>
+            <td colspan="14" align="center">
+                No Data
+            </td>
+        </tr>
+<%
+    }
+%>
+    </table>
+    <p align="right">
+        <input type="button" id="prevBtn" name="prevBtn" class="btn btn-default" value="메인 화면"/>
+    </p>
+</div>

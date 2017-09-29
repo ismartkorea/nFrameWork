@@ -1,0 +1,355 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>서비스구매</title>
+    <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
+    <meta name="viewport" content="width=device-width" />
+
+    <!-- Facebook and Twitter integration -->
+    <meta property="og:title" content=""/>
+    <meta property="og:image" content=""/>
+    <meta property="og:url" content=""/>
+    <meta property="og:site_name" content=""/>
+    <meta property="og:description" content=""/>
+    <meta name="twitter:title" content="" />
+    <meta name="twitter:image" content="" />
+    <meta name="twitter:url" content="" />
+    <meta name="twitter:card" content="" />
+
+    <!-- <link href='https://fonts.googleapis.com/css?family=Work+Sans:400,300,600,400italic,700' rel='stylesheet' type='text/css'> -->
+
+    <!-- Animate.css -->
+    <link rel="stylesheet" href="css/animate.css">
+    <!-- Icomoon Icon Fonts-->
+    <link rel="stylesheet" href="css/icomoon.css">
+    <!-- Bootstrap  -->
+    <link rel="stylesheet" href="css/bootstrap.css">
+
+    <!-- Magnific Popup -->
+    <link rel="stylesheet" href="css/magnific-popup.css">
+
+    <!-- Theme style  -->
+    <link rel="stylesheet" href="css/style.css">
+
+    <!-- Modernizr JS -->
+    <script src="js/modernizr-2.6.2.min.js"></script>
+    <!-- FOR IE9 below -->
+    <!--[if lt IE 9]>
+    <script src="js/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+<body>
+
+<?php include("include/nav.php"); ?>
+
+
+<!--마이페이지 타이틀 시작 -->
+<div class="col-md-12 col-pull-md-1 fh5co-heading animate-box">
+    <h2 class="ubar">서비스구매</h2>
+</div>
+<!--마이페이지 타이틀 end -->
+
+
+<!----- 구매하기 시작  ----->
+<div id="fh5co-about-section">
+    <div class="container pdrl5">
+
+        <!--1. 구매 서비스 선택 시작 -->
+        <div class="animate-box mb40">
+            <h3>서비스 선택</h3>
+
+            <table border="0" cellspacing="0" width="100%" class="table_style3">
+                <tr>
+                    <th>선택</th>
+                    <th>서비스명</th>
+                    <th>서비스금액/월</th>
+                    <th>서비스금액/년</th>
+                    <th class="brdno brrno">부가서비스</th>
+                </tr>
+
+                <tr>
+                    <td class="pdno"><input id="" type="checkbox" name="" checked="checked"><span></span></td>
+                    <td>어시스트프로</td>
+                    <td class="text-left"><input type="text" id="" name="" value="100,000" class="size7" readonly/><span class="small">원</span></td>
+                    <td class="text-left"><input type="text" id="" name="" value="1,200,000" class="size8h" readonly/><span class="small">원</span></td>
+                    <td><input type="text" id="" name="" value="3" class="size1" readonly/>개</td>
+                </tr>
+
+                <!--------접히는부분 시작---------->
+                <tr class="dispno2">
+                    <td colspan="5" class="bgg">
+                        <table border="0" width="100%" cellspacing="0" class="table_style_inner">
+                            <colgroup>
+                                <col width="50px">
+                                <col width="40%">
+                                <col>
+                                <col>
+                            </colgroup>
+                            <tr>
+                                <td class="backno bbdno pdb5 pdtno" colspan="4" ><h3 class="pdtno">1. 서비스 선택</h3></td>
+                            </tr>
+                            <tr>
+                                <td colspan="4" class="pdno pdt20">
+
+                                    <table border="0" width="100%" cellspacing="0" class="table_style5">
+                                        <colgroup>
+                                            <col>
+                                            <col>
+                                            <col>
+                                            <col>
+                                            <col>
+                                        </colgroup>
+                                        <thead>
+                                        <tr>
+                                            <th scope="col">구분</th>
+                                            <th scope="col">서비스명</th>
+                                            <th scope="col">서비스기간</th>
+                                            <th>잔여일</th>
+                                            <th scope="col" colspan="2">구매기간 선택</th>
+                                        </tr>
+                                        </thead>
+
+                                        <tbody>
+                                        <tr class="selected">
+                                            <th>기본서비스</th>
+                                            <td><input type="text" id="" name="" value="어시스트프로" class="size13 left" readonly/></td>
+                                            <td><input type="text" id="" name="" value="2017.05.12" class="size8 right" readonly/> - <input type="text" id="" name="" value="2018.04.15" class="size8 left" readonly/></td>
+                                            <td><input type="text" id="" name="" value="27" class="size3 right" readonly/>일</td>
+                                            <td colspan="2" class="left"><input type="radio" name="" id="" value=""><label for=""><span><span></span></span>선택안함</label>
+                                                <input type="radio" name="" id="" value=""><label for=""><span><span></span></span>1년</label>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>부가서비스</th>
+                                            <td colspan="4" class="pdtbno">
+
+                                                <table border="0" width="100%" cellspacing="0" class="table_style0">
+                                                    <tr>
+                                                        <td><input type="text" id="" name="" value="자료실" class="size13 left" readonly/></td>
+                                                        <td><input type="text" id="" name="" value="2017.06.24" class="size8 right" readonly/> - <input type="text" id="" name="" value="2017.07.24" class="size8 left" readonly/></td>
+                                                        <td><input type="text" id="" name="" value="13" class="size3 right" readonly/>일</td>
+                                                        <td colspan="2" class="left">
+                                                            <input type="radio" name="" id="" value=""><label for=""><span><span></span></span>잔여일</label>
+                                                            <input type="radio" name="" id="" value=""><label for=""><span><span></span></span>1개월</label>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+
+
+                                                <table border="0" width="100%" cellspacing="0" class="table_style0">
+                                                    <tr>
+                                                        <td><input type="text" id="" name="" value="로그분석/진단지원" class="size13 left" readonly/></td>
+                                                        <td><input type="text" id="" name="" value="" class="size8 right" readonly/> - <input type="text" id="" name="" value="" class="size8 left" readonly/>
+                                                        </td>
+                                                        <td><input type="text" id="" name="" value="0" class="size3 right" readonly/>일</td>
+                                                        <td colspan="2" class="left">
+                                                            <input type="radio" name="" id="" value=""><label for=""><span><span></span></span>잔여일</label>
+                                                            <input type="radio" name="" id="" value=""><label for=""><span><span></span></span>1개월</label>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+
+
+                                                <table border="0" width="100%" cellspacing="0" class="table_style0">
+                                                    <tr>
+                                                        <td><input type="text" id="" name="" value="원격지원" class="size13 left" readonly/></td>
+                                                        <td><input type="text" id="" name="" value="2017.05.12" class="size8 right" readonly/> - <input type="text" id="" name="" value="2018.04.15" class="size8 left" readonly/>
+                                                        </td>
+                                                        <td><input type="text" id="" name="" value="27" class="size3 right" readonly/>일</td>
+                                                        <td colspan="2" class="left">
+                                                            <input type="radio" name="" id="" value=""><label for=""><span><span></span></span>잔여일</label>
+                                                            <input type="radio" name="" id="" value=""><label for=""><span><span></span></span>1개월</label>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+
+                                            </td>
+                                        </tr>
+
+                                        </tbody>
+
+                                    </table>
+                                </td>
+                            </tr>
+
+
+
+                            <tr>
+                                <td class="backno bbdno pdb5" colspan="4"><h3>2. 총 서비스금액 확인</h3></td>
+                            </tr>
+                            <tr>
+                                <td class="pdlno backno bbdno pdtno" colspan="4">
+                                    <div class="service-detail">
+                                        <div class="wid93">
+                                            <div class="wid33">
+                                                <div class="wid33in">
+                                                    <h3>서비스금액</h3>
+                                                    <p>총금액:<input type="text" id="" name="" value="2,100,000" class="size6h" readonly/><span class="small">원</span></p>
+                                                    <p class="sub">부가서비스:<input type="text" id="" name="" value="2,100,000" class="size6h" readonly/><span class="small">원</span></p>
+                                                </div>
+                                            </div>
+                                            <div class="dispno orna"><img src="../images/minus.png" width="24px"></div>
+                                            <div class="wid33">
+                                                <div class="wid33in">
+                                                    <h3>할인금액</h3>
+                                                    <p>총 할인금액:<input type="text" id="" name="" value="8,480" class="size6h" readonly/><span class="small">원</span></p>
+                                                    <p class="sub">자료실<input type="text" id="" name="" value="100" class="size2"readonly/>%할인:<input type="text" id="" name="" value="3,870" class="size6h"readonly/>원</p>
+                                                    <p class="sub">원격지원<input type="text" id="" name="" value="10" class="size2"readonly/>%할인:<input type="text" id="" name="" value="3,870,000" class="size6h"readonly/>원</p>
+                                                </div>
+                                            </div>
+                                            <div class="dispno orna2"><img src="../images/equal.png" width="24px"></div>
+                                            <div class="wid33">
+                                                <div class="wid33in">
+                                                    <h3>결제예정금액</h3>
+                                                    <p><span class="pricetext"><input type="text" id="" name="" value="2,805,000" class="size13hh" readonly/></span>원</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <!--<tr>
+                                <td class="left backno bbdno pdt20" colspan="3" >3. 총 서비스금액 확인<br>
+                                어시스트프로(1,200,000원)+부가서비스 합(2,100,000원)-15%할인(495,000원)=총금액: <span class="fontnum pricetext pink">2,805,000</span> 원
+                               </td>
+                            </tr>-->
+
+                            <tr>
+                                <td class="left backno bbdno pdno pdt10" colspan="5"><a href="" class="btn btn-warning btnwide100 pdtb15">선택완료</a></td>
+                            </tr>
+                        </table><!--table_style_inner 끝-->
+                    </td>
+                </tr>
+                <!--------접히는부분 끝---------->
+
+
+
+                <tr>
+                    <td class="pdno"><input id="" type="checkbox" name="" checked="checked"><span></span></td>
+                    <td>부품검색앱</td>
+                    <td class="text-left"><input type="text" id="" name="" value="80,000" class="size7" readonly/><span class="small">원</span></td>
+                    <td><input type="text" id="" name="" value="1,340,000" class="size8h" readonly/><span class="small">원</span></td>
+                    <td>없음</td>
+                </tr>
+
+
+                </tr>
+            </table><!--table_style3 끝-->
+
+
+        </div><!--col-md-12  1. 구매서비스선택 끝 -->
+
+
+        <!--2. 결제예정금액 시작 -->
+        <div class="col-md-12 animate-box mb20">
+            <h3>결제예정금액 확인</h3>
+            <table border="0" cellspacing="0" width="100%" class="table_style3">
+                <colgroup>
+                    <col>
+                    <col>
+                    <col width="80px">
+                </colgroup>
+                <tr>
+                    <th>서비스명</th>
+                    <th>결제예정금액</th>
+                    <th>삭제</th>
+                </tr>
+
+                <tr>
+                    <td>어시스트프로</td>
+                    <td><input type="text" id="" name="" value="1,380,800" class="size8h" readonly/><span class="small">원</span></td>
+                    <td><input type="image" src="../images/remove.png" class="remove"></td>
+                </tr>
+
+                <tr>
+                    <td>부품검색앱</td>
+                    <td><input type="text" id="" name="" value="80,000" class="size7" readonly/><span class="small">원</span></td>
+                    <td><input type="image" src="../images/remove.png" class="remove"></td>
+                </tr>
+
+                <tr>
+                    <td colspan="3" class="totalprice">총 결제예정금액: <span class="pricetext"><input type="text" id="" name="" value="1,460,800" class="size13h"readonly/></span>원</td>
+                </tr>
+            </table>
+        </div><!--col-md-12  1. 결제예정금액 끝 -->
+
+        <!--3. 결제하기 시작 -->
+        <div class="col-md-12 animate-box mt20">
+            <h3>결제하기</h3>
+            <div class="col-md-7 animate-box">
+                <div class="paymentway">
+                    <h4 class="mtm9">* 결제수단</h4>
+                    <input type="radio" name="user-period" id="3m" value="3m"><label for="3m" class="payment"><span><span></span></span> 무통장입금</label>
+                    <input type="radio" name="payMethod" id="payMethod5" value="bank"><label for="payMethod5" class="payment"><span><span></span></span> NH에스크로
+                    <!--농협 에스크로 이체 인증마크 적용 시작-->
+
+                    <!--<script>
+                        function onPopCertMar(key){
+                            window.open('','self','height=700, width=650, status=yes, toolbar=no, menubar=no, location=no');
+                            document.CERTMARK_FORM.certMarkURLKey.value = key;
+                            document.CERTMARK_FORM.action='https://escrow.nonghyup.com/?certMarkURLKey=' + key;
+                            document.CERTMARK_FORM.target='self';
+                            document.CERTMARK_FORM.submit();
+                        }
+                    </script>
+
+                    <FORM name='CERTMARK_FORM' METHOD='POST'>
+                        <input type="hidden" name="certMarkURLKey">
+                    </FORM>-->
+                    <a href="javascript:onPopCertMar('49334eedfb793cc4d0199e24bee153d9')"><img src='https://escrow.nonghyup.com/images/IC/es/img_nh_mark01.gif' alt='에스크로이체로 결제하기' border='0' width='200px' style="vertical-align:bottom;" class="dispno" /></a>
+
+                    <!--농협 에스크로 이체 인증마크 적용 종료-->
+                </label>
+                </div><!--paymentway-->
+            </div><!--col-md-12-->
+
+            <div class="col-md-5 animate-box">
+                <div class="paymentway">
+                    <h4>* 현금영수증발행 여부</h4>
+                    <input type="radio" name="bill" id="bill1" value="yes"><label for="bill1" class="payment"><span><span></span></span> 신청</label>
+                    <input type="radio" name="bill" id="bill2" value="no"><label for="bill2" class="payment"><span><span></span></span> 미신청</label>                  </div><!--paymentway-->
+            </div><!--col-md-3-->
+        </div><!--col-md-12 -->
+        <!--3. 결제하기 끝 -->
+
+
+        <div class="col-md-12 animate-box text-center mt30">
+            <a href="" class="btn btn-pay2">결제하기</a>
+        </div>
+
+
+    </div><!--container -->
+</div><!----- fh5co-about-section  ----->
+
+
+
+
+<?php include("include/footer.php"); ?>
+
+
+
+<div class="gototop js-top">
+    <a href="#" class="js-gotop"><i class="icon-arrow-up"></i></a>
+</div>
+
+<!-- jQuery -->
+<script src="js/jquery.min.js"></script>
+<!-- jQuery Easing -->
+<script src="js/jquery.easing.1.3.js"></script>
+<!-- Bootstrap -->
+<script src="js/bootstrap.min.js"></script>
+<!-- Waypoints -->
+<script src="js/jquery.waypoints.min.js"></script>
+<!-- countTo -->
+<script src="js/jquery.countTo.js"></script>
+<!-- Magnific Popup -->
+<script src="js/jquery.magnific-popup.min.js"></script>
+<script src="js/magnific-popup-options.js"></script>
+<!-- Main -->
+<script src="js/main.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,84 @@
+<% layout('../../admin/layout') -%>
+    <link rel='stylesheet prefetch' href='/css/bootstrap.min.css'>
+    <script type="text/javascript" src="/js/jquery-1.11.3.min.js"></script>
+    <script type="text/javascript" src="/ckeditor/ckeditor.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            //
+            CKEDITOR.replace("editBox");
+
+            $("#prevBtn").on('click', function() {
+                location.href = "/admin/announce";
+            });
+            $("#submitBtn").on('click', function() {
+                var content = CKEDITOR.instances.editBox.getData();
+                $("#content").val(content);
+                $("#frm").attr("action", "/admin/announce/edit/do");
+                $("#frm").submit();
+            });
+        });
+    </script>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="page-header">공지사항 관리 화면</h1>
+        </div>
+    </div>
+    <form name="frm" id="frm" method="post" class="form-horizontal">
+        <input type="hidden" id="no" name="no" value="<%=board.no%>"/>
+        <input type="hidden" id="content" name="content" value=""/>
+        <table class="table table-bordered">
+            <tr>
+                <td style="width:80px;">
+                    <label for="title">제목</label>
+                </td>
+                <td colspan="3">
+                    <input type="text" name="title" id="title" class="form-control" maxlength="60" value="<%= board.title %>"/>
+                </td>
+                <td style="width:80px;">
+                    <label for="no">글 번호</label>
+                </td>
+                <td>
+                    <%= board.no %>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="">작성자</label>
+                </td>
+                <td>
+                    <input type="text" name="writer" id="writer" class="form-control" maxlength="20" value="<%=board.writer%>"/>
+                </td>
+                <td style="width:80px;">
+                    <label for="">작성날짜</label>
+                </td>
+                <td><%=board.date%></td>
+                <td style="width:80px;">
+                    <label for="">조회수</label>
+                </td>
+                <td><%=board.count%></td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="">글 내용</label>
+                </td>
+                <td colspan="5">
+                    <textarea id="editBox" name="editBox" class="form-control" maxlength="9999" cols="80" rows="10"><%=board.content%></textarea>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="writer">카테고리</label>
+                </td>
+                <td>
+                    <input type="text" name="ctg" id="ctg" class="form-control" value="<%=board.category%>" maxlength="12" size="15"/>
+                </td>
+            </tr>
+        </table>
+        <p class="form-group">
+        <div class="col-sm-offset-2 col-sm-10 text-right">
+            <input type="button" id="prevBtn" name="prevBtn" class="btn btn-default" value="리스트 화면"/>&nbsp;
+            <input type="button" id="submitBtn" name="submitBtn" class="btn btn-default" value="확인"/>
+        </div>
+    </form>
+</div>

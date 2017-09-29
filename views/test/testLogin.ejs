@@ -1,0 +1,76 @@
+<!DOCTYPE>
+<html lang="ko">
+<head>
+    <title>로그인 테스트</title>
+    <!-- Bootstrap core CSS     -->
+    <link href="../css/bootstrap.css" rel="stylesheet" />
+    <!--   Core JS Files   -->
+    <script src="../js/jquery-1.11.3.min.js" type="text/javascript"></script>
+    <script src="../js/bootstrap.min.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            // 초기 설정.
+            $("#submitBtn").on('click', function(e) {
+                e.preventDefault();
+
+                var dataValues = {loginId : $.trim($("#loginId").val()), loginPwd : $.trim($("#loginPwd").val())};
+                // 데이타 전송 처리.
+                $.ajax({
+                    url : "/test/login/process",
+                    type : "post",
+                    dataType : "json",
+                    data : dataValues,
+                    success : function(data) {
+                        //console.log(">>> data = " + data.result);
+                        if(data.result == "ERR0") {
+                            alert("아이디가 틀립니다. 다시 확인하세요");
+                            $("#loginId").focus();
+                        }
+                        if(data.result == "ERR1") {
+                            alert("비밀번호가 틀립니다. 다시 확인하세요");
+                            $("#loginPwd").focus();
+                        }
+                        if(data.result == "LOGINED") {
+                            alert("이미 로그인 상태입니다.");
+                            $("#loginPwd").focus();
+                        }
+                        if(data.result == "DUPLICATION") {
+                            alert("다른 기기에서 로그인 상태입니다.");
+                            $("#loginPwd").focus();
+                        }
+                        if(data.result == "OK") {
+                            //alert("환영합니다! " + data.session.usrId + " 님");
+                            location.href = '/test/index';
+                        }
+                    },
+                    error : function(err) {
+                        //alert("errCode : " + JSON.stringify(err));
+                        alert("errCode : " + err.message);
+                    }
+                });
+            })
+        });
+    </script>
+</head>
+<body>
+<div id="nav">
+    <h1>테스터 로그인</h1>
+</div>
+<div id="content">
+    <div class="row">
+         <label for="loginId">아이디</label>
+         <input type="text" id="loginId" name="loginId" value=""/>
+    </div>
+    <div class="row">
+        <label for="loginPwd">비밀번호</label>
+        <input type="password" id="loginPwd" name="loginPwd" value=""/>
+    </div>
+    <div class="row">
+        <input type="button" id="submitBtn" name="submitBtn" value="전송"/>
+    </div>
+</div>
+<div id="footer`">
+    푸터
+</div>
+</body>
+</html>

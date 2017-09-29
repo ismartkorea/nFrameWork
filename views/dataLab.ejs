@@ -1,0 +1,272 @@
+<!DOCTYPE HTML>
+<html lang="ko">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>고객센터</title>
+
+    <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
+    <meta name="viewport" content="width=device-width" />
+
+    <!-- Facebook and Twitter integration -->
+    <meta property="og:title" content=""/>
+    <meta property="og:image" content=""/>
+    <meta property="og:url" content=""/>
+    <meta property="og:site_name" content=""/>
+    <meta property="og:description" content=""/>
+    <meta name="twitter:title" content="" />
+    <meta name="twitter:image" content="" />
+    <meta name="twitter:url" content="" />
+    <meta name="twitter:card" content="" />
+
+    <!-- <link href='https://fonts.googleapis.com/css?family=Work+Sans:400,300,600,400italic,700' rel='stylesheet' type='text/css'> -->
+
+    <!-- Animate.css -->
+    <link rel="stylesheet" href="/css/animate.css">
+    <!-- Icomoon Icon Fonts-->
+    <link rel="stylesheet" href="/css/icomoon.css">
+    <!-- Bootstrap  -->
+    <link rel="stylesheet" href="/css/bootstrap.css">
+
+    <!-- Magnific Popup -->
+    <link rel="stylesheet" href="/css/magnific-popup.css">
+
+    <!-- Theme style  -->
+    <link rel="stylesheet" href="/css/style.css">
+
+    <!-- Modernizr JS -->
+    <script src="/js/modernizr-2.6.2.min.js"></script>
+    <!-- FOR IE9 below -->
+    <!--[if lt IE 9]>
+    <script src="/js/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+<body>
+
+<% include include/nav %>
+
+
+<form id="frm" name="frm" class="content">
+    <div id="fh5co-faqs" data-section="faqs">
+        <div class="container">
+
+                <!--고객센터 타이틀 시작 -->
+                <div class="fh5co-heading animate-box">
+                    <h2 class="ubar">고객센터</h2>
+                    <p class="submenu">
+                        <a href="/ascenter" class="btn btn-subm active">자료실</a>
+                        <a href="/ascenter/inquire" class="btn btn-subm">1:1문의하기</a>
+                        <a href="/ascenter/fnq" class="btn btn-subm">자주하는질문</a>
+                        <a href="tel:1644-0495" class="btn btn-subm dispmo">바로전화</a>
+                    </p>
+                </div>
+                <!--고객센터 타이틀 end -->
+
+                <!-- 자료실 목록 시작 -->
+                <div class="row animate-box" mt30>
+
+                            <!--자료실 테이블 시작 -->
+                            <div class="col-md-12">
+                                <h3 style="margin-bottom:-30px;">자료실</h3>
+
+                                <!--검색 시작-->
+                                <div class="text-right mb10">
+                                    <select id="srchType1" name="srchType1">
+                                        <option value="srchDataNm">자료명</option>
+                                        <option value="srchCategory">분류별</option>
+                                    </select>
+                                    <div style="display:inline-block;">
+                                        <div>
+                                            <input type="text" id="srchText1" name="srchText1" value="<%=srchText1%>" size="17" maxlength="17" placeholder="" />
+                                        </div>
+                                        <div id="srchCategoryBox" style="display:none;">
+                                            <select id="category1" name="category1"></select>
+                                        </div>
+                                    </div>
+                                    <input type="button" id="searchBtn" name="searchBtn" class="btn-sm btn-warning btn-sm" value="검색" placeholder="&#xf002;"/>
+                                </div>
+                                <!--검색 끝-->
+
+
+                                <form id="frm" name="frm">
+                                    <table border="0" cellspacing="0" width="100%" class="table_style1">
+                                        <tr>
+                                            <th width="3%">No</th>
+                                            <th width="20%">분류</th>
+                                            <th>자료명</th>
+                                            <th width="20%">날짜</th>
+                                        </tr>
+<%
+    if(rList.length > 0) {
+        rList.forEach(function(item, index) {
+%>
+
+                                        <tr>
+                                            <td><%=item.num%></td>
+                                            <td><%=item.categoryNm%></td>
+                                            <td><a href="/ascenter/view/<%=item.dNo%>"><%=item.dataNm%></a></td>
+                                            <td><%=item.insDate%></td>
+                                        </tr>
+<%
+        });
+    } else {
+%>
+                                        <tr>
+                                            <td colspan="4" align="center">
+                                                No Data
+                                            </td>
+                                        </tr>
+<%
+    }
+%>
+
+                                    </table>
+                                </form>
+                            </div><!--자료실 end -->
+
+
+
+
+
+
+
+
+
+
+                            <p id="page" class="page text-center mt20">
+<%
+                //console.log(">>> maxPage = " + maxPage);
+                for(var x=1; x<=maxPage;x++) {
+                    if(x <= offset || x > maxPage - offset || (x >= page-(offset-1) && x <= page+(offset-1))) {
+                        if(x != page) {
+                            //console.log(">>> * ["+x+"] page = " + page);
+%>
+                            [<a href="/ascenter?page=<%=x%>&srchType1=<%=srchType1%>&srchText1=<%=srchText1%>"><%=x%></a>]
+<%
+                        } else {
+    //console.log(">>> ["+x+"] page = " + page);
+%>
+                            [<b><%=x%></b>]
+<%
+                        }
+                    } else if(x == offset+1 || x == maxPage-offset) {
+%>
+                            ...
+<%
+                    }
+                }
+%>
+                            </p>
+                        </div><!--col-md-12끝-->
+
+                </div><!-- 끝-->
+                <!--자료실 열람 끝-->
+
+            </div><!--container-fluid-->
+        </div><!--content-->
+</form>
+<form name="fileForm" id="fileForm" method="post">
+    <input type="hidden" id="fileName" name="fileName" value=""/>
+</form>
+    </div><!--main-panel 메인화면 끝-->
+
+</div><!--wrapper-->
+
+<% include include/footer %>
+
+<div class="gototop js-top">
+    <a href="#" class="js-gotop"><i class="icon-arrow-up"></i></a>
+</div>
+
+</body>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+<!-- jQuery Easing -->
+<script src="/js/jquery.easing.1.3.js"></script>
+<!-- Bootstrap -->
+<script src="/js/bootstrap.min.js"></script>
+<!-- Waypoints -->
+<script src="/js/jquery.waypoints.min.js"></script>
+<!-- countTo -->
+<script src="/js/jquery.countTo.js"></script>
+<!-- Magnific Popup -->
+<script src="/js/jquery.magnific-popup.min.js"></script>
+<script src="/js/magnific-popup-options.js"></script>
+<!-- Main -->
+<script src="/js/main.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        // 초기 설정.
+        // 카테고리(대중소분류) 콤보박스 초기화.
+        var optionHTML1 = "<option value=''>선택하세요.</option>";
+
+<%
+    console.log(">>>> sList.length : " + sList.length);
+    if(sList.length > 0) {
+        sList.forEach(function(item) {
+%>
+        optionHTML1 += "<option value='<%=item.cateCd%>'><%=item.cateNm%></option>";
+<%
+        });
+    }
+%>
+        // 카테고리 콤보박스 세팅.
+        $("#category1").html(optionHTML1);
+
+        // 작성확인 후 전송하기 버튼 이벤트 처리.
+        $("#searchBtn").on('click', function(e) {
+            e.preventDefault();
+            var srchType1 = $.trim($("#srchType1 option:selected").val());
+
+            if(srchType1=="srchDataNm") {
+                if($.trim($("#srchText1").val()) == "") {
+                    alert("자료명을 입력하여 주세요.");
+                    $("#srchText1").focus();
+                    return false;
+                }
+            } else if(srchType1=="category1") {
+
+                if ($.trim($("#category1 option:selected").val()) == "") {
+                    alert("분류를 선택하여 주세요.");
+                    $("#category1").focus();
+                    return false;
+                }
+            }
+
+            $("#frm").attr("method", "post");
+            $("#frm").attr("action", "/ascenter/search");
+            $("#frm").submit();
+
+        });
+
+        // 자료 검색 부분 이벤트 처리.
+        $("#srchType1").on("change", function() {
+            var selVal = $("#srchType1 option:selected").val();
+            //console.log(">>>selVal : " + selVal);
+            if(selVal == "srchCategory") {
+                $("#srchText1").css("display","none");
+                $("#srchCategoryBox").css("display","inline-block");
+            } else if(selVal == "srchDataNm") {
+                $("#srchCategoryBox").css("display","none");
+                $("#srchText1").css("display","inline-block");
+            } else {
+                $("#srchCategoryBox").css("display", "none");
+                $("#srchText1").css("display","inline-block");
+            }
+        });
+
+    });
+
+    // 파일다운로드
+    function attachFileDownload(url) {
+
+        var frm = document.fileForm;
+            frm.action = "/ascenter/download";
+            frm.fileName.value = url;
+            frm.submit();
+    }
+
+</script>
+</html>
